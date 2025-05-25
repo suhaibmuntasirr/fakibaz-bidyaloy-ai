@@ -4,10 +4,12 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
-// Firebase configuration - You'll need to replace these with your actual Firebase config
+// Firebase configuration - Replace these with your actual Firebase config
+// Get these values from: https://console.firebase.google.com/
+// Go to Project Settings > General > Your apps > Web app > Config
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY_HERE",
-  authDomain: "YOUR_AUTH_DOMAIN_HERE",
+  authDomain: "YOUR_AUTH_DOMAIN_HERE", 
   projectId: "YOUR_PROJECT_ID_HERE",
   storageBucket: "YOUR_STORAGE_BUCKET_HERE",
   messagingSenderId: "YOUR_MESSAGING_SENDER_ID_HERE",
