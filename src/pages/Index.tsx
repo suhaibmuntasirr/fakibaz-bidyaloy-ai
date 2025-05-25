@@ -8,12 +8,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Navbar from '@/components/Navbar';
 import AIAssistant from '@/components/AIAssistant';
 import { useNavigate } from 'react-router-dom';
+import { useAuthAction } from '@/hooks/useAuthAction';
 
 const Index = () => {
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
+  const { requireAuth } = useAuthAction();
 
   const classes = [
     'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5', 'Class 6',
@@ -24,6 +26,25 @@ const Index = () => {
     'বাংলা', 'English', 'গণিত', 'বিজ্ঞান', 'সামাজিক বিজ্ঞান', 
     'ICT', 'পদার্থবিজ্ঞান', 'রসায়ন', 'জীববিজ্ঞান', 'উচ্চতর গণিত'
   ];
+
+  const handleAskQuestion = () => {
+    requireAuth(() => {
+      // Handle AI question submission here
+      console.log('Asking question:', query);
+    });
+  };
+
+  const handleNavigateToNotes = () => {
+    requireAuth(() => {
+      navigate('/notes');
+    });
+  };
+
+  const handleNavigateToCommunity = () => {
+    requireAuth(() => {
+      navigate('/community');
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#28282B] via-[#1a1a1d] to-[#28282B]">
@@ -92,6 +113,7 @@ const Index = () => {
                 <Button 
                   className="absolute right-2 top-2 h-12 w-12 bg-blue-600 hover:bg-blue-700"
                   size="icon"
+                  onClick={handleAskQuestion}
                 >
                   <Send className="h-5 w-5" />
                 </Button>
@@ -102,7 +124,7 @@ const Index = () => {
                 <Button 
                   variant="outline" 
                   className="bg-white/10 border-white/20 text-white hover:bg-white/20 h-12"
-                  onClick={() => navigate('/notes')}
+                  onClick={handleNavigateToNotes}
                 >
                   <BookOpen className="mr-2 h-4 w-4" />
                   নোট দেখো
@@ -110,7 +132,7 @@ const Index = () => {
                 <Button 
                   variant="outline" 
                   className="bg-white/10 border-white/20 text-white hover:bg-white/20 h-12"
-                  onClick={() => navigate('/notes')}
+                  onClick={handleNavigateToNotes}
                 >
                   <Upload className="mr-2 h-4 w-4" />
                   নোট আপলোড
@@ -118,6 +140,7 @@ const Index = () => {
                 <Button 
                   variant="outline" 
                   className="bg-white/10 border-white/20 text-white hover:bg-white/20 h-12"
+                  onClick={() => requireAuth(() => console.log('Search functionality'))}
                 >
                   <Search className="mr-2 h-4 w-4" />
                   খুঁজে দেখো
@@ -125,6 +148,7 @@ const Index = () => {
                 <Button 
                   variant="outline" 
                   className="bg-white/10 border-white/20 text-white hover:bg-white/20 h-12"
+                  onClick={handleNavigateToCommunity}
                 >
                   <Users className="mr-2 h-4 w-4" />
                   কমিউনিটি

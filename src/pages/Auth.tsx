@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import LoginForm from '@/components/auth/LoginForm';
 import RegisterForm from '@/components/auth/RegisterForm';
@@ -10,14 +10,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get the page user was trying to access
+  const from = (location.state as any)?.from?.pathname || '/';
 
   // Redirect if already authenticated
   if (currentUser) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={from} replace />;
   }
 
   const handleAuthSuccess = () => {
-    // User will be automatically redirected by the auth state change
+    // Redirect back to the page user was trying to access
+    navigate(from, { replace: true });
   };
 
   return (
