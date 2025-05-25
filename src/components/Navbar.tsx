@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Users, MessageCircle, Settings, User } from 'lucide-react';
+import { BookOpen, Users, MessageCircle, Settings, User, HelpCircle } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
@@ -11,6 +11,7 @@ const Navbar = () => {
   const navItems = [
     { name: 'AI শিক্ষক', path: '/', icon: MessageCircle },
     { name: 'নোট শেয়ার', path: '/notes', icon: BookOpen },
+    { name: 'প্রশ্ন ব্যাংক', path: '/questionbank', icon: HelpCircle },
     { name: 'কমিউনিটি', path: '/community', icon: Users },
   ];
 
