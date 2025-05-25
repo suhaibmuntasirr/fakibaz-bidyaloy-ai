@@ -1,12 +1,22 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Users, MessageCircle, Settings, User, HelpCircle } from 'lucide-react';
+import { BookOpen, Users, MessageCircle, Settings, User, HelpCircle, LogOut } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { currentUser, userProfile, logout } = useAuth();
 
   const navItems = [
     { name: 'AI শিক্ষক', path: '/', icon: MessageCircle },
@@ -14,6 +24,15 @@ const Navbar = () => {
     { name: 'প্রশ্ন ব্যাংক', path: '/questionbank', icon: HelpCircle },
     { name: 'কমিউনিটি', path: '/community', icon: Users },
   ];
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/auth');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   return (
     <nav className="bg-[#28282B]/90 backdrop-blur-lg border-b border-white/10 sticky top-0 z-50">
@@ -57,13 +76,49 @@ const Navbar = () => {
             >
               <Settings className="h-5 w-5" />
             </Button>
-            <Button 
-              variant="outline"
-              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-            >
-              <User className="mr-2 h-4 w-4" />
-              লগইন
-            </Button>
+            
+            {currentUser ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="outline"
+                    className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                  >
+                    <User className="mr-2 h-4 w-4" />
+                    {userProfile?.fullName || currentUser.email}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-[#28282B] border-white/20 text-white">
+                  <DropdownMenuLabel>আমার অ্যাকাউন্ট</DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-white/20" />
+                  <DropdownMenuItem className="hover:bg-white/10">
+                    <User className="mr-2 h-4 w-4" />
+                    প্রোফাইল
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-white/10">
+                    <Settings className="mr-2 h-4 w-4" />
+                    সেটিংস
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-white/20" />
+                  <DropdownMenuItem 
+                    className="hover:bg-white/10 text-red-400"
+                    onClick={handleLogout}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    লগআউট
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button 
+                variant="outline"
+                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                onClick={() => navigate('/auth')}
+              >
+                <User className="mr-2 h-4 w-4" />
+                লগইন
+              </Button>
+            )}
           </div>
 
           {/* Mobile menu button */}
