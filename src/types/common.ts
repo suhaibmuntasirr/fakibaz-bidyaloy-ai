@@ -4,8 +4,10 @@ export interface ViewerItem {
   title: string;
   class: string;
   subject: string;
+  chapter?: string;
   authorName?: string;
   author?: string;
+  authorId?: string;
   createdAt?: Date;
   uploadDate?: Date;
   likes: number;
@@ -16,6 +18,7 @@ export interface ViewerItem {
   questionFileUrl?: string;
   answerFileUrl?: string;
   fileName: string;
+  fileSize?: number;
   verified: boolean;
   likedBy: string[];
   tags: string[];
