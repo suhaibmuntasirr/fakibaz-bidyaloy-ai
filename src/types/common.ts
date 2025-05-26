@@ -9,7 +9,7 @@ export interface ViewerItem {
   author: string;
   authorId: string;
   createdAt?: Date;
-  uploadDate?: Date;
+  uploadDate: Date;
   likes: number;
   downloads: number;
   comments: number;

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -208,7 +207,7 @@ const PDFUpload = ({ type, onUploadSuccess }: PDFUploadProps) => {
       {/* Upload Guidelines */}
       <Card className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-lg border-white/20">
         <CardHeader>
-          <CardTitle className="text-white flex items-center">
+          <CardTitle className="text-[#28282B] flex items-center">
             <AlertCircle className="mr-2 h-5 w-5 text-yellow-400" />
             আপলোডের নির্দেশনা - শুধুমাত্র PDF ফাইল আপলোড করুন
           </CardTitle>
@@ -216,11 +215,11 @@ const PDFUpload = ({ type, onUploadSuccess }: PDFUploadProps) => {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-white/10 p-4 rounded-lg">
-              <h4 className="text-white font-medium mb-2 flex items-center">
+              <h4 className="text-[#28282B] font-medium mb-2 flex items-center">
                 <Star className="mr-2 h-4 w-4 text-yellow-400" />
                 মানসম্পন্ন নোটের বৈশিষ্ট্য
               </h4>
-              <ul className="text-gray-300 text-sm space-y-1">
+              <ul className="text-[#28282B] text-sm space-y-1">
                 <li>• পরিষ্কার এবং সুন্দর হাতের লেখা</li>
                 <li>• সঠিক ক্রমানুসারে সাজানো বিষয়বস্তু</li>
                 <li>• প্রয়োজনীয় চিত্র এবং উদাহরণ</li>
@@ -229,21 +228,21 @@ const PDFUpload = ({ type, onUploadSuccess }: PDFUploadProps) => {
               </ul>
             </div>
             <div className="bg-white/10 p-4 rounded-lg">
-              <h4 className="text-white font-medium mb-2 flex items-center">
+              <h4 className="text-[#28282B] font-medium mb-2 flex items-center">
                 <Award className="mr-2 h-4 w-4 text-green-400" />
                 পয়েন্ট সিস্টেম
               </h4>
-              <ul className="text-gray-300 text-sm space-y-1">
+              <ul className="text-[#28282B] text-sm space-y-1">
                 <li>• নোট আপলোড: ১০ পয়েন্ট</li>
                 <li>• প্রশ্ন আপলোড: ১৫ পয়েন্ট</li>
                 <li>• প্রতি লাইক: ২ পয়েন্ট</li>
                 <li>• প্রতি ডাউনলোড: ৫ পয়েন্ট</li>
-                <li className="text-yellow-300">• নোটের মান অনুযায়ী পেমেন্ট!</li>
+                <li className="text-yellow-600">• নোটের মান অনুযায়ী পেমেন্ট!</li>
               </ul>
             </div>
           </div>
           <div className="bg-red-500/20 border border-red-500/30 p-3 rounded-lg">
-            <p className="text-red-200 text-sm">
+            <p className="text-[#28282B] text-sm">
               <strong>গুরুত্বপূর্ণ:</strong> নোট অবশ্যই PDF ফরম্যাটে এবং ১০ MB এর কম হতে হবে। 
               নোটগুলো সিকোয়েন্সিয়াল এবং পড়ার উপযোগী হতে হবে যাতে অন্যরা সহজে বুঝতে পারে।
             </p>

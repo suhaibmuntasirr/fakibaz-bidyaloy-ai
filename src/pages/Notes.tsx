@@ -200,7 +200,7 @@ const Notes = () => {
     author: note.authorName || 'Unknown',
     authorId: note.authorId || '',
     createdAt: note.createdAt,
-    uploadDate: note.createdAt,
+    uploadDate: note.createdAt || new Date(),
     likes: note.likes,
     downloads: note.downloads,
     comments: note.comments,

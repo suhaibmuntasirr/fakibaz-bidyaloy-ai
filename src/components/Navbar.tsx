@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Users, MessageCircle, Settings, User, HelpCircle, LogOut } from 'lucide-react';
@@ -69,13 +68,7 @@ const Navbar = () => {
 
           {/* User Actions */}
           <div className="flex items-center space-x-3">
-            <Button 
-              variant="ghost" 
-              size="icon"
-              className="text-white hover:text-blue-400 hover:bg-white/10"
-            >
-              <Settings className="h-5 w-5" />
-            </Button>
+            
             
             {currentUser ? (
               <DropdownMenu>

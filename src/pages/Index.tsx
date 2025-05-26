@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Send, BookOpen, Users, Search, Upload, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -106,7 +105,7 @@ const Index = () => {
           <Card className="bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl">
             <CardHeader className="text-center pb-6">
               <CardTitle className="text-4xl font-bold text-white mb-2">
-                কী শিখবে চাও?
+                কী শিখতে চাও?
               </CardTitle>
               <p className="text-gray-300">
                 প্রশ্ন করো বাংলায় অথবা ইংরেজিতে
