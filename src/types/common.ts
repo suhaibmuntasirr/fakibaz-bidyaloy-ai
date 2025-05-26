@@ -6,7 +6,7 @@ export interface ViewerItem {
   subject: string;
   chapter: string;
   authorName?: string;
-  author?: string;
+  author: string;
   authorId?: string;
   createdAt?: Date;
   uploadDate?: Date;
