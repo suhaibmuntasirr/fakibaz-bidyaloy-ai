@@ -165,12 +165,12 @@ const Notes = () => {
                     <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   </div>
                   
-                  <Select value={selectedClass} onValueChange={setSelectedClass}>
+                  <Select value={selectedClass || undefined} onValueChange={setSelectedClass}>
                     <SelectTrigger className="bg-white/10 border-white/20 text-white">
                       <SelectValue placeholder="ক্লাস" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#28282B] border-white/20">
-                      <SelectItem value="" className="text-white hover:bg-white/10">সব ক্লাস</SelectItem>
+                      <SelectItem value="all" className="text-white hover:bg-white/10">সব ক্লাস</SelectItem>
                       {classes.map((cls) => (
                         <SelectItem key={cls} value={cls} className="text-white hover:bg-white/10">
                           {cls}
@@ -179,12 +179,12 @@ const Notes = () => {
                     </SelectContent>
                   </Select>
                   
-                  <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+                  <Select value={selectedSubject || undefined} onValueChange={setSelectedSubject}>
                     <SelectTrigger className="bg-white/10 border-white/20 text-white">
                       <SelectValue placeholder="বিষয়" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#28282B] border-white/20">
-                      <SelectItem value="" className="text-white hover:bg-white/10">সব বিষয়</SelectItem>
+                      <SelectItem value="all" className="text-white hover:bg-white/10">সব বিষয়</SelectItem>
                       {subjects.map((subject) => (
                         <SelectItem key={subject} value={subject} className="text-white hover:bg-white/10">
                           {subject}
