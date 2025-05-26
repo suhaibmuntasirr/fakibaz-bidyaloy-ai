@@ -9,6 +9,7 @@ import Navbar from '@/components/Navbar';
 import AIAssistant from '@/components/AIAssistant';
 import { useNavigate } from 'react-router-dom';
 import { useAuthAction } from '@/hooks/useAuthAction';
+import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [selectedClass, setSelectedClass] = useState('');
@@ -16,6 +17,7 @@ const Index = () => {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
   const { requireAuth } = useAuthAction();
+  const { toast } = useToast();
 
   const classes = [
     'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5', 'Class 6',
@@ -28,15 +30,47 @@ const Index = () => {
   ];
 
   const handleAskQuestion = () => {
+    if (!query.trim()) {
+      toast({
+        title: "প্রশ্ন লিখুন",
+        description: "অনুগ্রহ করে আপনার প্রশ্ন লিখুন",
+        variant: "destructive"
+      });
+      return;
+    }
+
     requireAuth(() => {
-      // Handle AI question submission here
-      console.log('Asking question:', query);
+      toast({
+        title: "AI প্রশ্ন প্রক্রিয়াকরণ",
+        description: "আপনার প্রশ্নের উত্তর খুঁজে দেওয়া হচ্ছে..."
+      });
+      console.log('Asking question:', query, 'Class:', selectedClass, 'Subject:', selectedSubject);
     });
   };
 
   const handleNavigateToNotes = () => {
+    navigate('/notes');
+  };
+
+  const handleNavigateToUpload = () => {
     requireAuth(() => {
       navigate('/notes');
+      // Focus on upload tab after navigation
+      setTimeout(() => {
+        const uploadTab = document.querySelector('[data-value="upload"]') as HTMLElement;
+        uploadTab?.click();
+      }, 100);
+    });
+  };
+
+  const handleSearch = () => {
+    requireAuth(() => {
+      const searchParams = new URLSearchParams();
+      if (query) searchParams.set('q', query);
+      if (selectedClass) searchParams.set('class', selectedClass);
+      if (selectedSubject) searchParams.set('subject', selectedSubject);
+      
+      navigate(`/notes?${searchParams.toString()}`);
     });
   };
 
@@ -44,6 +78,12 @@ const Index = () => {
     requireAuth(() => {
       navigate('/community');
     });
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleAskQuestion();
+    }
   };
 
   return (
@@ -107,6 +147,7 @@ const Index = () => {
                 <Input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
                   placeholder="তোমার প্রশ্ন লেখো..."
                   className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 h-16 text-lg pr-16"
                 />
@@ -132,7 +173,7 @@ const Index = () => {
                 <Button 
                   variant="outline" 
                   className="bg-white/10 border-white/20 text-white hover:bg-white/20 h-12"
-                  onClick={handleNavigateToNotes}
+                  onClick={handleNavigateToUpload}
                 >
                   <Upload className="mr-2 h-4 w-4" />
                   নোট আপলোড
@@ -140,7 +181,7 @@ const Index = () => {
                 <Button 
                   variant="outline" 
                   className="bg-white/10 border-white/20 text-white hover:bg-white/20 h-12"
-                  onClick={() => requireAuth(() => console.log('Search functionality'))}
+                  onClick={handleSearch}
                 >
                   <Search className="mr-2 h-4 w-4" />
                   খুঁজে দেখো
@@ -163,7 +204,7 @@ const Index = () => {
 
         {/* Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-          <Card className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/20 transition-all duration-300">
+          <Card className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer" onClick={() => requireAuth(() => console.log('AI feature clicked'))}>
             <CardHeader>
               <MessageCircle className="h-12 w-12 text-blue-400 mb-4" />
               <CardTitle className="text-white">AI শিক্ষক</CardTitle>
@@ -175,7 +216,7 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/20 transition-all duration-300">
+          <Card className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer" onClick={handleNavigateToNotes}>
             <CardHeader>
               <BookOpen className="h-12 w-12 text-green-400 mb-4" />
               <CardTitle className="text-white">নোট শেয়ারিং</CardTitle>
@@ -187,7 +228,7 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/20 transition-all duration-300">
+          <Card className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer" onClick={handleNavigateToCommunity}>
             <CardHeader>
               <Users className="h-12 w-12 text-purple-400 mb-4" />
               <CardTitle className="text-white">কমিউনিটি</CardTitle>

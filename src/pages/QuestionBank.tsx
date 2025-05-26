@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,25 +11,12 @@ import {
   Clock, BookOpen, Users, Target
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
-
-interface Question {
-  id: string;
-  title: string;
-  subject: string;
-  class: string;
-  school: string;
-  year: number;
-  examType: string;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-  marks: number;
-  uploader: string;
-  views: number;
-  likes: number;
-  answers: number;
-  hasAnswerKey: boolean;
-  uploadDate: Date;
-  verified: boolean;
-}
+import PDFUpload from '@/components/PDFUpload';
+import PDFViewer from '@/components/PDFViewer';
+import { notesService, Question } from '@/services/notesService';
+import { useAuth } from '@/contexts/AuthContext';
+import { useAuthAction } from '@/hooks/useAuthAction';
+import { useToast } from '@/hooks/use-toast';
 
 interface School {
   name: string;
@@ -45,64 +31,14 @@ const QuestionBank = () => {
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedSchool, setSelectedSchool] = useState('');
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
+  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
+  const [activeTab, setActiveTab] = useState('questions');
 
-  // Mock data
-  const mockQuestions: Question[] = [
-    {
-      id: '1',
-      title: 'গণিত প্রি-টেস্ট পরীক্ষা - দ্বিঘাত সমীকরণ',
-      subject: 'গণিত',
-      class: 'Class 9',
-      school: 'ঢাকা কলেজিয়েট স্কুল',
-      year: 2024,
-      examType: 'Pre-test',
-      difficulty: 'Medium',
-      marks: 50,
-      uploader: 'রাহুল আহমেদ',
-      views: 245,
-      likes: 34,
-      answers: 12,
-      hasAnswerKey: true,
-      uploadDate: new Date('2024-01-15'),
-      verified: true
-    },
-    {
-      id: '2',
-      title: 'Physics Final Examination - Mechanics',
-      subject: 'পদার্থবিজ্ঞান',
-      class: 'Class 11',
-      school: 'Notre Dame College',
-      year: 2023,
-      examType: 'Final',
-      difficulty: 'Hard',
-      marks: 100,
-      uploader: 'সারা খান',
-      views: 189,
-      likes: 28,
-      answers: 8,
-      hasAnswerKey: false,
-      uploadDate: new Date('2024-01-10'),
-      verified: true
-    },
-    {
-      id: '3',
-      title: 'বাংলা সাহিত্য অর্ধবার্ষিক পরীক্ষা',
-      subject: 'বাংলা',
-      class: 'Class 10',
-      school: 'ভিকারুননিসা নূন স্কুল',
-      year: 2024,
-      examType: 'Half-yearly',
-      difficulty: 'Easy',
-      marks: 75,
-      uploader: 'তানিয়া রহমান',
-      views: 312,
-      likes: 45,
-      answers: 18,
-      hasAnswerKey: true,
-      uploadDate: new Date('2024-01-20'),
-      verified: true
-    }
-  ];
+  const { currentUser } = useAuth();
+  const { requireAuth } = useAuthAction();
+  const { toast } = useToast();
 
   const topSchools: School[] = [
     { name: 'ঢাকা কলেজিয়েট স্কুল', location: 'ঢাকা', questionCount: 89, rank: 1 },
@@ -123,7 +59,24 @@ const QuestionBank = () => {
   ];
 
   const years = ['2024', '2023', '2022', '2021', '2020'];
-  const examTypes = ['Pre-test', 'Half-yearly', 'Final', 'Model Test', 'Weekly Test'];
+
+  // Load questions on component mount
+  useEffect(() => {
+    const loadedQuestions = notesService.getAllQuestions();
+    setQuestions(loadedQuestions);
+    setFilteredQuestions(loadedQuestions);
+  }, []);
+
+  // Filter questions when search parameters change
+  useEffect(() => {
+    const filtered = notesService.searchQuestions(searchQuery, {
+      class: selectedClass,
+      subject: selectedSubject,
+      year: selectedYear,
+      school: selectedSchool
+    });
+    setFilteredQuestions(filtered);
+  }, [searchQuery, selectedClass, selectedSubject, selectedYear, selectedSchool]);
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -132,6 +85,74 @@ const QuestionBank = () => {
       case 'Hard': return 'bg-red-500';
       default: return 'bg-gray-500';
     }
+  };
+
+  const handleQuestionClick = (question: Question) => {
+    requireAuth(() => {
+      notesService.viewQuestion(question.id);
+      setSelectedQuestion(question);
+      
+      // Update local state
+      const updatedQuestions = questions.map(q => 
+        q.id === question.id ? notesService.getQuestionById(question.id)! : q
+      );
+      setQuestions(updatedQuestions);
+      setFilteredQuestions(notesService.searchQuestions(searchQuery, {
+        class: selectedClass,
+        subject: selectedSubject,
+        year: selectedYear,
+        school: selectedSchool
+      }));
+    });
+  };
+
+  const handleLike = (questionId: string) => {
+    requireAuth(() => {
+      if (!currentUser) return;
+      
+      const liked = notesService.likeQuestion(questionId, currentUser.uid);
+      
+      // Update local state
+      const updatedQuestions = questions.map(question => 
+        question.id === questionId ? notesService.getQuestionById(questionId)! : question
+      );
+      setQuestions(updatedQuestions);
+      setFilteredQuestions(notesService.searchQuestions(searchQuery, {
+        class: selectedClass,
+        subject: selectedSubject,
+        year: selectedYear,
+        school: selectedSchool
+      }));
+
+      if (selectedQuestion && selectedQuestion.id === questionId) {
+        setSelectedQuestion(notesService.getQuestionById(questionId)!);
+      }
+
+      toast({
+        title: liked ? "লাইক দেওয়া হয়েছে!" : "লাইক সরানো হয়েছে",
+        description: liked ? "প্রশ্নটি আপনার পছন্দের তালিকায় যোগ হয়েছে" : "প্রশ্নটি পছন্দের তালিকা থেকে সরানো হয়েছে"
+      });
+    });
+  };
+
+  const handleDownload = (questionId: string) => {
+    requireAuth(() => {
+      toast({
+        title: "ডাউনলোড শুরু হয়েছে!",
+        description: "প্রশ্নপত্রটি ডাউনলোড হচ্ছে..."
+      });
+    });
+  };
+
+  const handleUploadSuccess = () => {
+    const loadedQuestions = notesService.getAllQuestions();
+    setQuestions(loadedQuestions);
+    setFilteredQuestions(loadedQuestions);
+    setActiveTab('questions');
+  };
+
+  const isQuestionLiked = (question: Question): boolean => {
+    return currentUser ? question.likedBy.includes(currentUser.uid) : false;
   };
 
   return (
@@ -145,7 +166,7 @@ const QuestionBank = () => {
           <p className="text-gray-300 text-lg">সব স্কুলের প্রশ্ন ও উত্তর একসাথে - পরীক্ষার শেষ মুহূর্তের প্রস্তুতি</p>
         </div>
 
-        <Tabs defaultValue="questions" className="space-y-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
           <TabsList className="grid w-full grid-cols-4 bg-white/10 border-white/20">
             <TabsTrigger value="questions" className="text-white data-[state=active]:bg-white/20">
               <FileText className="mr-2 h-4 w-4" />
@@ -186,6 +207,7 @@ const QuestionBank = () => {
                       <SelectValue placeholder="ক্লাস" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#28282B] border-white/20">
+                      <SelectItem value="" className="text-white hover:bg-white/10">সব ক্লাস</SelectItem>
                       {classes.map((cls) => (
                         <SelectItem key={cls} value={cls} className="text-white hover:bg-white/10">
                           {cls}
@@ -199,6 +221,7 @@ const QuestionBank = () => {
                       <SelectValue placeholder="বিষয়" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#28282B] border-white/20">
+                      <SelectItem value="" className="text-white hover:bg-white/10">সব বিষয়</SelectItem>
                       {subjects.map((subject) => (
                         <SelectItem key={subject} value={subject} className="text-white hover:bg-white/10">
                           {subject}
@@ -212,6 +235,7 @@ const QuestionBank = () => {
                       <SelectValue placeholder="বছর" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#28282B] border-white/20">
+                      <SelectItem value="" className="text-white hover:bg-white/10">সব বছর</SelectItem>
                       {years.map((year) => (
                         <SelectItem key={year} value={year} className="text-white hover:bg-white/10">
                           {year}
@@ -225,6 +249,7 @@ const QuestionBank = () => {
                       <SelectValue placeholder="স্কুল" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#28282B] border-white/20">
+                      <SelectItem value="" className="text-white hover:bg-white/10">সব স্কুল</SelectItem>
                       {topSchools.map((school) => (
                         <SelectItem key={school.name} value={school.name} className="text-white hover:bg-white/10">
                           {school.name}
@@ -238,11 +263,11 @@ const QuestionBank = () => {
 
             {/* Questions Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {mockQuestions.map((question) => (
-                <Card key={question.id} className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all duration-300">
+              {filteredQuestions.map((question) => (
+                <Card key={question.id} className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all duration-300 cursor-pointer">
                   <CardHeader>
                     <div className="flex items-start justify-between">
-                      <CardTitle className="text-white text-lg leading-tight">
+                      <CardTitle className="text-white text-lg leading-tight" onClick={() => handleQuestionClick(question)}>
                         {question.title}
                       </CardTitle>
                       <div className="flex items-center space-x-2">
@@ -309,6 +334,10 @@ const QuestionBank = () => {
                         <Button 
                           size="sm" 
                           className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDownload(question.id);
+                          }}
                         >
                           <Download className="h-4 w-4 mr-1" />
                           ডাউনলোড
@@ -317,6 +346,10 @@ const QuestionBank = () => {
                           size="sm" 
                           variant="outline"
                           className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleQuestionClick(question);
+                          }}
                         >
                           <Eye className="h-4 w-4 mr-1" />
                           দেখুন
@@ -326,6 +359,10 @@ const QuestionBank = () => {
                             size="sm" 
                             variant="outline"
                             className="bg-green-600/20 border-green-500/20 text-green-300 hover:bg-green-600/30"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDownload(question.id);
+                            }}
                           >
                             <Target className="h-4 w-4" />
                           </Button>
@@ -336,110 +373,18 @@ const QuestionBank = () => {
                 </Card>
               ))}
             </div>
+
+            {filteredQuestions.length === 0 && (
+              <div className="text-center py-12">
+                <div className="text-gray-400 text-lg mb-4">কোন প্রশ্ন পাওয়া যায়নি</div>
+                <p className="text-gray-500">অন্য কিছু খুঁজে দেখুন বা নতুন প্রশ্ন আপলোড করুন</p>
+              </div>
+            )}
           </TabsContent>
 
           {/* Upload Tab */}
-          <TabsContent value="upload" className="space-y-6">
-            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <Upload className="mr-2 h-5 w-5" />
-                  প্রশ্ন ও উত্তর আপলোড করুন
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Select>
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                      <SelectValue placeholder="ক্লাস নির্বাচন" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#28282B] border-white/20">
-                      {classes.map((cls) => (
-                        <SelectItem key={cls} value={cls} className="text-white hover:bg-white/10">
-                          {cls}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  
-                  <Select>
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                      <SelectValue placeholder="বিষয় নির্বাচন" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#28282B] border-white/20">
-                      {subjects.map((subject) => (
-                        <SelectItem key={subject} value={subject} className="text-white hover:bg-white/10">
-                          {subject}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Input 
-                    placeholder="স্কুলের নাম"
-                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                  />
-                  
-                  <Select>
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                      <SelectValue placeholder="পরীক্ষার বছর" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#28282B] border-white/20">
-                      {years.map((year) => (
-                        <SelectItem key={year} value={year} className="text-white hover:bg-white/10">
-                          {year}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-
-                  <Select>
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                      <SelectValue placeholder="পরীক্ষার ধরন" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#28282B] border-white/20">
-                      {examTypes.map((type) => (
-                        <SelectItem key={type} value={type} className="text-white hover:bg-white/10">
-                          {type}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <Input 
-                  placeholder="প্রশ্নের শিরোনাম"
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-4">
-                    <h3 className="text-white font-medium">প্রশ্নপত্র আপলোড</h3>
-                    <div className="border-2 border-dashed border-white/20 rounded-lg p-8 text-center">
-                      <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-300">প্রশ্নপত্র ড্র্যাগ করুন বা ক্লিক করে আপলোড করুন</p>
-                      <p className="text-sm text-gray-400 mt-2">PDF, JPG, PNG সাপোর্টেড</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-white font-medium">উত্তরপত্র আপলোড (ঐচ্ছিক)</h3>
-                    <div className="border-2 border-dashed border-green-500/20 rounded-lg p-8 text-center">
-                      <Target className="h-12 w-12 text-green-400 mx-auto mb-4" />
-                      <p className="text-gray-300">উত্তরপত্র আপলোড করুন</p>
-                      <p className="text-sm text-gray-400 mt-2">এটি অন্যদের আরো সাহায্য করবে</p>
-                    </div>
-                  </div>
-                </div>
-
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white h-12">
-                  <Upload className="mr-2 h-5 w-5" />
-                  আপলোড করুন
-                </Button>
-              </CardContent>
-            </Card>
+          <TabsContent value="upload">
+            <PDFUpload type="question" onUploadSuccess={handleUploadSuccess} />
           </TabsContent>
 
           {/* Leaderboard Tab */}
@@ -564,6 +509,18 @@ const QuestionBank = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* PDF Viewer Modal */}
+        {selectedQuestion && (
+          <PDFViewer
+            item={selectedQuestion}
+            type="question"
+            onClose={() => setSelectedQuestion(null)}
+            onLike={() => handleLike(selectedQuestion.id)}
+            onDownload={() => handleDownload(selectedQuestion.id)}
+            isLiked={isQuestionLiked(selectedQuestion)}
+          />
+        )}
       </div>
     </div>
   );
