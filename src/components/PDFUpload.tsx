@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,14 +33,18 @@ const PDFUpload = ({ type, onUploadSuccess }: PDFUploadProps) => {
   const classes = [
     'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5', 'Class 6',
     'Class 7', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'
-  ];
+  ].filter(cls => cls.trim() !== ''); // Filter out empty strings
 
   const subjects = [
     'বাংলা', 'English', 'গণিত', 'বিজ্ঞান', 'সামাজিক বিজ্ঞান', 
     'ICT', 'পদার্থবিজ্ঞান', 'রসায়ন', 'জীববিজ্ঞান', 'উচ্চতর গণিত'
-  ];
+  ].filter(subject => subject.trim() !== ''); // Filter out empty strings
 
-  const examTypes = ['Pre-test', 'Half-yearly', 'Final', 'Model Test', 'Weekly Test'];
+  const examTypes = ['Pre-test', 'Half-yearly', 'Final', 'Model Test', 'Weekly Test']
+    .filter(type => type.trim() !== ''); // Filter out empty strings
+
+  const years = ['2024', '2023', '2022', '2021', '2020']
+    .filter(year => year.trim() !== ''); // Filter out empty strings
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, fileType: 'main' | 'answer') => {
     const file = e.target.files?.[0];
@@ -207,7 +210,7 @@ const PDFUpload = ({ type, onUploadSuccess }: PDFUploadProps) => {
                   <SelectValue placeholder="পরীক্ষার বছর" />
                 </SelectTrigger>
                 <SelectContent className="bg-[#28282B] border-white/20">
-                  {['2024', '2023', '2022', '2021', '2020'].map((year) => (
+                  {years.map((year) => (
                     <SelectItem key={year} value={year} className="text-white hover:bg-white/10">
                       {year}
                     </SelectItem>
