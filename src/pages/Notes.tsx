@@ -195,7 +195,7 @@ const Notes = () => {
     title: note.title,
     class: note.class,
     subject: note.subject,
-    chapter: note.chapter,
+    chapter: note.chapter || '',
     authorName: note.authorName,
     author: note.authorName,
     authorId: note.authorId,

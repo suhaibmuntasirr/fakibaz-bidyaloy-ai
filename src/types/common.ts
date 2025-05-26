@@ -4,7 +4,7 @@ export interface ViewerItem {
   title: string;
   class: string;
   subject: string;
-  chapter?: string;
+  chapter: string;
   authorName?: string;
   author?: string;
   authorId?: string;
