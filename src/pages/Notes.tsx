@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,6 +9,7 @@ import Navbar from '@/components/Navbar';
 import PDFUpload from '@/components/PDFUpload';
 import PDFViewer from '@/components/PDFViewer';
 import { firebaseService, UploadedNote } from '@/services/firebaseService';
+import { ViewerItem } from '@/types/common';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAuthAction } from '@/hooks/useAuthAction';
 import { useToast } from '@/hooks/use-toast';
@@ -189,6 +189,27 @@ const Notes = () => {
   const isNoteLiked = (note: UploadedNote): boolean => {
     return currentUser ? note.likedBy.includes(currentUser.uid) : false;
   };
+
+  const convertNoteToViewerItem = (note: UploadedNote): ViewerItem => ({
+    id: note.id,
+    title: note.title,
+    class: note.class,
+    subject: note.subject,
+    authorName: note.authorName,
+    author: note.authorName,
+    createdAt: note.createdAt,
+    uploadDate: note.createdAt,
+    likes: note.likes,
+    downloads: note.downloads,
+    comments: note.comments,
+    rating: note.rating,
+    fileUrl: note.fileUrl,
+    fileName: note.fileName,
+    verified: note.verified,
+    likedBy: note.likedBy,
+    tags: note.tags,
+    description: note.description
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#28282B] via-[#1a1a1d] to-[#28282B]">
@@ -391,7 +412,7 @@ const Notes = () => {
         {/* PDF Viewer Modal */}
         {selectedNote && (
           <PDFViewer
-            item={selectedNote}
+            item={convertNoteToViewerItem(selectedNote)}
             type="note"
             onClose={() => setSelectedNote(null)}
             onLike={() => handleLike(selectedNote.id)}

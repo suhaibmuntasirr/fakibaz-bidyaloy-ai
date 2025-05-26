@@ -186,25 +186,26 @@ class FirebaseService {
   // Get Notes
   async getNotes(filters?: { class?: string; subject?: string; sortBy?: string }): Promise<UploadedNote[]> {
     try {
-      let q = collection(db, 'notes');
+      let queries = [];
       
       if (filters?.class && filters.class !== 'all') {
-        q = query(collection(db, 'notes'), where('class', '==', filters.class));
+        queries.push(where('class', '==', filters.class));
       }
       
       if (filters?.subject && filters.subject !== 'all') {
-        q = query(q, where('subject', '==', filters.subject));
+        queries.push(where('subject', '==', filters.subject));
       }
       
       // Apply sorting
       if (filters?.sortBy === 'popular') {
-        q = query(q, orderBy('likes', 'desc'));
+        queries.push(orderBy('likes', 'desc'));
       } else if (filters?.sortBy === 'rating') {
-        q = query(q, orderBy('rating', 'desc'));
+        queries.push(orderBy('rating', 'desc'));
       } else {
-        q = query(q, orderBy('createdAt', 'desc'));
+        queries.push(orderBy('createdAt', 'desc'));
       }
       
+      const q = query(collection(db, 'notes'), ...queries);
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => ({
         id: doc.id,
@@ -219,33 +220,34 @@ class FirebaseService {
   // Get Questions
   async getQuestions(filters?: { class?: string; subject?: string; year?: string; school?: string; sortBy?: string }): Promise<UploadedQuestion[]> {
     try {
-      let q = collection(db, 'questions');
+      let queries = [];
       
       if (filters?.class && filters.class !== 'all') {
-        q = query(collection(db, 'questions'), where('class', '==', filters.class));
+        queries.push(where('class', '==', filters.class));
       }
       
       if (filters?.subject && filters.subject !== 'all') {
-        q = query(q, where('subject', '==', filters.subject));
+        queries.push(where('subject', '==', filters.subject));
       }
       
       if (filters?.year && filters.year !== 'all') {
-        q = query(q, where('year', '==', filters.year));
+        queries.push(where('year', '==', filters.year));
       }
       
       if (filters?.school && filters.school !== 'all') {
-        q = query(q, where('school', '==', filters.school));
+        queries.push(where('school', '==', filters.school));
       }
       
       // Apply sorting
       if (filters?.sortBy === 'popular') {
-        q = query(q, orderBy('likes', 'desc'));
+        queries.push(orderBy('likes', 'desc'));
       } else if (filters?.sortBy === 'rating') {
-        q = query(q, orderBy('rating', 'desc'));
+        queries.push(orderBy('rating', 'desc'));
       } else {
-        q = query(q, orderBy('createdAt', 'desc'));
+        queries.push(orderBy('createdAt', 'desc'));
       }
       
+      const q = query(collection(db, 'questions'), ...queries);
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => ({
         id: doc.id,
@@ -341,12 +343,12 @@ class FirebaseService {
   }
 
   // Get Leaderboard
-  async getLeaderboard(limit: number = 10): Promise<UserProfile[]> {
+  async getLeaderboard(limitCount: number = 10): Promise<UserProfile[]> {
     try {
       const q = query(
         collection(db, 'users'),
         orderBy('points', 'desc'),
-        limit(limit)
+        limit(limitCount)
       );
       
       const snapshot = await getDocs(q);
