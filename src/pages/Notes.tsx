@@ -198,7 +198,7 @@ const Notes = () => {
     chapter: note.chapter || '',
     authorName: note.authorName,
     author: note.authorName || 'Unknown',
-    authorId: note.authorId,
+    authorId: note.authorId || '',
     createdAt: note.createdAt,
     uploadDate: note.createdAt,
     likes: note.likes,

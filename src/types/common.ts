@@ -7,7 +7,7 @@ export interface ViewerItem {
   chapter: string;
   authorName?: string;
   author: string;
-  authorId?: string;
+  authorId: string;
   createdAt?: Date;
   uploadDate?: Date;
   likes: number;
