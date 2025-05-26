@@ -33,18 +33,16 @@ const PDFUpload = ({ type, onUploadSuccess }: PDFUploadProps) => {
   const classes = [
     'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5', 'Class 6',
     'Class 7', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'
-  ].filter(cls => cls.trim() !== ''); // Filter out empty strings
+  ];
 
   const subjects = [
     'বাংলা', 'English', 'গণিত', 'বিজ্ঞান', 'সামাজিক বিজ্ঞান', 
     'ICT', 'পদার্থবিজ্ঞান', 'রসায়ন', 'জীববিজ্ঞান', 'উচ্চতর গণিত'
-  ].filter(subject => subject.trim() !== ''); // Filter out empty strings
+  ];
 
-  const examTypes = ['Pre-test', 'Half-yearly', 'Final', 'Model Test', 'Weekly Test']
-    .filter(type => type.trim() !== ''); // Filter out empty strings
+  const examTypes = ['Pre-test', 'Half-yearly', 'Final', 'Model Test', 'Weekly Test'];
 
-  const years = ['2024', '2023', '2022', '2021', '2020']
-    .filter(year => year.trim() !== ''); // Filter out empty strings
+  const years = ['2024', '2023', '2022', '2021', '2020'];
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, fileType: 'main' | 'answer') => {
     const file = e.target.files?.[0];
@@ -155,7 +153,7 @@ const PDFUpload = ({ type, onUploadSuccess }: PDFUploadProps) => {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Select value={formData.class} onValueChange={(value) => setFormData({...formData, class: value})}>
+            <Select value={formData.class || undefined} onValueChange={(value) => setFormData({...formData, class: value})}>
               <SelectTrigger className="bg-white/10 border-white/20 text-white">
                 <SelectValue placeholder="ক্লাস নির্বাচন করুন *" />
               </SelectTrigger>
@@ -168,7 +166,7 @@ const PDFUpload = ({ type, onUploadSuccess }: PDFUploadProps) => {
               </SelectContent>
             </Select>
             
-            <Select value={formData.subject} onValueChange={(value) => setFormData({...formData, subject: value})}>
+            <Select value={formData.subject || undefined} onValueChange={(value) => setFormData({...formData, subject: value})}>
               <SelectTrigger className="bg-white/10 border-white/20 text-white">
                 <SelectValue placeholder="বিষয় নির্বাচন করুন *" />
               </SelectTrigger>
@@ -205,7 +203,7 @@ const PDFUpload = ({ type, onUploadSuccess }: PDFUploadProps) => {
                 className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
               />
               
-              <Select value={formData.year} onValueChange={(value) => setFormData({...formData, year: value})}>
+              <Select value={formData.year || undefined} onValueChange={(value) => setFormData({...formData, year: value})}>
                 <SelectTrigger className="bg-white/10 border-white/20 text-white">
                   <SelectValue placeholder="পরীক্ষার বছর" />
                 </SelectTrigger>
@@ -218,7 +216,7 @@ const PDFUpload = ({ type, onUploadSuccess }: PDFUploadProps) => {
                 </SelectContent>
               </Select>
 
-              <Select value={formData.examType} onValueChange={(value) => setFormData({...formData, examType: value})}>
+              <Select value={formData.examType || undefined} onValueChange={(value) => setFormData({...formData, examType: value})}>
                 <SelectTrigger className="bg-white/10 border-white/20 text-white">
                   <SelectValue placeholder="পরীক্ষার ধরন" />
                 </SelectTrigger>
