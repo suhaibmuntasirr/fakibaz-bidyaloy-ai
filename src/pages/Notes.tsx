@@ -9,7 +9,7 @@ import { Upload, Search, ThumbsUp, MessageCircle, Download, Star, Eye } from 'lu
 import Navbar from '@/components/Navbar';
 import PDFUpload from '@/components/PDFUpload';
 import PDFViewer from '@/components/PDFViewer';
-import { notesService, Note } from '@/services/notesService';
+import { firebaseService, UploadedNote } from '@/services/firebaseService';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAuthAction } from '@/hooks/useAuthAction';
 import { useToast } from '@/hooks/use-toast';
@@ -19,10 +19,11 @@ const Notes = () => {
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [sortBy, setSortBy] = useState('newest');
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [filteredNotes, setFilteredNotes] = useState<Note[]>([]);
-  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [notes, setNotes] = useState<UploadedNote[]>([]);
+  const [filteredNotes, setFilteredNotes] = useState<UploadedNote[]>([]);
+  const [selectedNote, setSelectedNote] = useState<UploadedNote | null>(null);
   const [activeTab, setActiveTab] = useState('browse');
+  const [loading, setLoading] = useState(true);
   
   const { currentUser } = useAuth();
   const { requireAuth } = useAuthAction();
@@ -40,89 +41,152 @@ const Notes = () => {
 
   // Load notes on component mount
   useEffect(() => {
-    const loadedNotes = notesService.getAllNotes();
-    setNotes(loadedNotes);
-    setFilteredNotes(loadedNotes);
-  }, []);
+    const loadNotes = async () => {
+      try {
+        const loadedNotes = await firebaseService.getNotes();
+        setNotes(loadedNotes);
+        setFilteredNotes(loadedNotes);
+      } catch (error) {
+        console.error('Error loading notes:', error);
+        toast({
+          title: "ত্রুটি",
+          description: "নোট লোড করতে সমস্যা হয়েছে",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadNotes();
+  }, [toast]);
 
   // Filter notes when search parameters change
   useEffect(() => {
-    const filtered = notesService.searchNotes(searchQuery, {
-      class: selectedClass,
-      subject: selectedSubject,
-      sortBy
-    });
-    setFilteredNotes(filtered);
-  }, [searchQuery, selectedClass, selectedSubject, sortBy]);
+    let filtered = [...notes];
 
-  const handleNoteClick = (note: Note) => {
+    // Apply search query
+    if (searchQuery) {
+      filtered = filtered.filter(note =>
+        note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        note.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        note.chapter?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        note.authorName.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Apply class filter
+    if (selectedClass && selectedClass !== 'all') {
+      filtered = filtered.filter(note => note.class === selectedClass);
+    }
+
+    // Apply subject filter
+    if (selectedSubject && selectedSubject !== 'all') {
+      filtered = filtered.filter(note => note.subject === selectedSubject);
+    }
+
+    // Apply sorting
+    if (sortBy === 'popular') {
+      filtered.sort((a, b) => b.likes - a.likes);
+    } else if (sortBy === 'rating') {
+      filtered.sort((a, b) => b.rating - a.rating);
+    } else {
+      filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+
+    setFilteredNotes(filtered);
+  }, [searchQuery, selectedClass, selectedSubject, sortBy, notes]);
+
+  const handleNoteClick = (note: UploadedNote) => {
     requireAuth(() => {
       setSelectedNote(note);
     });
   };
 
-  const handleLike = (noteId: string) => {
-    requireAuth(() => {
+  const handleLike = async (noteId: string) => {
+    requireAuth(async () => {
       if (!currentUser) return;
       
-      const liked = notesService.likeNote(noteId, currentUser.uid);
-      
-      // Update local state
-      const updatedNotes = notes.map(note => 
-        note.id === noteId ? notesService.getNoteById(noteId)! : note
-      );
-      setNotes(updatedNotes);
-      setFilteredNotes(notesService.searchNotes(searchQuery, {
-        class: selectedClass,
-        subject: selectedSubject,
-        sortBy
-      }));
+      try {
+        await firebaseService.likeItem(noteId, currentUser.uid, 'note');
+        
+        // Reload notes to get updated data
+        const updatedNotes = await firebaseService.getNotes();
+        setNotes(updatedNotes);
+        
+        if (selectedNote && selectedNote.id === noteId) {
+          const updatedNote = updatedNotes.find(n => n.id === noteId);
+          if (updatedNote) setSelectedNote(updatedNote);
+        }
 
-      if (selectedNote && selectedNote.id === noteId) {
-        setSelectedNote(notesService.getNoteById(noteId)!);
+        toast({
+          title: "লাইক আপডেট হয়েছে!",
+          description: "আপনার পছন্দ সংরক্ষিত হয়েছে"
+        });
+      } catch (error) {
+        console.error('Error liking note:', error);
+        toast({
+          title: "ত্রুটি",
+          description: "লাইক করতে সমস্যা হয়েছে",
+          variant: "destructive"
+        });
       }
-
-      toast({
-        title: liked ? "লাইক দেওয়া হয়েছে!" : "লাইক সরানো হয়েছে",
-        description: liked ? "নোটটি আপনার পছন্দের তালিকায় যোগ হয়েছে" : "নোটটি পছন্দের তালিকা থেকে সরানো হয়েছে"
-      });
     });
   };
 
-  const handleDownload = (noteId: string) => {
-    requireAuth(() => {
-      notesService.downloadNote(noteId);
+  const handleDownload = async (noteId: string) => {
+    requireAuth(async () => {
+      if (!currentUser) return;
       
-      // Update local state
-      const updatedNotes = notes.map(note => 
-        note.id === noteId ? notesService.getNoteById(noteId)! : note
-      );
-      setNotes(updatedNotes);
-      setFilteredNotes(notesService.searchNotes(searchQuery, {
-        class: selectedClass,
-        subject: selectedSubject,
-        sortBy
-      }));
+      try {
+        await firebaseService.downloadItem(noteId, currentUser.uid, 'note');
+        
+        // Find the note and download it
+        const note = notes.find(n => n.id === noteId);
+        if (note && note.fileUrl) {
+          const link = document.createElement('a');
+          link.href = note.fileUrl;
+          link.download = note.fileName;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+        
+        // Reload notes to get updated download count
+        const updatedNotes = await firebaseService.getNotes();
+        setNotes(updatedNotes);
+        
+        if (selectedNote && selectedNote.id === noteId) {
+          const updatedNote = updatedNotes.find(n => n.id === noteId);
+          if (updatedNote) setSelectedNote(updatedNote);
+        }
 
-      if (selectedNote && selectedNote.id === noteId) {
-        setSelectedNote(notesService.getNoteById(noteId)!);
+        toast({
+          title: "ডাউনলোড শুরু হয়েছে!",
+          description: "নোটটি ডাউনলোড হচ্ছে..."
+        });
+      } catch (error) {
+        console.error('Error downloading note:', error);
+        toast({
+          title: "ত্রুটি",
+          description: "ডাউনলোড করতে সমস্যা হয়েছে",
+          variant: "destructive"
+        });
       }
-
-      toast({
-        title: "ডাউনলোড শুরু হয়েছে!",
-        description: "নোটটি ডাউনলোড হচ্ছে..."
-      });
     });
   };
 
-  const handleUploadSuccess = () => {
-    const loadedNotes = notesService.getAllNotes();
-    setNotes(loadedNotes);
-    setFilteredNotes(loadedNotes);
-    setActiveTab('browse');
+  const handleUploadSuccess = async () => {
+    try {
+      const loadedNotes = await firebaseService.getNotes();
+      setNotes(loadedNotes);
+      setActiveTab('browse');
+    } catch (error) {
+      console.error('Error reloading notes:', error);
+    }
   };
 
-  const isNoteLiked = (note: Note): boolean => {
+  const isNoteLiked = (note: UploadedNote): boolean => {
     return currentUser ? note.likedBy.includes(currentUser.uid) : false;
   };
 
@@ -208,99 +272,109 @@ const Notes = () => {
             </Card>
 
             {/* Notes Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredNotes.map((note) => (
-                <Card key={note.id} className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all duration-300 cursor-pointer">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <CardTitle className="text-white text-lg leading-tight" onClick={() => handleNoteClick(note)}>
-                        {note.title}
-                      </CardTitle>
-                      {note.verified && (
-                        <div className="bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center">
-                          <Star className="h-3 w-3 mr-1" />
-                          যাচাইকৃত
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="text-gray-400 text-lg mb-4">লোড হচ্ছে...</div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredNotes.map((note) => (
+                  <Card key={note.id} className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all duration-300 cursor-pointer">
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <CardTitle className="text-white text-lg leading-tight" onClick={() => handleNoteClick(note)}>
+                          {note.title}
+                        </CardTitle>
+                        {note.verified && (
+                          <div className="bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center">
+                            <Star className="h-3 w-3 mr-1" />
+                            যাচাইকৃত
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm text-gray-300">
+                        <span>{note.class}</span>
+                        <span>•</span>
+                        <span>{note.subject}</span>
+                        {note.chapter && (
+                          <>
+                            <span>•</span>
+                            <span>{note.chapter}</span>
+                          </>
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="text-sm text-gray-300">
+                          লেখক: <span className="text-white">{note.authorName}</span>
                         </div>
-                      )}
-                    </div>
-                    <div className="flex items-center space-x-2 text-sm text-gray-300">
-                      <span>{note.class}</span>
-                      <span>•</span>
-                      <span>{note.subject}</span>
-                      <span>•</span>
-                      <span>{note.chapter}</span>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="text-sm text-gray-300">
-                        লেখক: <span className="text-white">{note.author}</span>
-                      </div>
-                      
-                      <div className="flex flex-wrap gap-1">
-                        {note.tags.map((tag) => (
-                          <span key={tag} className="bg-blue-600/30 text-blue-300 text-xs px-2 py-1 rounded">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                      
-                      <div className="flex items-center justify-between text-sm text-gray-300">
-                        <div className="flex items-center space-x-4">
-                          <div className="flex items-center">
-                            <ThumbsUp className="h-4 w-4 mr-1" />
-                            {note.likes}
+                        
+                        <div className="flex flex-wrap gap-1">
+                          {note.tags.map((tag) => (
+                            <span key={tag} className="bg-blue-600/30 text-blue-300 text-xs px-2 py-1 rounded">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                        
+                        <div className="flex items-center justify-between text-sm text-gray-300">
+                          <div className="flex items-center space-x-4">
+                            <div className="flex items-center">
+                              <ThumbsUp className="h-4 w-4 mr-1" />
+                              {note.likes}
+                            </div>
+                            <div className="flex items-center">
+                              <MessageCircle className="h-4 w-4 mr-1" />
+                              {note.comments}
+                            </div>
+                            <div className="flex items-center">
+                              <Download className="h-4 w-4 mr-1" />
+                              {note.downloads}
+                            </div>
                           </div>
                           <div className="flex items-center">
-                            <MessageCircle className="h-4 w-4 mr-1" />
-                            {note.comments}
+                            <Star className="h-4 w-4 mr-1 text-yellow-400" />
+                            {note.rating}
                           </div>
-                          <div className="flex items-center">
+                        </div>
+                        
+                        <div className="flex space-x-2">
+                          <Button 
+                            size="sm" 
+                            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDownload(note.id);
+                            }}
+                          >
                             <Download className="h-4 w-4 mr-1" />
-                            {note.downloads}
-                          </div>
-                        </div>
-                        <div className="flex items-center">
-                          <Star className="h-4 w-4 mr-1 text-yellow-400" />
-                          {note.rating}
+                            ডাউনলোড
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            className={`${
+                              isNoteLiked(note) 
+                                ? 'bg-red-600/20 border-red-500/20 text-red-300' 
+                                : 'bg-white/10 border-white/20 text-white hover:bg-white/20'
+                            }`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleLike(note.id);
+                            }}
+                          >
+                            <ThumbsUp className="h-4 w-4" />
+                          </Button>
                         </div>
                       </div>
-                      
-                      <div className="flex space-x-2">
-                        <Button 
-                          size="sm" 
-                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDownload(note.id);
-                          }}
-                        >
-                          <Download className="h-4 w-4 mr-1" />
-                          ডাউনলোড
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          className={`${
-                            isNoteLiked(note) 
-                              ? 'bg-red-600/20 border-red-500/20 text-red-300' 
-                              : 'bg-white/10 border-white/20 text-white hover:bg-white/20'
-                          }`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleLike(note.id);
-                          }}
-                        >
-                          <ThumbsUp className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
 
-            {filteredNotes.length === 0 && (
+            {filteredNotes.length === 0 && !loading && (
               <div className="text-center py-12">
                 <div className="text-gray-400 text-lg mb-4">কোন নোট পাওয়া যায়নি</div>
                 <p className="text-gray-500">অন্য কিছু খুঁজে দেখুন বা নতুন নোট আপলোড করুন</p>
