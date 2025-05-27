@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Send, BookOpen, Users, Search, Upload, MessageCircle, Sparkles, Star, Heart } from 'lucide-react';
+import { Send, BookOpen, Users, Search, Upload, MessageCircle, Sparkles, Star, Heart, GraduationCap, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -29,6 +28,13 @@ const Index = () => {
     'ICT', 'পদার্থবিজ্ঞান', 'রসায়ন', 'জীববিজ্ঞান', 'উচ্চতর গণিত'
   ];
 
+  const gradeCategories = [
+    { range: 'ক্লাস ১-৫', icon: '🎨', description: 'প্রাথমিক শিক্ষা', classes: ['Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5'] },
+    { range: 'ক্লাস ৬-৮', icon: '📚', description: 'মাধ্যমিক প্রস্তুতি', classes: ['Class 6', 'Class 7', 'Class 8'] },
+    { range: 'ক্লাস ৯-১০', icon: '🎯', description: 'SSC প্রস্তুতি', classes: ['Class 9', 'Class 10'] },
+    { range: 'ক্লাস ১১-১২', icon: '🏆', description: 'HSC প্রস্তুতি', classes: ['Class 11', 'Class 12'] }
+  ];
+
   const handleAskQuestion = () => {
     if (!query.trim()) {
       toast({
@@ -55,7 +61,6 @@ const Index = () => {
   const handleNavigateToUpload = () => {
     requireAuth(() => {
       navigate('/notes');
-      // Focus on upload tab after navigation
       setTimeout(() => {
         const uploadTab = document.querySelector('[data-value="upload"]') as HTMLElement;
         uploadTab?.click();
@@ -86,6 +91,12 @@ const Index = () => {
     }
   };
 
+  const handleGradeClick = (gradeCategory: typeof gradeCategories[0]) => {
+    requireAuth(() => {
+      navigate(`/notes?class=${gradeCategory.classes[0]}`);
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] relative overflow-hidden">
       {/* Animated Background Elements */}
@@ -113,6 +124,91 @@ const Index = () => {
           <p className="text-lg text-gray-300 max-w-2xl mx-auto">
             NCTB পাঠ্যক্রম সহায়ক ও P2P নোট শেয়ারিং সিস্টেম
           </p>
+        </div>
+
+        {/* Grade Selection and P2P Explanation Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+          {/* Left Side - Grade Selection */}
+          <Card className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-xl border-blue-400/30 rounded-2xl overflow-hidden">
+            <CardHeader className="text-center pb-6">
+              <div className="flex items-center justify-center mb-4">
+                <GraduationCap className="h-10 w-10 text-blue-400 mr-3" />
+                <CardTitle className="text-white text-3xl">যে কোন ক্লাসের নোট পাও এখানেই</CardTitle>
+              </div>
+              <p className="text-gray-200 text-lg">সব ক্লাসের সম্পূর্ণ কোর্স নোট চলছে!</p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {gradeCategories.map((category, index) => (
+                <div
+                  key={index}
+                  onClick={() => handleGradeClick(category)}
+                  className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer group hover:scale-105"
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className="text-4xl">{category.icon}</div>
+                    <div className="flex-1">
+                      <h3 className="text-white text-xl font-semibold mb-1">{category.range}</h3>
+                      <p className="text-gray-300">{category.description}</p>
+                    </div>
+                    <div className="text-blue-400 group-hover:text-blue-300 transition-colors">
+                      <BookOpen className="h-6 w-6" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div className="text-center pt-4">
+                <p className="text-green-400 text-sm font-medium">সবগুলো ক্লাসের নোট দেখুন →</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Right Side - P2P System Explanation */}
+          <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl border-purple-400/30 rounded-2xl overflow-hidden">
+            <CardHeader className="text-center pb-6">
+              <div className="flex items-center justify-center mb-4">
+                <Target className="h-10 w-10 text-purple-400 mr-3" />
+                <CardTitle className="text-white text-3xl">P2P নোট ও প্রশ্নব্যাংক সিস্টেম</CardTitle>
+              </div>
+              <p className="text-gray-200 text-lg">নিজের প্রস্তুতি নিন, অন্যদের সাহায্য করুন</p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="bg-blue-500/30 rounded-full p-2">
+                      <BookOpen className="h-5 w-5 text-blue-300" />
+                    </div>
+                    <h4 className="text-white font-semibold">নোট শেয়ার করুন</h4>
+                  </div>
+                  <p className="text-gray-300 text-sm">আপনার তৈরি নোট আপলোড করে অন্যদের সাহায্য করুন</p>
+                </div>
+
+                <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="bg-green-500/30 rounded-full p-2">
+                      <Users className="h-5 w-5 text-green-300" />
+                    </div>
+                    <h4 className="text-white font-semibold">কমিউনিটি সাপোর্ট</h4>
+                  </div>
+                  <p className="text-gray-300 text-sm">সবার সাথে মিলে পড়াশোনা করুন এবং একসাথে এগিয়ে যান</p>
+                </div>
+
+                <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="bg-purple-500/30 rounded-full p-2">
+                      <Star className="h-5 w-5 text-purple-300" />
+                    </div>
+                    <h4 className="text-white font-semibold">লক্ষ্য অর্জন</h4>
+                  </div>
+                  <p className="text-gray-300 text-sm">আপনার লক্ষ্য পূরণ করুন এবং অন্যদের স্বপ্ন পূরণে সাহায্য করুন</p>
+                </div>
+              </div>
+
+              <div className="text-center pt-4">
+                <p className="text-pink-400 text-sm font-medium">৩০+ ফ্রি কোর্স এবং প্রতিদিন নতুন কনটেন্ট →</p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Main AI Assistant Card */}
