@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -523,6 +522,15 @@ const QuestionBank = () => {
           />
         )}
       </div>
+
+      {/* Footer */}
+      <footer className="bg-black/50 border-t border-white/10 py-4 mt-16">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-gray-300 text-sm">
+            2025 Copyright © Fakibaz. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };

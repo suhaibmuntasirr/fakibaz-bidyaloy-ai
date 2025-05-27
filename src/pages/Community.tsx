@@ -83,7 +83,7 @@ const Community = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+          <Card className="bg-gradient-to-br from-black via-gray-900 to-blue-900/30 backdrop-blur-lg border-white/20">
             <CardContent className="pt-6 text-center">
               <Users className="h-12 w-12 text-blue-400 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white">{topContributors.length || '১২,৫০০'}+</h3>
@@ -91,7 +91,7 @@ const Community = () => {
             </CardContent>
           </Card>
           
-          <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+          <Card className="bg-gradient-to-br from-black via-gray-900 to-green-900/30 backdrop-blur-lg border-white/20">
             <CardContent className="pt-6 text-center">
               <BookOpen className="h-12 w-12 text-green-400 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white">৮,৭৫০+</h3>
@@ -99,7 +99,7 @@ const Community = () => {
             </CardContent>
           </Card>
           
-          <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+          <Card className="bg-gradient-to-br from-black via-gray-900 to-purple-900/30 backdrop-blur-lg border-white/20">
             <CardContent className="pt-6 text-center">
               <MessageCircle className="h-12 w-12 text-purple-400 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white">২৫,০০০+</h3>
@@ -107,7 +107,7 @@ const Community = () => {
             </CardContent>
           </Card>
           
-          <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+          <Card className="bg-gradient-to-br from-black via-gray-900 to-yellow-900/30 backdrop-blur-lg border-white/20">
             <CardContent className="pt-6 text-center">
               <Award className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white">৯৮%</h3>
@@ -118,7 +118,7 @@ const Community = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Leaderboard */}
-          <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+          <Card className="bg-gradient-to-br from-black via-gray-900 to-orange-900/30 backdrop-blur-lg border-white/20">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
                 <Trophy className="mr-2 h-5 w-5 text-yellow-400" />
@@ -169,7 +169,7 @@ const Community = () => {
           </Card>
 
           {/* Recent Activities */}
-          <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+          <Card className="bg-gradient-to-br from-black via-gray-900 to-cyan-900/30 backdrop-blur-lg border-white/20">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
                 <MessageCircle className="mr-2 h-5 w-5 text-blue-400" />
@@ -205,7 +205,7 @@ const Community = () => {
         </div>
 
         {/* Join Community CTA */}
-        <Card className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-lg border-white/20 mt-8">
+        <Card className="bg-gradient-to-br from-black via-gray-900 to-indigo-900/30 backdrop-blur-lg border-white/20 mt-8">
           <CardContent className="pt-8 text-center">
             <Users className="h-16 w-16 text-white mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-white mb-4">
@@ -217,22 +217,21 @@ const Community = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3"
+                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-8 py-3"
                 onClick={() => handleSocialLink('discord')}
               >
                 <MessageCircle className="mr-2 h-5 w-5" />
                 Discord এ যোগ দাও
               </Button>
               <Button 
-                className="bg-green-600 hover:bg-green-700 text-white px-8 py-3"
+                className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white px-8 py-3"
                 onClick={() => handleSocialLink('whatsapp')}
               >
                 <MessageCircle className="mr-2 h-5 w-5" />
                 WhatsApp গ্রুপ
               </Button>
               <Button 
-                variant="outline" 
-                className="bg-blue-600 hover:bg-blue-700 border-blue-500/20 text-white px-8 py-3"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3"
                 onClick={() => handleSocialLink('messenger')}
               >
                 <MessageCircle className="mr-2 h-5 w-5" />
@@ -242,6 +241,15 @@ const Community = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-black/50 border-t border-white/10 py-4 mt-16">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-gray-300 text-sm">
+            2025 Copyright © Fakibaz. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };

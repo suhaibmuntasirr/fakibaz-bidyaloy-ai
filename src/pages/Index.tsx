@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Send, BookOpen, Users, Search, Upload, MessageCircle, Sparkles, Star, Heart, GraduationCap, Target, Bot, User, Key } from 'lucide-react';
+import { Send, BookOpen, Users, Search, Upload, MessageCircle, Star, GraduationCap, Target, Bot, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Navbar from '@/components/Navbar';
+import AdBanner from '@/components/AdBanner';
 import { useNavigate } from 'react-router-dom';
 import { useAuthAction } from '@/hooks/useAuthAction';
 import { useToast } from '@/hooks/use-toast';
@@ -24,8 +25,6 @@ const Index = () => {
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [apiKey, setApiKey] = useState('');
-  const [showApiKeyInput, setShowApiKeyInput] = useState(true);
   const [showChat, setShowChat] = useState(false);
   const navigate = useNavigate();
   const { requireAuth } = useAuthAction();
@@ -87,15 +86,6 @@ const Index = () => {
       return;
     }
 
-    if (showApiKeyInput) {
-      toast({
-        title: "API Key প্রয়োজন",
-        description: "প্রথমে OpenAI API Key সেট করুন",
-        variant: "destructive"
-      });
-      return;
-    }
-
     requireAuth(async () => {
       const userMessage: Message = {
         id: Date.now().toString(),
@@ -109,6 +99,10 @@ const Index = () => {
       setIsLoading(true);
 
       try {
+        // Use a predefined API key or get from environment
+        const apiKey = 'your-api-key-here'; // This should come from your backend
+        chatGPTService.setApiKey(apiKey);
+        
         const response = await chatGPTService.sendMessage(query, {
           class: selectedClass,
           subject: selectedSubject
@@ -184,15 +178,20 @@ const Index = () => {
     <div className="min-h-screen bg-[#28282B]">
       <Navbar />
       
+      {/* Ad Banner */}
+      <AdBanner 
+        imageUrl="/lovable-uploads/e283b105-0747-4859-9cef-ef35fb06dd9d.png"
+        altText="ফ্রিকোর্স - After SSC English Course"
+        onClick={() => window.open('https://example.com/ad-link', '_blank')}
+      />
+      
       {/* Hero Section */}
       <div className="container mx-auto px-4 pt-8 pb-12">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-6">
-            <Sparkles className="h-12 w-12 text-yellow-400 mr-4" />
             <h1 className="text-7xl font-bold text-white">
               ফাকিবাজ
             </h1>
-            <Heart className="h-12 w-12 text-red-400 ml-4" />
           </div>
           <p className="text-2xl text-gray-200 mb-8">
             বাংলাদেশের প্রথম <span className="text-blue-400 font-semibold">AI-চালিত</span> শিক্ষা প্ল্যাটফর্ম
@@ -282,7 +281,7 @@ const Index = () => {
 
         {/* Main AI Question Card */}
         <div className="max-w-5xl mx-auto mb-16">
-          <Card className="bg-black/60 backdrop-blur-xl border-white/30 shadow-2xl">
+          <Card className="bg-gradient-to-br from-black via-gray-900 to-purple-900/30 backdrop-blur-xl border-white/30 shadow-2xl">
             <CardHeader className="text-center pb-6">
               <CardTitle className="text-5xl font-bold text-white mb-4 flex items-center justify-center">
                 <MessageCircle className="mr-4 h-12 w-12 text-blue-400" />
@@ -293,31 +292,6 @@ const Index = () => {
               </p>
             </CardHeader>
             <CardContent className="space-y-8 p-8">
-              {/* API Key Input */}
-              {showApiKeyInput && (
-                <div className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-                  <div className="flex items-center mb-3">
-                    <Key className="h-5 w-5 text-yellow-400 mr-2" />
-                    <span className="text-white font-medium">OpenAI API Key প্রয়োজন</span>
-                  </div>
-                  <div className="flex space-x-2">
-                    <Input
-                      type="password"
-                      value={apiKey}
-                      onChange={(e) => setApiKey(e.target.value)}
-                      placeholder="sk-..."
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                    />
-                    <Button onClick={handleSetApiKey} className="bg-yellow-600 hover:bg-yellow-700">
-                      সেট করুন
-                    </Button>
-                  </div>
-                  <p className="text-xs text-gray-300 mt-2">
-                    API Key শুধুমাত্র আপনার ব্রাউজারে সংরক্ষিত হবে
-                  </p>
-                </div>
-              )}
-
               {/* Class and Subject Selection */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Select value={selectedClass} onValueChange={setSelectedClass}>
@@ -355,13 +329,11 @@ const Index = () => {
                   onKeyPress={handleKeyPress}
                   placeholder="✨ তোমার প্রশ্ন লেখো..."
                   className="bg-white/10 border-white/30 text-white placeholder:text-gray-300 h-20 text-xl pr-20"
-                  disabled={showApiKeyInput}
                 />
                 <Button 
-                  className="absolute right-3 top-3 h-14 w-14 bg-blue-600 hover:bg-blue-700"
+                  className="absolute right-3 top-3 h-14 w-14 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                   size="icon"
                   onClick={handleAskQuestion}
-                  disabled={showApiKeyInput}
                 >
                   <Send className="h-6 w-6" />
                 </Button>
@@ -459,6 +431,26 @@ const Index = () => {
           </Card>
         </div>
 
+        {/* Mobile App Download Section */}
+        <div className="max-w-3xl mx-auto mb-16">
+          <Card className="bg-gradient-to-br from-black via-gray-900 to-blue-900/30 backdrop-blur-xl border-white/30">
+            <CardContent className="pt-8 text-center">
+              <h3 className="text-2xl font-bold text-white mb-4">
+                আমাদের মোবাইল অ্যাপ ডাউনলোড করুন
+              </h3>
+              <p className="text-gray-300 text-lg mb-6">
+                যেকোনো সময়, যেকোনো জায়গায় শিখুন
+              </p>
+              <Button 
+                className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white px-8 py-3"
+                onClick={() => window.open('https://play.google.com/store/apps', '_blank')}
+              >
+                মোবাইল অ্যাপ ডাউনলোড করুন
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
           <Card className="bg-black/40 backdrop-blur-xl border-white/20 hover:border-blue-300/50 transition-all duration-500 cursor-pointer group" onClick={() => requireAuth(() => console.log('AI feature clicked'))}>
@@ -522,6 +514,15 @@ const Index = () => {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-black/50 border-t border-white/10 py-4">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-gray-300 text-sm">
+            2025 Copyright © Fakibaz. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };

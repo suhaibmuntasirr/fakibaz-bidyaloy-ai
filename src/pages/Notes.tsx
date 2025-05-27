@@ -226,12 +226,12 @@ const Notes = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="grid w-full grid-cols-2 bg-white/10 border-white/20">
-            <TabsTrigger value="browse" className="text-white data-[state=active]:bg-white/20">
+          <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-black to-gray-900 border-white/20">
+            <TabsTrigger value="browse" className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600">
               <Eye className="mr-2 h-4 w-4" />
               নোট ব্রাউজ করুন
             </TabsTrigger>
-            <TabsTrigger value="upload" className="text-white data-[state=active]:bg-white/20">
+            <TabsTrigger value="upload" className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600">
               <Upload className="mr-2 h-4 w-4" />
               নোট আপলোড করুন
             </TabsTrigger>
@@ -240,7 +240,7 @@ const Notes = () => {
           {/* Browse Tab */}
           <TabsContent value="browse" className="space-y-6">
             {/* Search and Filter Section */}
-            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+            <Card className="bg-gradient-to-br from-black via-gray-900 to-blue-900/30 backdrop-blur-lg border-white/20">
               <CardContent className="pt-6">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                   <div className="relative md:col-span-2">
@@ -424,6 +424,15 @@ const Notes = () => {
           />
         )}
       </div>
+
+      {/* Footer */}
+      <footer className="bg-black/50 border-t border-white/10 py-4 mt-16">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-gray-300 text-sm">
+            2025 Copyright © Fakibaz. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };
