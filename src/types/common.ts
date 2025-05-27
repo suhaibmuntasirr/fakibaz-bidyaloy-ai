@@ -14,7 +14,7 @@ export interface ViewerItem {
   downloads: number;
   comments: number;
   rating: number;
-  fileUrl?: string;
+  fileUrl: string;
   questionFileUrl?: string;
   answerFileUrl?: string;
   fileName: string;

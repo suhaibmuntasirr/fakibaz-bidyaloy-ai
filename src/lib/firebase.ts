@@ -3,17 +3,17 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { getAnalytics } from 'firebase/analytics';
 
-// Firebase configuration - Replace these with your actual Firebase config
-// Get these values from: https://console.firebase.google.com/
-// Go to Project Settings > General > Your apps > Web app > Config
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY_HERE",
-  authDomain: "YOUR_AUTH_DOMAIN_HERE", 
-  projectId: "YOUR_PROJECT_ID_HERE",
-  storageBucket: "YOUR_STORAGE_BUCKET_HERE",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID_HERE",
-  appId: "YOUR_APP_ID_HERE"
+  apiKey: "AIzaSyA-GmdiQ762QaWp7Lw_iZMrPCiwKFi0QIk",
+  authDomain: "fakibaz-f8afb.firebaseapp.com",
+  projectId: "fakibaz-f8afb",
+  storageBucket: "fakibaz-f8afb.firebasestorage.app",
+  messagingSenderId: "323925967726",
+  appId: "1:323925967726:web:03042f3649724eddb2777f",
+  measurementId: "G-NB2QSQN6JE"
 };
 
 // Initialize Firebase
@@ -23,5 +23,6 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+export const analytics = getAnalytics(app);
 
 export default app;
