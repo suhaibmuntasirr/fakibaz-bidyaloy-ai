@@ -1,19 +1,32 @@
 import React, { useState } from 'react';
-import { Send, BookOpen, Users, Search, Upload, MessageCircle, Sparkles, Star, Heart, GraduationCap, Target } from 'lucide-react';
+import { Send, BookOpen, Users, Search, Upload, MessageCircle, Sparkles, Star, Heart, GraduationCap, Target, Bot, User, Key } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Navbar from '@/components/Navbar';
-import AIAssistant from '@/components/AIAssistant';
 import { useNavigate } from 'react-router-dom';
 import { useAuthAction } from '@/hooks/useAuthAction';
 import { useToast } from '@/hooks/use-toast';
+import { chatGPTService } from '@/services/chatgptService';
+
+interface Message {
+  id: string;
+  type: 'user' | 'ai';
+  content: string;
+  timestamp: Date;
+  references?: string[];
+}
 
 const Index = () => {
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [query, setQuery] = useState('');
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiKey, setApiKey] = useState('');
+  const [showApiKeyInput, setShowApiKeyInput] = useState(true);
+  const [showChat, setShowChat] = useState(false);
   const navigate = useNavigate();
   const { requireAuth } = useAuthAction();
   const { toast } = useToast();
@@ -35,7 +48,36 @@ const Index = () => {
     { range: 'ক্লাস ১১-১২', icon: '🏆', description: 'HSC প্রস্তুতি', classes: ['Class 11', 'Class 12'] }
   ];
 
-  const handleAskQuestion = () => {
+  React.useEffect(() => {
+    const savedApiKey = localStorage.getItem('openai_api_key');
+    if (savedApiKey) {
+      setApiKey(savedApiKey);
+      chatGPTService.setApiKey(savedApiKey);
+      setShowApiKeyInput(false);
+    }
+  }, []);
+
+  const handleSetApiKey = () => {
+    if (!apiKey.trim()) {
+      toast({
+        title: "API Key প্রয়োজন",
+        description: "অনুগ্রহ করে OpenAI API Key প্রদান করুন",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    chatGPTService.setApiKey(apiKey);
+    setShowApiKeyInput(false);
+    localStorage.setItem('openai_api_key', apiKey);
+    
+    toast({
+      title: "API Key সেট করা হয়েছে",
+      description: "এখন আপনি AI শিক্ষকের সাথে কথা বলতে পারেন!"
+    });
+  };
+
+  const handleAskQuestion = async () => {
     if (!query.trim()) {
       toast({
         title: "প্রশ্ন লিখুন",
@@ -45,12 +87,53 @@ const Index = () => {
       return;
     }
 
-    requireAuth(() => {
+    if (showApiKeyInput) {
       toast({
-        title: "AI প্রশ্ন প্রক্রিয়াকরণ",
-        description: "আপনার প্রশ্নের উত্তর খুঁজে দেওয়া হচ্ছে..."
+        title: "API Key প্রয়োজন",
+        description: "প্রথমে OpenAI API Key সেট করুন",
+        variant: "destructive"
       });
-      console.log('Asking question:', query, 'Class:', selectedClass, 'Subject:', selectedSubject);
+      return;
+    }
+
+    requireAuth(async () => {
+      const userMessage: Message = {
+        id: Date.now().toString(),
+        type: 'user',
+        content: query,
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, userMessage]);
+      setShowChat(true);
+      setIsLoading(true);
+
+      try {
+        const response = await chatGPTService.sendMessage(query, {
+          class: selectedClass,
+          subject: selectedSubject
+        });
+
+        const aiResponse: Message = {
+          id: (Date.now() + 1).toString(),
+          type: 'ai',
+          content: response,
+          timestamp: new Date(),
+          references: selectedClass && selectedSubject ? [`${selectedClass} - ${selectedSubject}`] : []
+        };
+        
+        setMessages(prev => [...prev, aiResponse]);
+      } catch (error) {
+        toast({
+          title: "ত্রুটি",
+          description: error instanceof Error ? error.message : "কিছু ভুল হয়েছে",
+          variant: "destructive"
+        });
+      } finally {
+        setIsLoading(false);
+      }
+
+      setQuery('');
     });
   };
 
@@ -98,30 +181,23 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-4 -left-4 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-        <div className="absolute top-20 right-10 w-56 h-56 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-20 left-20 w-64 h-64 bg-pink-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{ animationDelay: '4s' }}></div>
-      </div>
-
+    <div className="min-h-screen bg-[#28282B]">
       <Navbar />
       
       {/* Hero Section */}
-      <div className="container mx-auto px-4 pt-8 pb-12 relative z-10">
+      <div className="container mx-auto px-4 pt-8 pb-12">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-6">
-            <Sparkles className="h-12 w-12 text-yellow-400 mr-4 animate-pulse" />
-            <h1 className="text-7xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent tracking-tight">
+            <Sparkles className="h-12 w-12 text-yellow-400 mr-4" />
+            <h1 className="text-7xl font-bold text-white">
               ফাকিবাজ
             </h1>
-            <Heart className="h-12 w-12 text-red-400 ml-4 animate-pulse" />
+            <Heart className="h-12 w-12 text-red-400 ml-4" />
           </div>
-          <p className="text-2xl text-gray-200 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-2xl text-gray-200 mb-8">
             বাংলাদেশের প্রথম <span className="text-blue-400 font-semibold">AI-চালিত</span> শিক্ষা প্ল্যাটফর্ম
           </p>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-300">
             NCTB পাঠ্যক্রম সহায়ক ও P2P নোট শেয়ারিং সিস্টেম
           </p>
         </div>
@@ -129,7 +205,7 @@ const Index = () => {
         {/* Grade Selection and P2P Explanation Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
           {/* Left Side - Grade Selection */}
-          <Card className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-xl border-blue-400/30 rounded-2xl overflow-hidden">
+          <Card className="bg-black/40 backdrop-blur-xl border-white/20">
             <CardHeader className="text-center pb-6">
               <div className="flex items-center justify-center mb-4">
                 <GraduationCap className="h-10 w-10 text-blue-400 mr-3" />
@@ -142,7 +218,7 @@ const Index = () => {
                 <div
                   key={index}
                   onClick={() => handleGradeClick(category)}
-                  className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer group hover:scale-105"
+                  className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer group"
                 >
                   <div className="flex items-center space-x-4">
                     <div className="text-4xl">{category.icon}</div>
@@ -156,14 +232,11 @@ const Index = () => {
                   </div>
                 </div>
               ))}
-              <div className="text-center pt-4">
-                <p className="text-green-400 text-sm font-medium">সবগুলো ক্লাসের নোট দেখুন →</p>
-              </div>
             </CardContent>
           </Card>
 
           {/* Right Side - P2P System Explanation */}
-          <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl border-purple-400/30 rounded-2xl overflow-hidden">
+          <Card className="bg-black/40 backdrop-blur-xl border-white/20">
             <CardHeader className="text-center pb-6">
               <div className="flex items-center justify-center mb-4">
                 <Target className="h-10 w-10 text-purple-400 mr-3" />
@@ -203,18 +276,14 @@ const Index = () => {
                   <p className="text-gray-300 text-sm">আপনার লক্ষ্য পূরণ করুন এবং অন্যদের স্বপ্ন পূরণে সাহায্য করুন</p>
                 </div>
               </div>
-
-              <div className="text-center pt-4">
-                <p className="text-pink-400 text-sm font-medium">৩০+ ফ্রি কোর্স এবং প্রতিদিন নতুন কনটেন্ট →</p>
-              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Main AI Assistant Card */}
+        {/* Main AI Question Card */}
         <div className="max-w-5xl mx-auto mb-16">
-          <Card className="bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-xl border-white/30 shadow-2xl rounded-2xl overflow-hidden">
-            <CardHeader className="text-center pb-6 bg-gradient-to-r from-blue-600/20 to-purple-600/20">
+          <Card className="bg-black/60 backdrop-blur-xl border-white/30 shadow-2xl">
+            <CardHeader className="text-center pb-6">
               <CardTitle className="text-5xl font-bold text-white mb-4 flex items-center justify-center">
                 <MessageCircle className="mr-4 h-12 w-12 text-blue-400" />
                 কী শিখতে চাও?
@@ -224,15 +293,40 @@ const Index = () => {
               </p>
             </CardHeader>
             <CardContent className="space-y-8 p-8">
+              {/* API Key Input */}
+              {showApiKeyInput && (
+                <div className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                  <div className="flex items-center mb-3">
+                    <Key className="h-5 w-5 text-yellow-400 mr-2" />
+                    <span className="text-white font-medium">OpenAI API Key প্রয়োজন</span>
+                  </div>
+                  <div className="flex space-x-2">
+                    <Input
+                      type="password"
+                      value={apiKey}
+                      onChange={(e) => setApiKey(e.target.value)}
+                      placeholder="sk-..."
+                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                    />
+                    <Button onClick={handleSetApiKey} className="bg-yellow-600 hover:bg-yellow-700">
+                      সেট করুন
+                    </Button>
+                  </div>
+                  <p className="text-xs text-gray-300 mt-2">
+                    API Key শুধুমাত্র আপনার ব্রাউজারে সংরক্ষিত হবে
+                  </p>
+                </div>
+              )}
+
               {/* Class and Subject Selection */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Select value={selectedClass} onValueChange={setSelectedClass}>
-                  <SelectTrigger className="bg-white/10 border-white/30 text-white h-14 text-lg rounded-xl backdrop-blur-lg">
+                  <SelectTrigger className="bg-white/10 border-white/30 text-white h-14 text-lg">
                     <SelectValue placeholder="🎓 ক্লাস নির্বাচন করুন" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#28282B] border-white/20 rounded-xl">
+                  <SelectContent className="bg-[#28282B] border-white/20">
                     {classes.map((cls) => (
-                      <SelectItem key={cls} value={cls} className="text-white hover:bg-white/10 rounded-lg">
+                      <SelectItem key={cls} value={cls} className="text-white hover:bg-white/10">
                         {cls}
                       </SelectItem>
                     ))}
@@ -240,12 +334,12 @@ const Index = () => {
                 </Select>
 
                 <Select value={selectedSubject} onValueChange={setSelectedSubject}>
-                  <SelectTrigger className="bg-white/10 border-white/30 text-white h-14 text-lg rounded-xl backdrop-blur-lg">
+                  <SelectTrigger className="bg-white/10 border-white/30 text-white h-14 text-lg">
                     <SelectValue placeholder="📚 বিষয় নির্বাচন করুন" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#28282B] border-white/20 rounded-xl">
+                  <SelectContent className="bg-[#28282B] border-white/20">
                     {subjects.map((subject) => (
-                      <SelectItem key={subject} value={subject} className="text-white hover:bg-white/10 rounded-lg">
+                      <SelectItem key={subject} value={subject} className="text-white hover:bg-white/10">
                         {subject}
                       </SelectItem>
                     ))}
@@ -260,22 +354,77 @@ const Index = () => {
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="✨ তোমার প্রশ্ন লেখো..."
-                  className="bg-white/10 border-white/30 text-white placeholder:text-gray-300 h-20 text-xl pr-20 rounded-xl backdrop-blur-lg"
+                  className="bg-white/10 border-white/30 text-white placeholder:text-gray-300 h-20 text-xl pr-20"
+                  disabled={showApiKeyInput}
                 />
                 <Button 
-                  className="absolute right-3 top-3 h-14 w-14 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl shadow-lg"
+                  className="absolute right-3 top-3 h-14 w-14 bg-blue-600 hover:bg-blue-700"
                   size="icon"
                   onClick={handleAskQuestion}
+                  disabled={showApiKeyInput}
                 >
                   <Send className="h-6 w-6" />
                 </Button>
               </div>
 
+              {/* Chat Messages */}
+              {showChat && (
+                <div className="h-96 overflow-y-auto bg-black/20 rounded-xl p-4 border border-white/10">
+                  {messages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`flex mb-4 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div
+                        className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
+                          message.type === 'user'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-white/20 text-white border border-white/20'
+                        }`}
+                      >
+                        <div className="flex items-start space-x-2">
+                          {message.type === 'ai' && <Bot className="h-4 w-4 mt-1 text-blue-400" />}
+                          {message.type === 'user' && <User className="h-4 w-4 mt-1" />}
+                          <div className="flex-1">
+                            <p className="text-sm leading-relaxed">{message.content}</p>
+                            {message.references && message.references.length > 0 && (
+                              <div className="mt-2 space-y-1">
+                                {message.references.map((ref, index) => (
+                                  <div key={index} className="flex items-center text-xs text-blue-300">
+                                    <BookOpen className="h-3 w-3 mr-1" />
+                                    {ref}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {isLoading && (
+                    <div className="flex justify-start mb-4">
+                      <div className="bg-white/20 text-white border border-white/20 max-w-xs lg:max-w-md px-4 py-3 rounded-2xl">
+                        <div className="flex items-center space-x-2">
+                          <Bot className="h-4 w-4 text-blue-400" />
+                          <div className="flex space-x-1">
+                            <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                            <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Quick Action Buttons */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <Button 
                   variant="outline" 
-                  className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-400/30 text-white hover:bg-green-500/30 h-16 rounded-xl backdrop-blur-lg"
+                  className="bg-white/10 border-white/30 text-white hover:bg-white/20 h-16"
                   onClick={handleNavigateToNotes}
                 >
                   <BookOpen className="mr-2 h-5 w-5" />
@@ -283,7 +432,7 @@ const Index = () => {
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border-blue-400/30 text-white hover:bg-blue-500/30 h-16 rounded-xl backdrop-blur-lg"
+                  className="bg-white/10 border-white/30 text-white hover:bg-white/20 h-16"
                   onClick={handleNavigateToUpload}
                 >
                   <Upload className="mr-2 h-5 w-5" />
@@ -291,7 +440,7 @@ const Index = () => {
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-purple-400/30 text-white hover:bg-purple-500/30 h-16 rounded-xl backdrop-blur-lg"
+                  className="bg-white/10 border-white/30 text-white hover:bg-white/20 h-16"
                   onClick={handleSearch}
                 >
                   <Search className="mr-2 h-5 w-5" />
@@ -299,7 +448,7 @@ const Index = () => {
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="bg-gradient-to-r from-orange-500/20 to-red-500/20 border-orange-400/30 text-white hover:bg-orange-500/30 h-16 rounded-xl backdrop-blur-lg"
+                  className="bg-white/10 border-white/30 text-white hover:bg-white/20 h-16"
                   onClick={handleNavigateToCommunity}
                 >
                   <Users className="mr-2 h-5 w-5" />
@@ -310,12 +459,9 @@ const Index = () => {
           </Card>
         </div>
 
-        {/* AI Assistant Component */}
-        <AIAssistant selectedClass={selectedClass} selectedSubject={selectedSubject} />
-
         {/* Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
-          <Card className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-xl border-blue-400/30 hover:border-blue-300/50 transition-all duration-500 cursor-pointer group rounded-2xl" onClick={() => requireAuth(() => console.log('AI feature clicked'))}>
+          <Card className="bg-black/40 backdrop-blur-xl border-white/20 hover:border-blue-300/50 transition-all duration-500 cursor-pointer group" onClick={() => requireAuth(() => console.log('AI feature clicked'))}>
             <CardHeader className="text-center">
               <div className="mx-auto mb-4 p-4 bg-blue-500/20 rounded-full w-fit group-hover:scale-110 transition-transform duration-300">
                 <MessageCircle className="h-12 w-12 text-blue-400" />
@@ -329,7 +475,7 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-xl border-green-400/30 hover:border-green-300/50 transition-all duration-500 cursor-pointer group rounded-2xl" onClick={handleNavigateToNotes}>
+          <Card className="bg-black/40 backdrop-blur-xl border-white/20 hover:border-green-300/50 transition-all duration-500 cursor-pointer group" onClick={handleNavigateToNotes}>
             <CardHeader className="text-center">
               <div className="mx-auto mb-4 p-4 bg-green-500/20 rounded-full w-fit group-hover:scale-110 transition-transform duration-300">
                 <BookOpen className="h-12 w-12 text-green-400" />
@@ -343,7 +489,7 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl border-purple-400/30 hover:border-purple-300/50 transition-all duration-500 cursor-pointer group rounded-2xl" onClick={handleNavigateToCommunity}>
+          <Card className="bg-black/40 backdrop-blur-xl border-white/20 hover:border-purple-300/50 transition-all duration-500 cursor-pointer group" onClick={handleNavigateToCommunity}>
             <CardHeader className="text-center">
               <div className="mx-auto mb-4 p-4 bg-purple-500/20 rounded-full w-fit group-hover:scale-110 transition-transform duration-300">
                 <Users className="h-12 w-12 text-purple-400" />
