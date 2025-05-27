@@ -207,7 +207,7 @@ const Notes = () => {
     rating: note.rating,
     fileUrl: note.fileUrl,
     fileName: note.fileName,
-    fileSize: note.fileSize,
+    fileSize: note.fileSize || 0,
     verified: note.verified,
     likedBy: note.likedBy,
     tags: note.tags,

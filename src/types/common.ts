@@ -18,7 +18,7 @@ export interface ViewerItem {
   questionFileUrl?: string;
   answerFileUrl?: string;
   fileName: string;
-  fileSize?: number;
+  fileSize: number;
   verified: boolean;
   likedBy: string[];
   tags: string[];
