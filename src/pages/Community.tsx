@@ -31,15 +31,15 @@ const Community = () => {
     switch (badge) {
       case 'Gold':
       case 'গোল্ড':
-        return 'bg-yellow-500 text-black';
+        return 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30';
       case 'Silver':
       case 'সিলভার':
-        return 'bg-gray-400 text-black';
+        return 'bg-gray-400/20 text-gray-300 border border-gray-400/30';
       case 'Bronze':
       case 'ব্রোঞ্জ':
-        return 'bg-orange-600 text-white';
+        return 'bg-orange-600/20 text-orange-300 border border-orange-600/30';
       default:
-        return 'bg-gray-600 text-white';
+        return 'bg-gray-600/20 text-gray-300 border border-gray-600/30';
     }
   };
 
@@ -71,7 +71,7 @@ const Community = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#28282B] via-[#1a1a1d] to-[#28282B]">
+    <div className="min-h-screen bg-[#28282B]">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
@@ -83,7 +83,7 @@ const Community = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-black via-gray-900 to-blue-900/30 backdrop-blur-lg border-white/20">
+          <Card className="bg-gradient-to-br from-black/30 to-blue-900/20 backdrop-blur-lg border-white/10">
             <CardContent className="pt-6 text-center">
               <Users className="h-12 w-12 text-blue-400 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white">{topContributors.length || '১২,৫০০'}+</h3>
@@ -91,7 +91,7 @@ const Community = () => {
             </CardContent>
           </Card>
           
-          <Card className="bg-gradient-to-br from-black via-gray-900 to-green-900/30 backdrop-blur-lg border-white/20">
+          <Card className="bg-gradient-to-br from-black/30 to-green-900/20 backdrop-blur-lg border-white/10">
             <CardContent className="pt-6 text-center">
               <BookOpen className="h-12 w-12 text-green-400 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white">৮,৭৫০+</h3>
@@ -99,7 +99,7 @@ const Community = () => {
             </CardContent>
           </Card>
           
-          <Card className="bg-gradient-to-br from-black via-gray-900 to-purple-900/30 backdrop-blur-lg border-white/20">
+          <Card className="bg-gradient-to-br from-black/30 to-purple-900/20 backdrop-blur-lg border-white/10">
             <CardContent className="pt-6 text-center">
               <MessageCircle className="h-12 w-12 text-purple-400 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white">২৫,০০০+</h3>
@@ -107,7 +107,7 @@ const Community = () => {
             </CardContent>
           </Card>
           
-          <Card className="bg-gradient-to-br from-black via-gray-900 to-yellow-900/30 backdrop-blur-lg border-white/20">
+          <Card className="bg-gradient-to-br from-black/30 to-yellow-900/20 backdrop-blur-lg border-white/10">
             <CardContent className="pt-6 text-center">
               <Award className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white">৯৮%</h3>
@@ -118,7 +118,7 @@ const Community = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Leaderboard */}
-          <Card className="bg-gradient-to-br from-black via-gray-900 to-orange-900/30 backdrop-blur-lg border-white/20">
+          <Card className="bg-gradient-to-br from-black/30 to-orange-900/20 backdrop-blur-lg border-white/10">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
                 <Trophy className="mr-2 h-5 w-5 text-yellow-400" />
@@ -133,13 +133,13 @@ const Community = () => {
                   </div>
                 ) : topContributors.length > 0 ? (
                   topContributors.map((contributor, index) => (
-                    <div key={contributor.uid} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                    <div key={contributor.uid} className="flex items-center justify-between p-3 bg-black/20 rounded-lg backdrop-blur-lg border border-white/10">
                       <div className="flex items-center space-x-3">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                          index === 0 ? 'bg-yellow-500 text-black' :
-                          index === 1 ? 'bg-gray-400 text-black' :
-                          index === 2 ? 'bg-orange-600 text-white' :
-                          'bg-gray-600 text-white'
+                          index === 0 ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30' :
+                          index === 1 ? 'bg-gray-400/20 text-gray-300 border border-gray-400/30' :
+                          index === 2 ? 'bg-orange-600/20 text-orange-300 border border-orange-600/30' :
+                          'bg-gray-600/20 text-gray-300 border border-gray-600/30'
                         }`}>
                           {index + 1}
                         </div>
@@ -162,14 +162,14 @@ const Community = () => {
                   </div>
                 )}
               </div>
-              <Button className="w-full mt-4 bg-blue-600 hover:bg-blue-700">
+              <Button className="w-full mt-4 bg-gradient-to-r from-blue-600/50 to-purple-600/50 hover:from-blue-700/50 hover:to-purple-700/50 backdrop-blur-lg border border-white/10">
                 সম্পূর্ণ লিস্ট দেখো
               </Button>
             </CardContent>
           </Card>
 
           {/* Recent Activities */}
-          <Card className="bg-gradient-to-br from-black via-gray-900 to-cyan-900/30 backdrop-blur-lg border-white/20">
+          <Card className="bg-gradient-to-br from-black/30 to-cyan-900/20 backdrop-blur-lg border-white/10">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
                 <MessageCircle className="mr-2 h-5 w-5 text-blue-400" />
@@ -179,9 +179,9 @@ const Community = () => {
             <CardContent>
               <div className="space-y-4">
                 {recentActivities.map((activity, index) => (
-                  <div key={index} className="p-3 bg-white/5 rounded-lg">
+                  <div key={index} className="p-3 bg-black/20 rounded-lg backdrop-blur-lg border border-white/10">
                     <div className="flex items-start space-x-3">
-                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                      <div className="w-8 h-8 bg-gradient-to-br from-blue-600/50 to-purple-600/50 rounded-full flex items-center justify-center border border-white/10">
                         <span className="text-white text-sm font-bold">
                           {activity.user.charAt(0)}
                         </span>
@@ -197,7 +197,7 @@ const Community = () => {
                   </div>
                 ))}
               </div>
-              <Button className="w-full mt-4 bg-green-600 hover:bg-green-700">
+              <Button className="w-full mt-4 bg-gradient-to-r from-green-600/50 to-teal-600/50 hover:from-green-700/50 hover:to-teal-700/50 backdrop-blur-lg border border-white/10">
                 আরো দেখো
               </Button>
             </CardContent>
@@ -205,7 +205,7 @@ const Community = () => {
         </div>
 
         {/* Join Community CTA */}
-        <Card className="bg-gradient-to-br from-black via-gray-900 to-indigo-900/30 backdrop-blur-lg border-white/20 mt-8">
+        <Card className="bg-gradient-to-br from-black/30 to-indigo-900/20 backdrop-blur-lg border-white/10 mt-8">
           <CardContent className="pt-8 text-center">
             <Users className="h-16 w-16 text-white mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-white mb-4">
@@ -217,21 +217,21 @@ const Community = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-8 py-3"
+                className="bg-gradient-to-r from-indigo-600/50 to-purple-600/50 hover:from-indigo-700/50 hover:to-purple-700/50 text-white px-8 py-3 backdrop-blur-lg border border-white/10"
                 onClick={() => handleSocialLink('discord')}
               >
                 <MessageCircle className="mr-2 h-5 w-5" />
                 Discord এ যোগ দাও
               </Button>
               <Button 
-                className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white px-8 py-3"
+                className="bg-gradient-to-r from-green-600/50 to-teal-600/50 hover:from-green-700/50 hover:to-teal-700/50 text-white px-8 py-3 backdrop-blur-lg border border-white/10"
                 onClick={() => handleSocialLink('whatsapp')}
               >
                 <MessageCircle className="mr-2 h-5 w-5" />
                 WhatsApp গ্রুপ
               </Button>
               <Button 
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3"
+                className="bg-gradient-to-r from-blue-600/50 to-indigo-600/50 hover:from-blue-700/50 hover:to-indigo-700/50 text-white px-8 py-3 backdrop-blur-lg border border-white/10"
                 onClick={() => handleSocialLink('messenger')}
               >
                 <MessageCircle className="mr-2 h-5 w-5" />

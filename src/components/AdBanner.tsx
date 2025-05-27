@@ -14,8 +14,8 @@ const AdBanner: React.FC<AdBannerProps> = ({ imageUrl, altText, onClick }) => {
   if (!isVisible) return null;
 
   return (
-    <div className="relative w-full bg-gradient-to-r from-red-600 to-red-700 overflow-hidden">
-      <div className="container mx-auto px-4 py-2">
+    <div className="relative w-full bg-black overflow-hidden">
+      <div className="w-full">
         <div 
           className="relative cursor-pointer"
           onClick={onClick}
@@ -23,7 +23,7 @@ const AdBanner: React.FC<AdBannerProps> = ({ imageUrl, altText, onClick }) => {
           <img 
             src={imageUrl} 
             alt={altText}
-            className="w-full h-20 md:h-24 object-cover rounded-lg"
+            className="w-full h-20 md:h-24 object-cover"
           />
           <button
             onClick={(e) => {
