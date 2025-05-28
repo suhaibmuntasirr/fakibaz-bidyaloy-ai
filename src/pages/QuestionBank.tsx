@@ -163,11 +163,22 @@ const QuestionBank = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">প্রশ্ন ব্যাংক</h1>
-          <p className="text-gray-300 text-lg">সব স্কুলের প্রশ্ন ও উত্তর একসাথে - পরীক্ষার শেষ মুহূর্তের প্রস্তুতি</p>
+          <p className="text-gray-300 text-lg mb-6">সব স্কুলের প্রশ্ন ও উত্তর একসাথে - পরীক্ষার শেষ মুহূর্তের প্রস্তুতি</p>
+          
+          {/* Banner Image */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <div className="bg-gradient-to-br from-[#28282B]/60 via-blue-600/20 to-cyan-600/20 backdrop-blur-lg rounded-xl p-6 border border-white/20 overflow-hidden">
+              <img 
+                src="/lovable-uploads/941c0193-0e49-4df6-b5a0-d9438b99be97.png" 
+                alt="Question Bank Banner"
+                className="w-full h-48 object-cover rounded-lg shadow-lg"
+              />
+            </div>
+          </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="grid w-full grid-cols-4 bg-white/10 border-white/20">
+          <TabsList className="grid w-full grid-cols-4 bg-gradient-to-r from-[#28282B]/80 via-purple-600/20 to-blue-600/20 backdrop-blur-lg border-white/20">
             <TabsTrigger value="questions" className="text-white data-[state=active]:bg-white/20">
               <FileText className="mr-2 h-4 w-4" />
               প্রশ্ন ব্যাংক
@@ -189,7 +200,7 @@ const QuestionBank = () => {
           {/* Questions Tab */}
           <TabsContent value="questions" className="space-y-6">
             {/* Search and Filter */}
-            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+            <Card className="bg-gradient-to-br from-[#28282B]/80 via-purple-600/20 to-blue-600/20 backdrop-blur-lg border-white/20">
               <CardContent className="pt-6">
                 <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                   <div className="relative md:col-span-2">
@@ -197,13 +208,13 @@ const QuestionBank = () => {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="প্রশ্ন খুঁজুন..."
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 pl-10"
+                      className="bg-[#28282B]/40 border-white/20 text-white placeholder:text-gray-400 pl-10"
                     />
                     <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   </div>
                   
                   <Select value={selectedClass || undefined} onValueChange={setSelectedClass}>
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                    <SelectTrigger className="bg-[#28282B]/40 border-white/20 text-white">
                       <SelectValue placeholder="ক্লাস" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#28282B] border-white/20">
@@ -217,7 +228,7 @@ const QuestionBank = () => {
                   </Select>
                   
                   <Select value={selectedSubject || undefined} onValueChange={setSelectedSubject}>
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                    <SelectTrigger className="bg-[#28282B]/40 border-white/20 text-white">
                       <SelectValue placeholder="বিষয়" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#28282B] border-white/20">
@@ -231,7 +242,7 @@ const QuestionBank = () => {
                   </Select>
                   
                   <Select value={selectedYear || undefined} onValueChange={setSelectedYear}>
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                    <SelectTrigger className="bg-[#28282B]/40 border-white/20 text-white">
                       <SelectValue placeholder="বছর" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#28282B] border-white/20">
@@ -245,7 +256,7 @@ const QuestionBank = () => {
                   </Select>
                   
                   <Select value={selectedSchool || undefined} onValueChange={setSelectedSchool}>
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                    <SelectTrigger className="bg-[#28282B]/40 border-white/20 text-white">
                       <SelectValue placeholder="স্কুল" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#28282B] border-white/20">
@@ -264,7 +275,7 @@ const QuestionBank = () => {
             {/* Questions Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {filteredQuestions.map((question) => (
-                <Card key={question.id} className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all duration-300 cursor-pointer">
+                <Card key={question.id} className="bg-gradient-to-br from-[#28282B]/80 via-purple-600/20 to-blue-600/20 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all duration-300 cursor-pointer">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <CardTitle className="text-white text-lg leading-tight" onClick={() => handleQuestionClick(question)}>
@@ -345,7 +356,7 @@ const QuestionBank = () => {
                         <Button 
                           size="sm" 
                           variant="outline"
-                          className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                          className="bg-[#28282B]/40 border-white/20 text-white hover:bg-white/20"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleQuestionClick(question);
@@ -390,7 +401,7 @@ const QuestionBank = () => {
           {/* Leaderboard Tab */}
           <TabsContent value="leaderboard" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+              <Card className="bg-gradient-to-br from-[#28282B]/80 via-yellow-600/20 to-orange-600/20 backdrop-blur-lg border-white/20">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
                     <Trophy className="mr-2 h-5 w-5 text-yellow-400" />
@@ -416,7 +427,7 @@ const QuestionBank = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+              <Card className="bg-gradient-to-br from-[#28282B]/80 via-blue-600/20 to-purple-600/20 backdrop-blur-lg border-white/20">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
                     <Award className="mr-2 h-5 w-5 text-blue-400" />
@@ -442,7 +453,7 @@ const QuestionBank = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+              <Card className="bg-gradient-to-br from-[#28282B]/80 via-green-600/20 to-teal-600/20 backdrop-blur-lg border-white/20">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
                     <Clock className="mr-2 h-5 w-5 text-green-400" />
@@ -472,7 +483,7 @@ const QuestionBank = () => {
 
           {/* Schools Tab */}
           <TabsContent value="schools" className="space-y-6">
-            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+            <Card className="bg-gradient-to-br from-[#28282B]/80 via-purple-600/20 to-blue-600/20 backdrop-blur-lg border-white/20">
               <CardHeader>
                 <CardTitle className="text-white flex items-center">
                   <School className="mr-2 h-5 w-5" />
@@ -482,7 +493,7 @@ const QuestionBank = () => {
               <CardContent>
                 <div className="space-y-4">
                   {topSchools.map((school, index) => (
-                    <Card key={school.name} className="bg-white/5 border-white/10">
+                    <Card key={school.name} className="bg-gradient-to-r from-[#28282B]/60 via-purple-600/15 to-blue-600/15 backdrop-blur-lg border-white/10">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center">

@@ -24,7 +24,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   onSubscribe
 }) => {
   return (
-    <Card className={`relative bg-gradient-to-br from-black/60 via-purple-900/30 to-blue-900/40 backdrop-blur-lg border-white/20 transition-all duration-300 hover:scale-105 ${
+    <Card className={`relative bg-gradient-to-br from-[#28282B]/80 via-purple-600/20 to-blue-600/20 backdrop-blur-lg border-white/20 transition-all duration-300 hover:scale-105 ${
       isPopular ? 'ring-2 ring-yellow-400/50 shadow-lg shadow-yellow-400/20' : ''
     }`}>
       {isPopular && (
