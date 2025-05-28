@@ -10,6 +10,7 @@ import Notes from "./pages/Notes";
 import QuestionBank from "./pages/QuestionBank";
 import Community from "./pages/Community";
 import Auth from "./pages/Auth";
+import Subscription from "./pages/Subscription";
 import Settings from "./components/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/notes" element={<Notes />} />
             <Route path="/questionbank" element={<QuestionBank />} />
             <Route path="/community" element={<Community />} />
+            <Route path="/subscription" element={<Subscription />} />
             <Route path="/settings" element={<Settings />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

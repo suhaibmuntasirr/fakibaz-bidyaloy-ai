@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Upload, Search, ThumbsUp, MessageCircle, Download, Star, Eye } from 'lucide-react';
+import { Upload, Search, ThumbsUp, MessageCircle, Download, Star, Eye, Crown } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import PDFUpload from '@/components/PDFUpload';
 import PDFViewer from '@/components/PDFViewer';
@@ -26,10 +26,15 @@ const Notes = () => {
   const [selectedNote, setSelectedNote] = useState<UploadedNote | null>(null);
   const [activeTab, setActiveTab] = useState('browse');
   const [loading, setLoading] = useState(true);
+  const [dailyViewCount, setDailyViewCount] = useState(0);
   
   const { currentUser } = useAuth();
   const { requireAuth } = useAuthAction();
   const { toast } = useToast();
+
+  // Simulated subscription status - replace with actual subscription logic
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const maxDailyViews = 5;
 
   const classes = [
     'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5', 'Class 6',
@@ -109,7 +114,18 @@ const Notes = () => {
 
   const handleNoteClick = (note: UploadedNote) => {
     requireAuth(() => {
+      if (!isSubscribed && dailyViewCount >= maxDailyViews) {
+        toast({
+          title: "দৈনিক সীমা শেষ",
+          description: "আজকের জন্য আপনার ৫টি নোট দেখার সীমা শেষ। প্রিমিয়াম সাবস্ক্রিপশন নিন অসীমিত অ্যাক্সেসের জন্য।",
+          variant: "destructive"
+        });
+        return;
+      }
       setSelectedNote(note);
+      if (!isSubscribed) {
+        setDailyViewCount(prev => prev + 1);
+      }
     });
   };
 
@@ -234,29 +250,48 @@ const Notes = () => {
           <h1 className="text-4xl font-bold text-white mb-4">নোট শেয়ারিং সিস্টেম</h1>
           <p className="text-gray-300 text-lg mb-8">সবার সাথে নোট শেয়ার করো এবং একসাথে শেখো</p>
           
-          {/* Image below header */}
-          <Card className="bg-gradient-to-br from-black/40 via-blue-900/20 to-purple-900/20 backdrop-blur-xl border-white/10 overflow-hidden max-w-2xl mx-auto mb-8">
-            <CardContent className="p-0">
-              <img 
-                src="/lovable-uploads/06a338a9-fcef-422a-b61e-7f9968010583.png" 
-                alt="Digital learning experience"
-                className="w-full h-64 object-cover rounded-lg"
-              />
-              <div className="p-6 text-center">
-                <h3 className="text-white font-semibold text-lg mb-2">ডিজিটাল শিক্ষার ভবিষ্যৎ</h3>
-                <p className="text-gray-300 text-sm">প্রযুক্তির সাহায্যে শিক্ষা গ্রহণ করুন এবং জ্ঞান ভাগাভাগি করুন</p>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Better Image Placement */}
+          <div className="flex justify-center mb-8">
+            <Card className="bg-gradient-to-br from-black/60 via-blue-900/40 to-purple-900/60 backdrop-blur-xl border-white/20 overflow-hidden max-w-4xl">
+              <CardContent className="p-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+                  <div className="relative h-64 md:h-80">
+                    <img 
+                      src="/lovable-uploads/06a338a9-fcef-422a-b61e-7f9968010583.png" 
+                      alt="Digital learning experience"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20"></div>
+                  </div>
+                  <div className="p-8 flex flex-col justify-center">
+                    <h3 className="text-white font-bold text-2xl mb-4">ডিজিটাল শিক্ষার ভবিষ্যৎ</h3>
+                    <p className="text-gray-300 mb-6 leading-relaxed">
+                      প্রযুক্তির সাহায্যে শিক্ষা গ্রহণ করুন এবং জ্ঞান ভাগাভাগি করুন। 
+                      হাজারো শিক্ষার্থীর সাথে যুক্ত হয়ে একসাথে এগিয়ে চলুন।
+                    </p>
+                    {!isSubscribed && (
+                      <div className="bg-gradient-to-r from-orange-600/20 to-red-600/20 border border-orange-500/30 rounded-lg p-4 mb-4">
+                        <div className="flex items-center text-orange-300 mb-2">
+                          <Crown className="h-4 w-4 mr-2" />
+                          <span className="font-semibold">আজকের সীমা: {dailyViewCount}/{maxDailyViews}</span>
+                        </div>
+                        <p className="text-sm text-gray-300">প্রিমিয়াম সাবস্ক্রিপশন নিন অসীমিত অ্যাক্সেসের জন্য</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-black/40 to-gray-900/40 border-white/20 backdrop-blur-lg">
-            <TabsTrigger value="browse" className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600">
+          <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-black/60 via-gray-900/60 to-black/60 border-white/20 backdrop-blur-lg">
+            <TabsTrigger value="browse" className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600/80 data-[state=active]:to-purple-600/80">
               <Eye className="mr-2 h-4 w-4" />
               নোট ব্রাউজ করুন
             </TabsTrigger>
-            <TabsTrigger value="upload" className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600">
+            <TabsTrigger value="upload" className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600/80 data-[state=active]:to-purple-600/80">
               <Upload className="mr-2 h-4 w-4" />
               নোট আপলোড করুন
             </TabsTrigger>
@@ -265,7 +300,7 @@ const Notes = () => {
           {/* Browse Tab */}
           <TabsContent value="browse" className="space-y-6">
             {/* Search and Filter Section */}
-            <Card className="bg-gradient-to-br from-black/40 via-gray-900/20 to-blue-900/20 backdrop-blur-lg border-white/20">
+            <Card className="bg-gradient-to-br from-black/60 via-gray-900/40 to-blue-900/40 backdrop-blur-lg border-white/20">
               <CardContent className="pt-6">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                   <div className="relative md:col-span-2">
@@ -273,13 +308,13 @@ const Notes = () => {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="নোট খুঁজে দেখো..."
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 pl-10"
+                      className="bg-white/10 border-white/30 text-white placeholder:text-gray-400 pl-10"
                     />
                     <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   </div>
                   
                   <Select value={selectedClass || undefined} onValueChange={setSelectedClass}>
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                    <SelectTrigger className="bg-white/10 border-white/30 text-white">
                       <SelectValue placeholder="ক্লাস" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#28282B] border-white/20">
@@ -293,7 +328,7 @@ const Notes = () => {
                   </Select>
                   
                   <Select value={selectedSubject || undefined} onValueChange={setSelectedSubject}>
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                    <SelectTrigger className="bg-white/10 border-white/30 text-white">
                       <SelectValue placeholder="বিষয়" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#28282B] border-white/20">
@@ -307,7 +342,7 @@ const Notes = () => {
                   </Select>
                   
                   <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                    <SelectTrigger className="bg-white/10 border-white/30 text-white">
                       <SelectValue placeholder="সাজানো" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#28282B] border-white/20">
@@ -328,7 +363,7 @@ const Notes = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredNotes.map((note) => (
-                  <Card key={note.id} className="bg-gradient-to-br from-black/40 via-gray-900/20 to-blue-900/20 backdrop-blur-lg border-white/20 hover:bg-white/10 transition-all duration-300 cursor-pointer">
+                  <Card key={note.id} className="bg-gradient-to-br from-black/60 via-gray-900/40 to-blue-900/40 backdrop-blur-lg border-white/20 hover:bg-white/10 transition-all duration-300 cursor-pointer">
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <CardTitle className="text-white text-lg leading-tight" onClick={() => handleNoteClick(note)}>
@@ -391,7 +426,7 @@ const Notes = () => {
                         <div className="flex space-x-2">
                           <Button 
                             size="sm" 
-                            className="flex-1 bg-gradient-to-r from-blue-600/50 to-purple-600/50 hover:from-blue-700/50 hover:to-purple-700/50 text-white backdrop-blur-lg border border-white/10"
+                            className="flex-1 bg-gradient-to-r from-blue-600/70 to-purple-600/70 hover:from-blue-700/70 hover:to-purple-700/70 text-white backdrop-blur-lg border border-white/20"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleDownload(note.id);
@@ -405,8 +440,8 @@ const Notes = () => {
                             variant="outline"
                             className={`${
                               isNoteLiked(note) 
-                                ? 'bg-red-600/20 border-red-500/20 text-red-300' 
-                                : 'bg-white/10 border-white/20 text-white hover:bg-white/20'
+                                ? 'bg-red-600/30 border-red-500/30 text-red-300' 
+                                : 'bg-white/10 border-white/30 text-white hover:bg-white/20'
                             } backdrop-blur-lg`}
                             onClick={(e) => {
                               e.stopPropagation();
