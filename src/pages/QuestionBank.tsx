@@ -167,9 +167,9 @@ const QuestionBank = () => {
           
           {/* Banner Image */}
           <div className="max-w-4xl mx-auto mb-8">
-            <div className="bg-gradient-to-br from-[#28282B]/60 via-blue-600/20 to-cyan-600/20 backdrop-blur-lg rounded-xl p-6 border border-white/20 overflow-hidden">
+            <div className="bg-gradient-to-br from-black/80 via-[#28282B]/60 to-blue-600/30 backdrop-blur-lg rounded-xl p-6 border border-white/20 overflow-hidden">
               <img 
-                src="/lovable-uploads/941c0193-0e49-4df6-b5a0-d9438b99be97.png" 
+                src="/lovable-uploads/86534693-a004-4787-8ce6-8be9d4ed7603.png" 
                 alt="Question Bank Banner"
                 className="w-full h-48 object-cover rounded-lg shadow-lg"
               />
@@ -178,7 +178,7 @@ const QuestionBank = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="grid w-full grid-cols-4 bg-gradient-to-r from-[#28282B]/80 via-purple-600/20 to-blue-600/20 backdrop-blur-lg border-white/20">
+          <TabsList className="grid w-full grid-cols-4 bg-gradient-to-r from-black/90 via-[#28282B]/80 to-purple-600/30 backdrop-blur-lg border-white/20">
             <TabsTrigger value="questions" className="text-white data-[state=active]:bg-white/20">
               <FileText className="mr-2 h-4 w-4" />
               প্রশ্ন ব্যাংক
@@ -200,7 +200,7 @@ const QuestionBank = () => {
           {/* Questions Tab */}
           <TabsContent value="questions" className="space-y-6">
             {/* Search and Filter */}
-            <Card className="bg-gradient-to-br from-[#28282B]/80 via-purple-600/20 to-blue-600/20 backdrop-blur-lg border-white/20">
+            <Card className="bg-gradient-to-br from-black/90 via-[#28282B]/80 to-purple-600/30 backdrop-blur-lg border-white/20">
               <CardContent className="pt-6">
                 <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                   <div className="relative md:col-span-2">
@@ -275,7 +275,7 @@ const QuestionBank = () => {
             {/* Questions Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {filteredQuestions.map((question) => (
-                <Card key={question.id} className="bg-gradient-to-br from-[#28282B]/80 via-purple-600/20 to-blue-600/20 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all duration-300 cursor-pointer">
+                <Card key={question.id} className="bg-gradient-to-br from-black/90 via-[#28282B]/80 to-purple-600/30 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all duration-300 cursor-pointer">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <CardTitle className="text-white text-lg leading-tight" onClick={() => handleQuestionClick(question)}>
@@ -401,7 +401,7 @@ const QuestionBank = () => {
           {/* Leaderboard Tab */}
           <TabsContent value="leaderboard" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="bg-gradient-to-br from-[#28282B]/80 via-yellow-600/20 to-orange-600/20 backdrop-blur-lg border-white/20">
+              <Card className="bg-gradient-to-br from-black/90 via-[#28282B]/80 to-yellow-600/30 backdrop-blur-lg border-white/20">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
                     <Trophy className="mr-2 h-5 w-5 text-yellow-400" />
@@ -427,7 +427,7 @@ const QuestionBank = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gradient-to-br from-[#28282B]/80 via-blue-600/20 to-purple-600/20 backdrop-blur-lg border-white/20">
+              <Card className="bg-gradient-to-br from-black/90 via-[#28282B]/80 to-blue-600/30 backdrop-blur-lg border-white/20">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
                     <Award className="mr-2 h-5 w-5 text-blue-400" />
@@ -453,7 +453,7 @@ const QuestionBank = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gradient-to-br from-[#28282B]/80 via-green-600/20 to-teal-600/20 backdrop-blur-lg border-white/20">
+              <Card className="bg-gradient-to-br from-black/90 via-[#28282B]/80 to-green-600/30 backdrop-blur-lg border-white/20">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
                     <Clock className="mr-2 h-5 w-5 text-green-400" />
@@ -483,7 +483,7 @@ const QuestionBank = () => {
 
           {/* Schools Tab */}
           <TabsContent value="schools" className="space-y-6">
-            <Card className="bg-gradient-to-br from-[#28282B]/80 via-purple-600/20 to-blue-600/20 backdrop-blur-lg border-white/20">
+            <Card className="bg-gradient-to-br from-black/90 via-[#28282B]/80 to-purple-600/30 backdrop-blur-lg border-white/20">
               <CardHeader>
                 <CardTitle className="text-white flex items-center">
                   <School className="mr-2 h-5 w-5" />
@@ -493,7 +493,7 @@ const QuestionBank = () => {
               <CardContent>
                 <div className="space-y-4">
                   {topSchools.map((school, index) => (
-                    <Card key={school.name} className="bg-gradient-to-r from-[#28282B]/60 via-purple-600/15 to-blue-600/15 backdrop-blur-lg border-white/10">
+                    <Card key={school.name} className="bg-gradient-to-r from-black/80 via-[#28282B]/60 to-purple-600/20 backdrop-blur-lg border-white/10">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center">
