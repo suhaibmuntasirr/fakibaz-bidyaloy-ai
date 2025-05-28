@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Send, BookOpen, Users, Search, Upload, MessageCircle, Star, GraduationCap, Target, Bot, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -29,8 +30,6 @@ const Index = () => {
   const navigate = useNavigate();
   const { requireAuth } = useAuthAction();
   const { toast } = useToast();
-  const [apiKey, setApiKey] = useState('');
-  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
 
   const classes = [
     'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5', 'Class 6',
@@ -63,7 +62,7 @@ const Index = () => {
     {
       name: "Hasibur Rahman",
       title: "Online Business Owner",
-      content: "আমার এক্টি অনলাইনের শেষ ছিল কিংবদন্তিটিক লিভে নিয়ে কিন্তুদর সানেল আমাহের শেহোন কিংবদন্তি ক্ষরীং কুক্ষিতটি নান্দক। ফাকিবাজ করার মাধ্যেমে কিন্তুদর একটি বেসিক গোষ্টি নিয়ে কিন্তুদর ইউসুফ করার কর্মটাই করেছা শিক্ষতে সেকেড।"
+      content: "আমার এক্টি অনলাইনের শেষ ছিল কিংবদন্তিটিক লিভে নিয়ে কিন্তুদর সানেল আমাহের শেহোন কিন্তুদর ইউসুফ করার কর্মটাই করেছা শিক্ষতে সেকেড।"
     }
   ];
 
@@ -76,34 +75,14 @@ const Index = () => {
     { name: "Startup Ventures", logo: "SV" }
   ];
 
-  React.useEffect(() => {
-    const savedApiKey = localStorage.getItem('openai_api_key');
-    if (savedApiKey) {
-      setApiKey(savedApiKey);
-      chatGPTService.setApiKey(savedApiKey);
-      setShowApiKeyInput(false);
-    }
-  }, []);
-
-  const handleSetApiKey = () => {
-    if (!apiKey.trim()) {
-      toast({
-        title: "API Key প্রয়োজন",
-        description: "অনুগ্রহ করে OpenAI API Key প্রদান করুন",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    chatGPTService.setApiKey(apiKey);
-    setShowApiKeyInput(false);
-    localStorage.setItem('openai_api_key', apiKey);
-    
-    toast({
-      title: "API Key সেট করা হয়েছে",
-      description: "এখন আপনি AI শিক্ষকের সাথে কথা বলতে পারেন!"
-    });
-  };
+  const mediaOutlets = [
+    { name: "দৈনিক প্রথম আলো", type: "সংবাদপত্র" },
+    { name: "বাংলাভিশন", type: "টেলিভিশন" },
+    { name: "দৈনিক কালের কণ্ঠ", type: "সংবাদপত্র" },
+    { name: "চ্যানেল আই", type: "টেলিভিশন" },
+    { name: "দৈনিক যুগান্তর", type: "সংবাদপত্র" },
+    { name: "এটিএন বাংলা", type: "টেলিভিশন" }
+  ];
 
   const handleAskQuestion = async () => {
     if (!query.trim()) {
@@ -128,7 +107,6 @@ const Index = () => {
       setIsLoading(true);
 
       try {
-        // Use backend API key (this would be handled by your backend)
         const response = await chatGPTService.sendMessage(query, {
           class: selectedClass,
           subject: selectedSubject
@@ -196,7 +174,9 @@ const Index = () => {
 
   const handleGradeClick = (gradeCategory: typeof gradeCategories[0]) => {
     requireAuth(() => {
-      navigate(`/notes?class=${gradeCategory.classes[0]}`);
+      // Auto-select the first class from the category
+      const firstClass = gradeCategory.classes[0];
+      navigate(`/notes?class=${encodeURIComponent(firstClass)}`);
     });
   };
 
@@ -227,10 +207,55 @@ const Index = () => {
           </p>
         </div>
 
+        {/* Images Section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <Card className="bg-gradient-to-br from-black/40 via-blue-900/20 to-purple-900/20 backdrop-blur-xl border-white/10 overflow-hidden">
+            <CardContent className="p-0">
+              <img 
+                src="/lovable-uploads/38c39eea-85c1-42df-a76e-abc6c534d2db.png" 
+                alt="Students collaborating"
+                className="w-full h-48 object-cover rounded-t-lg"
+              />
+              <div className="p-6">
+                <h3 className="text-white font-semibold text-lg mb-2">একসাথে শিখি</h3>
+                <p className="text-gray-300 text-sm">সবার সাথে মিলে পড়াশোনা করুন এবং একসাথে এগিয়ে যান</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-black/40 via-purple-900/20 to-pink-900/20 backdrop-blur-xl border-white/10 overflow-hidden">
+            <CardContent className="p-0">
+              <img 
+                src="/lovable-uploads/394575bd-0e65-4fc0-8982-c7aeb2363127.png" 
+                alt="Online learning"
+                className="w-full h-48 object-cover rounded-t-lg"
+              />
+              <div className="p-6">
+                <h3 className="text-white font-semibold text-lg mb-2">ডিজিটাল শিক্ষা</h3>
+                <p className="text-gray-300 text-sm">আধুনিক প্রযুক্তির সাহায্যে শিক্ষা গ্রহণ করুন</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-black/40 via-green-900/20 to-teal-900/20 backdrop-blur-xl border-white/10 overflow-hidden">
+            <CardContent className="p-0">
+              <img 
+                src="/lovable-uploads/8ed33e65-80c8-4458-bbae-ad121a7ef03c.png" 
+                alt="Mobile learning"
+                className="w-full h-48 object-cover rounded-t-lg"
+              />
+              <div className="p-6">
+                <h3 className="text-white font-semibold text-lg mb-2">মোবাইল লার্নিং</h3>
+                <p className="text-gray-300 text-sm">যেকোনো সময়, যেকোনো জায়গায় শিখুন</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Grade Selection and P2P Explanation Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
           {/* Left Side - Grade Selection */}
-          <Card className="bg-black/20 backdrop-blur-xl border-white/10">
+          <Card className="bg-gradient-to-br from-black/40 via-blue-900/20 to-purple-900/20 backdrop-blur-xl border-white/10">
             <CardHeader className="text-center pb-6">
               <div className="flex items-center justify-center mb-4">
                 <GraduationCap className="h-10 w-10 text-blue-400 mr-3" />
@@ -243,7 +268,7 @@ const Index = () => {
                 <div
                   key={index}
                   onClick={() => handleGradeClick(category)}
-                  className="bg-gradient-to-r from-black/30 to-purple-900/20 backdrop-blur-lg rounded-xl p-6 border border-white/10 hover:bg-white/10 transition-all duration-300 cursor-pointer group"
+                  className="bg-gradient-to-r from-black/40 to-purple-900/30 backdrop-blur-lg rounded-xl p-6 border border-white/10 hover:bg-white/10 transition-all duration-300 cursor-pointer group"
                 >
                   <div className="flex items-center space-x-4">
                     <div className="text-4xl">{category.icon}</div>
@@ -261,7 +286,7 @@ const Index = () => {
           </Card>
 
           {/* Right Side - P2P System Explanation */}
-          <Card className="bg-black/20 backdrop-blur-xl border-white/10">
+          <Card className="bg-gradient-to-br from-black/40 via-purple-900/20 to-pink-900/20 backdrop-blur-xl border-white/10">
             <CardHeader className="text-center pb-6">
               <div className="flex items-center justify-center mb-4">
                 <Target className="h-10 w-10 text-purple-400 mr-3" />
@@ -271,7 +296,7 @@ const Index = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
-                <div className="bg-gradient-to-r from-black/30 to-blue-900/20 backdrop-blur-lg rounded-xl p-4 border border-white/10">
+                <div className="bg-gradient-to-r from-black/40 to-blue-900/30 backdrop-blur-lg rounded-xl p-4 border border-white/10">
                   <div className="flex items-center space-x-3 mb-2">
                     <div className="bg-blue-500/20 rounded-full p-2">
                       <BookOpen className="h-5 w-5 text-blue-300" />
@@ -281,7 +306,7 @@ const Index = () => {
                   <p className="text-gray-300 text-sm">আপনার তৈরি নোট আপলোড করে অন্যদের সাহায্য করুন</p>
                 </div>
 
-                <div className="bg-gradient-to-r from-black/30 to-green-900/20 backdrop-blur-lg rounded-xl p-4 border border-white/10">
+                <div className="bg-gradient-to-r from-black/40 to-green-900/30 backdrop-blur-lg rounded-xl p-4 border border-white/10">
                   <div className="flex items-center space-x-3 mb-2">
                     <div className="bg-green-500/20 rounded-full p-2">
                       <Users className="h-5 w-5 text-green-300" />
@@ -291,7 +316,7 @@ const Index = () => {
                   <p className="text-gray-300 text-sm">সবার সাথে মিলে পড়াশোনা করুন এবং একসাথে এগিয়ে যান</p>
                 </div>
 
-                <div className="bg-gradient-to-r from-black/30 to-purple-900/20 backdrop-blur-lg rounded-xl p-4 border border-white/10">
+                <div className="bg-gradient-to-r from-black/40 to-purple-900/30 backdrop-blur-lg rounded-xl p-4 border border-white/10">
                   <div className="flex items-center space-x-3 mb-2">
                     <div className="bg-purple-500/20 rounded-full p-2">
                       <Star className="h-5 w-5 text-purple-300" />
@@ -307,7 +332,7 @@ const Index = () => {
 
         {/* Main AI Question Card */}
         <div className="max-w-5xl mx-auto mb-16">
-          <Card className="bg-gradient-to-br from-black/30 via-gray-900/20 to-purple-900/10 backdrop-blur-xl border-white/20 shadow-2xl">
+          <Card className="bg-gradient-to-br from-black/40 via-gray-900/30 to-purple-900/20 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader className="text-center pb-6">
               <CardTitle className="text-5xl font-bold text-white mb-4 flex items-center justify-center">
                 <MessageCircle className="mr-4 h-12 w-12 text-blue-400" />
@@ -367,7 +392,7 @@ const Index = () => {
 
               {/* Chat Messages */}
               {showChat && (
-                <div className="h-96 overflow-y-auto bg-black/10 rounded-xl p-4 border border-white/10 backdrop-blur-lg">
+                <div className="h-96 overflow-y-auto bg-black/20 rounded-xl p-4 border border-white/10 backdrop-blur-lg">
                   {messages.map((message) => (
                     <div
                       key={message.id}
@@ -377,7 +402,7 @@ const Index = () => {
                         className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
                           message.type === 'user'
                             ? 'bg-blue-600 text-white'
-                            : 'bg-black/20 text-white border border-white/20 backdrop-blur-lg'
+                            : 'bg-black/30 text-white border border-white/20 backdrop-blur-lg'
                         }`}
                       >
                         <div className="flex items-start space-x-2">
@@ -403,7 +428,7 @@ const Index = () => {
                   
                   {isLoading && (
                     <div className="flex justify-start mb-4">
-                      <div className="bg-black/20 text-white border border-white/20 max-w-xs lg:max-w-md px-4 py-3 rounded-2xl backdrop-blur-lg">
+                      <div className="bg-black/30 text-white border border-white/20 max-w-xs lg:max-w-md px-4 py-3 rounded-2xl backdrop-blur-lg">
                         <div className="flex items-center space-x-2">
                           <Bot className="h-4 w-4 text-blue-400" />
                           <div className="flex space-x-1">
@@ -464,7 +489,7 @@ const Index = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="bg-gradient-to-br from-black/20 to-gray-900/10 backdrop-blur-xl border-white/10">
+              <Card key={index} className="bg-gradient-to-br from-black/40 via-gray-900/20 to-blue-900/20 backdrop-blur-xl border-white/10">
                 <CardContent className="pt-6">
                   <div className="mb-4">
                     <div className="text-pink-400 text-4xl mb-4">"</div>
@@ -487,12 +512,34 @@ const Index = () => {
           <h2 className="text-4xl font-bold text-white text-center mb-12">
             আমাদের ইনভেস্টর
           </h2>
-          <Card className="bg-black/20 backdrop-blur-xl border-white/10 overflow-hidden">
+          <Card className="bg-gradient-to-br from-black/40 via-purple-900/20 to-blue-900/20 backdrop-blur-xl border-white/10 overflow-hidden">
             <CardContent className="py-8">
               <div className="flex animate-scroll space-x-12">
                 {[...investors, ...investors].map((investor, index) => (
-                  <div key={index} className="flex-shrink-0 w-24 h-24 bg-gradient-to-br from-black/30 to-purple-900/20 backdrop-blur-lg rounded-full flex items-center justify-center border border-white/10">
+                  <div key={index} className="flex-shrink-0 w-24 h-24 bg-gradient-to-br from-black/40 to-purple-900/30 backdrop-blur-lg rounded-full flex items-center justify-center border border-white/10">
                     <span className="text-white font-bold text-lg">{investor.logo}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Media Coverage Section */}
+        <div className="max-w-6xl mx-auto mb-16">
+          <h2 className="text-4xl font-bold text-white text-center mb-6">
+            গণমাধ্যমে Fakibaz
+          </h2>
+          <p className="text-gray-300 text-center mb-12 max-w-4xl mx-auto">
+            দৈনিক সংবাদপত্র, টেলিভিশন চ্যানেলসহ বিভিন্ন গণমাধ্যমে Fakibaz সম্পর্কে প্রকাশিত বিভিন্ন সংবাদ ও প্রতিবেদনসমূহ
+          </p>
+          <Card className="bg-gradient-to-br from-black/40 via-green-900/20 to-teal-900/20 backdrop-blur-xl border-white/10">
+            <CardContent className="py-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {mediaOutlets.map((outlet, index) => (
+                  <div key={index} className="bg-gradient-to-r from-black/40 to-green-900/30 backdrop-blur-lg rounded-xl p-6 border border-white/10 text-center">
+                    <h4 className="text-white font-semibold text-lg mb-2">{outlet.name}</h4>
+                    <p className="text-green-300 text-sm">{outlet.type}</p>
                   </div>
                 ))}
               </div>
@@ -502,7 +549,7 @@ const Index = () => {
 
         {/* Mobile App Download Section */}
         <div className="max-w-3xl mx-auto mb-16">
-          <Card className="bg-gradient-to-br from-black/30 via-gray-900/20 to-blue-900/10 backdrop-blur-xl border-white/20">
+          <Card className="bg-gradient-to-br from-black/40 via-gray-900/20 to-blue-900/20 backdrop-blur-xl border-white/20">
             <CardContent className="pt-8 text-center">
               <h3 className="text-2xl font-bold text-white mb-4">
                 আমাদের মোবাইল অ্যাপ ডাউনলোড করুন
@@ -530,7 +577,7 @@ const Index = () => {
 
         {/* Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
-          <Card className="bg-black/20 backdrop-blur-xl border-white/10 hover:border-blue-300/30 transition-all duration-500 cursor-pointer group" onClick={() => requireAuth(() => console.log('AI feature clicked'))}>
+          <Card className="bg-gradient-to-br from-black/40 via-blue-900/20 to-purple-900/20 backdrop-blur-xl border-white/10 hover:border-blue-300/30 transition-all duration-500 cursor-pointer group" onClick={() => requireAuth(() => console.log('AI feature clicked'))}>
             <CardHeader className="text-center">
               <div className="mx-auto mb-4 p-4 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full w-fit group-hover:scale-110 transition-transform duration-300">
                 <MessageCircle className="h-12 w-12 text-blue-400" />
@@ -544,7 +591,7 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-black/20 backdrop-blur-xl border-white/10 hover:border-green-300/30 transition-all duration-500 cursor-pointer group" onClick={handleNavigateToNotes}>
+          <Card className="bg-gradient-to-br from-black/40 via-green-900/20 to-teal-900/20 backdrop-blur-xl border-white/10 hover:border-green-300/30 transition-all duration-500 cursor-pointer group" onClick={handleNavigateToNotes}>
             <CardHeader className="text-center">
               <div className="mx-auto mb-4 p-4 bg-gradient-to-br from-green-500/20 to-teal-500/20 rounded-full w-fit group-hover:scale-110 transition-transform duration-300">
                 <BookOpen className="h-12 w-12 text-green-400" />
@@ -558,7 +605,7 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-black/20 backdrop-blur-xl border-white/10 hover:border-purple-300/30 transition-all duration-500 cursor-pointer group" onClick={handleNavigateToCommunity}>
+          <Card className="bg-gradient-to-br from-black/40 via-purple-900/20 to-pink-900/20 backdrop-blur-xl border-white/10 hover:border-purple-300/30 transition-all duration-500 cursor-pointer group" onClick={handleNavigateToCommunity}>
             <CardHeader className="text-center">
               <div className="mx-auto mb-4 p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full w-fit group-hover:scale-110 transition-transform duration-300">
                 <Users className="h-12 w-12 text-purple-400" />
@@ -576,15 +623,15 @@ const Index = () => {
         {/* Stats Section */}
         <div className="mt-20 text-center">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="bg-black/20 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+            <div className="bg-gradient-to-br from-black/40 to-blue-900/30 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
               <div className="text-4xl font-bold text-blue-400 mb-2">১০০০+</div>
               <div className="text-gray-200">শিক্ষার্থী</div>
             </div>
-            <div className="bg-black/20 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+            <div className="bg-gradient-to-br from-black/40 to-green-900/30 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
               <div className="text-4xl font-bold text-green-400 mb-2">৫০০০+</div>
               <div className="text-gray-200">শেয়ারকৃত নোট</div>
             </div>
-            <div className="bg-black/20 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+            <div className="bg-gradient-to-br from-black/40 to-purple-900/30 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
               <div className="text-4xl font-bold text-purple-400 mb-2">২৪/৭</div>
               <div className="text-gray-200">AI সহায়তা</div>
             </div>

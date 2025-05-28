@@ -13,8 +13,10 @@ import { ViewerItem } from '@/types/common';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAuthAction } from '@/hooks/useAuthAction';
 import { useToast } from '@/hooks/use-toast';
+import { useSearchParams } from 'react-router-dom';
 
 const Notes = () => {
+  const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
@@ -38,6 +40,14 @@ const Notes = () => {
     'বাংলা', 'English', 'গণিত', 'বিজ্ঞান', 'সামাজিক বিজ্ঞান', 
     'ICT', 'পদার্থবিজ্ঞান', 'রসায়ন', 'জীববিজ্ঞান', 'উচ্চতর গণিত'
   ];
+
+  // Auto-select class from URL parameters
+  useEffect(() => {
+    const classFromUrl = searchParams.get('class');
+    if (classFromUrl) {
+      setSelectedClass(classFromUrl);
+    }
+  }, [searchParams]);
 
   // Load notes on component mount
   useEffect(() => {
@@ -222,11 +232,26 @@ const Notes = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">নোট শেয়ারিং সিস্টেম</h1>
-          <p className="text-gray-300 text-lg">সবার সাথে নোট শেয়ার করো এবং একসাথে শেখো</p>
+          <p className="text-gray-300 text-lg mb-8">সবার সাথে নোট শেয়ার করো এবং একসাথে শেখো</p>
+          
+          {/* Image below header */}
+          <Card className="bg-gradient-to-br from-black/40 via-blue-900/20 to-purple-900/20 backdrop-blur-xl border-white/10 overflow-hidden max-w-2xl mx-auto mb-8">
+            <CardContent className="p-0">
+              <img 
+                src="/lovable-uploads/06a338a9-fcef-422a-b61e-7f9968010583.png" 
+                alt="Digital learning experience"
+                className="w-full h-64 object-cover rounded-lg"
+              />
+              <div className="p-6 text-center">
+                <h3 className="text-white font-semibold text-lg mb-2">ডিজিটাল শিক্ষার ভবিষ্যৎ</h3>
+                <p className="text-gray-300 text-sm">প্রযুক্তির সাহায্যে শিক্ষা গ্রহণ করুন এবং জ্ঞান ভাগাভাগি করুন</p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-black to-gray-900 border-white/20">
+          <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-black/40 to-gray-900/40 border-white/20 backdrop-blur-lg">
             <TabsTrigger value="browse" className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600">
               <Eye className="mr-2 h-4 w-4" />
               নোট ব্রাউজ করুন
@@ -240,7 +265,7 @@ const Notes = () => {
           {/* Browse Tab */}
           <TabsContent value="browse" className="space-y-6">
             {/* Search and Filter Section */}
-            <Card className="bg-gradient-to-br from-black via-gray-900 to-blue-900/30 backdrop-blur-lg border-white/20">
+            <Card className="bg-gradient-to-br from-black/40 via-gray-900/20 to-blue-900/20 backdrop-blur-lg border-white/20">
               <CardContent className="pt-6">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                   <div className="relative md:col-span-2">
@@ -303,14 +328,14 @@ const Notes = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredNotes.map((note) => (
-                  <Card key={note.id} className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all duration-300 cursor-pointer">
+                  <Card key={note.id} className="bg-gradient-to-br from-black/40 via-gray-900/20 to-blue-900/20 backdrop-blur-lg border-white/20 hover:bg-white/10 transition-all duration-300 cursor-pointer">
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <CardTitle className="text-white text-lg leading-tight" onClick={() => handleNoteClick(note)}>
                           {note.title}
                         </CardTitle>
                         {note.verified && (
-                          <div className="bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center">
+                          <div className="bg-green-500/20 text-green-300 text-xs px-2 py-1 rounded-full flex items-center border border-green-500/30">
                             <Star className="h-3 w-3 mr-1" />
                             যাচাইকৃত
                           </div>
@@ -336,7 +361,7 @@ const Notes = () => {
                         
                         <div className="flex flex-wrap gap-1">
                           {note.tags.map((tag) => (
-                            <span key={tag} className="bg-blue-600/30 text-blue-300 text-xs px-2 py-1 rounded">
+                            <span key={tag} className="bg-blue-600/30 text-blue-300 text-xs px-2 py-1 rounded border border-blue-600/30">
                               {tag}
                             </span>
                           ))}
@@ -366,7 +391,7 @@ const Notes = () => {
                         <div className="flex space-x-2">
                           <Button 
                             size="sm" 
-                            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                            className="flex-1 bg-gradient-to-r from-blue-600/50 to-purple-600/50 hover:from-blue-700/50 hover:to-purple-700/50 text-white backdrop-blur-lg border border-white/10"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleDownload(note.id);
@@ -382,7 +407,7 @@ const Notes = () => {
                               isNoteLiked(note) 
                                 ? 'bg-red-600/20 border-red-500/20 text-red-300' 
                                 : 'bg-white/10 border-white/20 text-white hover:bg-white/20'
-                            }`}
+                            } backdrop-blur-lg`}
                             onClick={(e) => {
                               e.stopPropagation();
                               handleLike(note.id);

@@ -83,7 +83,7 @@ const Community = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-black/30 to-blue-900/20 backdrop-blur-lg border-white/10">
+          <Card className="bg-gradient-to-br from-black/40 via-blue-900/20 to-purple-900/20 backdrop-blur-lg border-white/10">
             <CardContent className="pt-6 text-center">
               <Users className="h-12 w-12 text-blue-400 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white">{topContributors.length || '১২,৫০০'}+</h3>
@@ -91,7 +91,7 @@ const Community = () => {
             </CardContent>
           </Card>
           
-          <Card className="bg-gradient-to-br from-black/30 to-green-900/20 backdrop-blur-lg border-white/10">
+          <Card className="bg-gradient-to-br from-black/40 via-green-900/20 to-teal-900/20 backdrop-blur-lg border-white/10">
             <CardContent className="pt-6 text-center">
               <BookOpen className="h-12 w-12 text-green-400 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white">৮,৭৫০+</h3>
@@ -99,7 +99,7 @@ const Community = () => {
             </CardContent>
           </Card>
           
-          <Card className="bg-gradient-to-br from-black/30 to-purple-900/20 backdrop-blur-lg border-white/10">
+          <Card className="bg-gradient-to-br from-black/40 via-purple-900/20 to-pink-900/20 backdrop-blur-lg border-white/10">
             <CardContent className="pt-6 text-center">
               <MessageCircle className="h-12 w-12 text-purple-400 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white">২৫,০০০+</h3>
@@ -107,7 +107,7 @@ const Community = () => {
             </CardContent>
           </Card>
           
-          <Card className="bg-gradient-to-br from-black/30 to-yellow-900/20 backdrop-blur-lg border-white/10">
+          <Card className="bg-gradient-to-br from-black/40 via-yellow-900/20 to-orange-900/20 backdrop-blur-lg border-white/10">
             <CardContent className="pt-6 text-center">
               <Award className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white">৯৮%</h3>
@@ -118,7 +118,7 @@ const Community = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Leaderboard */}
-          <Card className="bg-gradient-to-br from-black/30 to-orange-900/20 backdrop-blur-lg border-white/10">
+          <Card className="bg-gradient-to-br from-black/40 via-orange-900/20 to-yellow-900/20 backdrop-blur-lg border-white/10">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
                 <Trophy className="mr-2 h-5 w-5 text-yellow-400" />
@@ -133,7 +133,7 @@ const Community = () => {
                   </div>
                 ) : topContributors.length > 0 ? (
                   topContributors.map((contributor, index) => (
-                    <div key={contributor.uid} className="flex items-center justify-between p-3 bg-black/20 rounded-lg backdrop-blur-lg border border-white/10">
+                    <div key={contributor.uid} className="flex items-center justify-between p-3 bg-black/30 rounded-lg backdrop-blur-lg border border-white/10">
                       <div className="flex items-center space-x-3">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
                           index === 0 ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30' :
@@ -162,14 +162,14 @@ const Community = () => {
                   </div>
                 )}
               </div>
-              <Button className="w-full mt-4 bg-gradient-to-r from-blue-600/50 to-purple-600/50 hover:from-blue-700/50 hover:to-purple-700/50 backdrop-blur-lg border border-white/10">
+              <Button className="w-full mt-4 bg-gradient-to-r from-blue-600/50 to-purple-600/50 hover:from-blue-700/50 hover:to-purple-700/50 backdrop-blur-lg border border-white/10 text-white">
                 সম্পূর্ণ লিস্ট দেখো
               </Button>
             </CardContent>
           </Card>
 
           {/* Recent Activities */}
-          <Card className="bg-gradient-to-br from-black/30 to-cyan-900/20 backdrop-blur-lg border-white/10">
+          <Card className="bg-gradient-to-br from-black/40 via-cyan-900/20 to-blue-900/20 backdrop-blur-lg border-white/10">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
                 <MessageCircle className="mr-2 h-5 w-5 text-blue-400" />
@@ -179,7 +179,7 @@ const Community = () => {
             <CardContent>
               <div className="space-y-4">
                 {recentActivities.map((activity, index) => (
-                  <div key={index} className="p-3 bg-black/20 rounded-lg backdrop-blur-lg border border-white/10">
+                  <div key={index} className="p-3 bg-black/30 rounded-lg backdrop-blur-lg border border-white/10">
                     <div className="flex items-start space-x-3">
                       <div className="w-8 h-8 bg-gradient-to-br from-blue-600/50 to-purple-600/50 rounded-full flex items-center justify-center border border-white/10">
                         <span className="text-white text-sm font-bold">
@@ -197,7 +197,7 @@ const Community = () => {
                   </div>
                 ))}
               </div>
-              <Button className="w-full mt-4 bg-gradient-to-r from-green-600/50 to-teal-600/50 hover:from-green-700/50 hover:to-teal-700/50 backdrop-blur-lg border border-white/10">
+              <Button className="w-full mt-4 bg-gradient-to-r from-green-600/50 to-teal-600/50 hover:from-green-700/50 hover:to-teal-700/50 backdrop-blur-lg border border-white/10 text-white">
                 আরো দেখো
               </Button>
             </CardContent>
@@ -205,7 +205,7 @@ const Community = () => {
         </div>
 
         {/* Join Community CTA */}
-        <Card className="bg-gradient-to-br from-black/30 to-indigo-900/20 backdrop-blur-lg border-white/10 mt-8">
+        <Card className="bg-gradient-to-br from-black/40 via-indigo-900/20 to-purple-900/20 backdrop-blur-lg border-white/10 mt-8">
           <CardContent className="pt-8 text-center">
             <Users className="h-16 w-16 text-white mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-white mb-4">
