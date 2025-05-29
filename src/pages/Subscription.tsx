@@ -55,7 +55,7 @@ const Subscription = () => {
           </p>
           
           {/* Billing Cycle Toggle */}
-          <div className="inline-flex bg-gradient-to-r from-black/60 to-gray-900/60 backdrop-blur-lg border border-white/20 rounded-lg p-1">
+          <div className="inline-flex bg-black/30 backdrop-blur-lg border border-white/10 rounded-lg p-1">
             <button
               onClick={() => setBillingCycle('monthly')}
               className={`px-6 py-2 rounded-md transition-all ${
@@ -103,7 +103,7 @@ const Subscription = () => {
         </div>
 
         {/* Add-ons Section */}
-        <Card className="bg-gradient-to-br from-black/60 via-green-900/30 to-teal-900/40 backdrop-blur-lg border-white/20 mb-16">
+        <Card className="bg-black/20 backdrop-blur-lg border border-white/10 mb-16">
           <CardHeader className="text-center">
             <CardTitle className="text-white text-2xl mb-2">
               অতিরিক্ত ফিচার
@@ -113,7 +113,11 @@ const Subscription = () => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {addOnFeatures.map((addon, index) => (
-                <div key={index} className="bg-black/30 rounded-lg p-6 border border-white/10">
+                <div key={index} className={`bg-gradient-to-br ${
+                  index === 0 ? 'from-black/40 to-emerald-900/30' :
+                  index === 1 ? 'from-black/40 to-cyan-900/30' :
+                  'from-black/40 to-amber-900/30'
+                } rounded-lg p-6 border border-white/10`}>
                   <h3 className="text-white font-semibold text-lg mb-2">{addon.name}</h3>
                   <p className="text-gray-300 text-sm mb-4">{addon.description}</p>
                   <div className="flex items-center justify-between">
@@ -129,7 +133,7 @@ const Subscription = () => {
         </Card>
 
         {/* Payment Methods */}
-        <Card className="bg-gradient-to-br from-black/60 via-blue-900/30 to-purple-900/40 backdrop-blur-lg border-white/20 mb-16">
+        <Card className="bg-black/20 backdrop-blur-lg border border-white/10 mb-16">
           <CardHeader className="text-center">
             <CardTitle className="text-white text-2xl mb-2 flex items-center justify-center">
               <CreditCard className="mr-2" />
@@ -138,8 +142,13 @@ const Subscription = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {['bKash', 'Nagad', 'Rocket', 'VISA'].map((method) => (
-                <div key={method} className="bg-black/30 rounded-lg p-4 text-center border border-white/10">
+              {['bKash', 'Nagad', 'Rocket', 'VISA'].map((method, index) => (
+                <div key={method} className={`bg-gradient-to-br ${
+                  index === 0 ? 'from-black/40 to-pink-900/30' :
+                  index === 1 ? 'from-black/40 to-orange-900/30' :
+                  index === 2 ? 'from-black/40 to-purple-900/30' :
+                  'from-black/40 to-blue-900/30'
+                } rounded-lg p-4 text-center border border-white/10`}>
                   <div className="text-white font-semibold">{method}</div>
                 </div>
               ))}
@@ -152,7 +161,7 @@ const Subscription = () => {
 
         {/* Special Offers */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          <Card className="bg-gradient-to-br from-black/60 via-orange-900/30 to-yellow-900/40 backdrop-blur-lg border-white/20">
+          <Card className="bg-gradient-to-br from-black/40 to-orange-900/30 backdrop-blur-lg border border-white/10">
             <CardContent className="pt-6 text-center">
               <Users className="h-12 w-12 text-orange-400 mx-auto mb-4" />
               <h3 className="text-white font-bold text-lg mb-2">গ্রুপ ডিসকাউন্ট</h3>
@@ -165,7 +174,7 @@ const Subscription = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-black/60 via-pink-900/30 to-purple-900/40 backdrop-blur-lg border-white/20">
+          <Card className="bg-gradient-to-br from-black/40 to-pink-900/30 backdrop-blur-lg border border-white/10">
             <CardContent className="pt-6 text-center">
               <Gift className="h-12 w-12 text-pink-400 mx-auto mb-4" />
               <h3 className="text-white font-bold text-lg mb-2">রেফারেল বোনাস</h3>
@@ -178,7 +187,7 @@ const Subscription = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-black/60 via-indigo-900/30 to-blue-900/40 backdrop-blur-lg border-white/20">
+          <Card className="bg-gradient-to-br from-black/40 to-indigo-900/30 backdrop-blur-lg border border-white/10">
             <CardContent className="pt-6 text-center">
               <Headphones className="h-12 w-12 text-indigo-400 mx-auto mb-4" />
               <h3 className="text-white font-bold text-lg mb-2">২৪/৭ সাপোর্ট</h3>
@@ -193,7 +202,7 @@ const Subscription = () => {
         </div>
 
         {/* FAQ Section */}
-        <Card className="bg-gradient-to-br from-black/60 via-gray-900/30 to-slate-900/40 backdrop-blur-lg border-white/20">
+        <Card className="bg-black/20 backdrop-blur-lg border border-white/10">
           <CardHeader>
             <CardTitle className="text-white text-2xl text-center">
               প্রায়শই জিজ্ঞাসিত প্রশ্ন
@@ -214,7 +223,11 @@ const Subscription = () => {
                 a: "আপনার রেফারেল লিংক দিয়ে কেউ সাবস্ক্রাইব করলে আপনি ১ মাস ফ্রি পাবেন।"
               }
             ].map((faq, index) => (
-              <div key={index} className="bg-black/30 rounded-lg p-4 border border-white/10">
+              <div key={index} className={`bg-gradient-to-r ${
+                index === 0 ? 'from-black/40 to-violet-900/30' :
+                index === 1 ? 'from-black/40 to-emerald-900/30' :
+                'from-black/40 to-rose-900/30'
+              } rounded-lg p-4 border border-white/10`}>
                 <h4 className="text-white font-semibold mb-2">{faq.q}</h4>
                 <p className="text-gray-300 text-sm">{faq.a}</p>
               </div>
