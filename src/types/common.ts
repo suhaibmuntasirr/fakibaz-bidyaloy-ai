@@ -24,3 +24,28 @@ export interface ViewerItem {
   tags: string[];
   description?: string;
 }
+
+export interface Note {
+  id: string;
+  title: string;
+  class: string;
+  subject: string;
+  chapter: string;
+  description: string;
+  authorId: string;
+  authorName: string;
+  fileUrl: string;
+  fileName: string;
+  fileSize: number;
+  uploadedAt: string;
+  likes: number;
+  likedBy: string[];
+  downloads: number;
+  downloadedBy: string[];
+  comments: number;
+  rating: number;
+  ratingCount: number;
+  verified: boolean;
+  tags: string[];
+  uploaderName: string;
+}

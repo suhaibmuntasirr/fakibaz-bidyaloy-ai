@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -9,6 +8,11 @@ import { BookOpen, Users, Star, Target, Shield, Zap } from 'lucide-react';
 
 const Auth = () => {
   const [activeTab, setActiveTab] = useState('login');
+
+  const handleAuthSuccess = () => {
+    // Handle successful authentication - could redirect to dashboard
+    console.log('Authentication successful');
+  };
 
   const features = [
     {
@@ -140,11 +144,11 @@ const Auth = () => {
                   </TabsList>
                   
                   <TabsContent value="login" className="mt-6">
-                    <LoginForm />
+                    <LoginForm onSuccess={handleAuthSuccess} />
                   </TabsContent>
                   
                   <TabsContent value="register" className="mt-6">
-                    <RegisterForm />
+                    <RegisterForm onSuccess={handleAuthSuccess} />
                   </TabsContent>
                 </Tabs>
               </CardContent>

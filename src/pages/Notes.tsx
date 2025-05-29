@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -117,7 +116,7 @@ const Notes = () => {
 
   const handleLike = async (noteId: string) => {
     try {
-      await notesService.likeNote(noteId);
+      await notesService.likeNote(noteId, 'currentUserId');
       setNotes(prevNotes => 
         prevNotes.map(note => 
           note.id === noteId 
@@ -396,13 +395,16 @@ const Notes = () => {
                 </p>
               </CardHeader>
               <CardContent>
-                <PDFUpload onUploadSuccess={() => {
-                  fetchNotes();
-                  toast({
-                    title: "সফল!",
-                    description: "নোট সফলভাবে আপলোড হয়েছে",
-                  });
-                }} />
+                <PDFUpload 
+                  type="note"
+                  onUploadSuccess={() => {
+                    fetchNotes();
+                    toast({
+                      title: "সফল!",
+                      description: "নোট সফলভাবে আপলোড হয়েছে",
+                    });
+                  }} 
+                />
               </CardContent>
             </Card>
           </TabsContent>
@@ -411,9 +413,13 @@ const Notes = () => {
         {/* PDF Viewer Modal */}
         {selectedNote && (
           <PDFViewer
-            note={selectedNote}
+            item={selectedNote}
+            type="note"
             isOpen={!!selectedNote}
             onClose={() => setSelectedNote(null)}
+            onLike={() => handleLike(selectedNote.id)}
+            onDownload={() => window.open(selectedNote.fileUrl, '_blank')}
+            isLiked={false}
           />
         )}
       </div>
