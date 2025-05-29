@@ -7,7 +7,32 @@ import {
   Download, ThumbsUp, MessageCircle, Star, X, 
   FileText, User, Calendar, BookOpen, School
 } from 'lucide-react';
-import { Note, Question } from '@/services/notesService';
+import { Note } from '@/types/common';
+
+export interface Question {
+  id: string;
+  title: string;
+  subject: string;
+  class: string;
+  school: string;
+  year: number;
+  examType: string;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  marks: number;
+  uploader: string;
+  uploaderId: string;
+  views: number;
+  likes: number;
+  answers: number;
+  hasAnswerKey: boolean;
+  uploadDate: Date;
+  verified: boolean;
+  questionFileUrl: string;
+  answerFileUrl?: string;
+  fileName: string;
+  answerFileName?: string;
+  likedBy: string[];
+}
 
 interface PDFViewerProps {
   item: Note | Question;

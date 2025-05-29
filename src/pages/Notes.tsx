@@ -415,7 +415,6 @@ const Notes = () => {
           <PDFViewer
             item={selectedNote}
             type="note"
-            isOpen={!!selectedNote}
             onClose={() => setSelectedNote(null)}
             onLike={() => handleLike(selectedNote.id)}
             onDownload={() => window.open(selectedNote.fileUrl, '_blank')}
