@@ -32,20 +32,17 @@ export interface Note {
   subject: string;
   chapter: string;
   description: string;
+  author: string;
   authorId: string;
-  authorName: string;
   fileUrl: string;
   fileName: string;
   fileSize: number;
-  uploadedAt: string;
+  uploadDate: Date;
   likes: number;
   likedBy: string[];
   downloads: number;
-  downloadedBy: string[];
   comments: number;
   rating: number;
-  ratingCount: number;
   verified: boolean;
   tags: string[];
-  uploaderName: string;
 }

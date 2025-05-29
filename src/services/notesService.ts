@@ -1,25 +1,4 @@
-
-export interface Note {
-  id: string;
-  title: string;
-  subject: string;
-  class: string;
-  chapter: string;
-  author: string;
-  authorId: string;
-  likes: number;
-  comments: number;
-  downloads: number;
-  rating: number;
-  tags: string[];
-  uploadDate: Date;
-  verified: boolean;
-  fileUrl: string;
-  fileName: string;
-  fileSize: number;
-  description?: string;
-  likedBy: string[];
-}
+import { Note } from '@/types/common';
 
 export interface Question {
   id: string;

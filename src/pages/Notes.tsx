@@ -70,7 +70,7 @@ const Notes = () => {
     if (searchQuery) {
       filtered = filtered.filter(note => 
         note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        note.description.toLowerCase().includes(searchQuery.toLowerCase())
+        (note.description && note.description.toLowerCase().includes(searchQuery.toLowerCase()))
       );
     }
 
@@ -95,7 +95,7 @@ const Notes = () => {
           return a.title.localeCompare(b.title);
         case 'latest':
         default:
-          return new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime();
+          return new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime();
       }
     });
 
@@ -313,11 +313,11 @@ const Notes = () => {
                       <div className="flex items-center justify-between text-sm text-gray-400 mb-4">
                         <div className="flex items-center">
                           <User className="h-3 w-3 mr-1" />
-                          {note.uploaderName}
+                          {note.author}
                         </div>
                         <div className="flex items-center">
                           <Clock className="h-3 w-3 mr-1" />
-                          {new Date(note.uploadedAt).toLocaleDateString('bn-BD')}
+                          {new Date(note.uploadDate).toLocaleDateString('bn-BD')}
                         </div>
                       </div>
 
