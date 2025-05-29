@@ -74,11 +74,11 @@ const Notes = () => {
       );
     }
 
-    if (selectedClass) {
+    if (selectedClass && selectedClass !== 'all') {
       filtered = filtered.filter(note => note.class === selectedClass);
     }
 
-    if (selectedSubject) {
+    if (selectedSubject && selectedSubject !== 'all') {
       filtered = filtered.filter(note => note.subject === selectedSubject);
     }
 
@@ -105,8 +105,8 @@ const Notes = () => {
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (searchQuery) params.set('q', searchQuery);
-    if (selectedClass) params.set('class', selectedClass);
-    if (selectedSubject) params.set('subject', selectedSubject);
+    if (selectedClass && selectedClass !== 'all') params.set('class', selectedClass);
+    if (selectedSubject && selectedSubject !== 'all') params.set('subject', selectedSubject);
     setSearchParams(params);
   };
 
@@ -203,7 +203,7 @@ const Notes = () => {
                       <SelectValue placeholder="ক্লাস নির্বাচন" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#28282B] border-white/20">
-                      <SelectItem value="" className="text-white">সব ক্লাস</SelectItem>
+                      <SelectItem value="all" className="text-white">সব ক্লাস</SelectItem>
                       {classes.map((cls) => (
                         <SelectItem key={cls} value={cls} className="text-white hover:bg-white/10">
                           {cls}
@@ -217,7 +217,7 @@ const Notes = () => {
                       <SelectValue placeholder="বিষয় নির্বাচন" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#28282B] border-white/20">
-                      <SelectItem value="" className="text-white">সব বিষয়</SelectItem>
+                      <SelectItem value="all" className="text-white">সব বিষয়</SelectItem>
                       {subjects.map((subject) => (
                         <SelectItem key={subject} value={subject} className="text-white hover:bg-white/10">
                           {subject}
@@ -313,7 +313,7 @@ const Notes = () => {
                       <div className="flex items-center justify-between text-sm text-gray-400 mb-4">
                         <div className="flex items-center">
                           <User className="h-3 w-3 mr-1" />
-                          {note.author}
+                          {note.authorName}
                         </div>
                         <div className="flex items-center">
                           <Clock className="h-3 w-3 mr-1" />
