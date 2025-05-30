@@ -313,7 +313,7 @@ const Notes = () => {
                       <div className="flex items-center justify-between text-sm text-gray-400 mb-4">
                         <div className="flex items-center">
                           <User className="h-3 w-3 mr-1" />
-                          {note.authorName}
+                          {note.author}
                         </div>
                         <div className="flex items-center">
                           <Clock className="h-3 w-3 mr-1" />
