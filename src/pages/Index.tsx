@@ -4,12 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { MessageCircle, BookOpen, Users, Brain, Star, ArrowRight, Search, Play, Heart, Share2, Download, Eye, X, Send } from 'lucide-react';
+import { MessageCircle, BookOpen, Users, Brain, Star, ArrowRight, Search, Play, Heart, Share2, Download, Eye, X, Send, GraduationCap } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import TrendingTopics from '@/components/TrendingTopics';
 import CommunityStats from '@/components/CommunityStats';
 import StudyGroups from '@/components/StudyGroups';
 import AdBanner from '@/components/AdBanner';
+import ClassSelection from '@/components/ClassSelection';
 import AccessibleButton from '@/components/AccessibleButton';
 import { useToast } from '@/hooks/use-toast';
 
@@ -21,6 +22,7 @@ const Index = () => {
   const [showAIChat, setShowAIChat] = useState(false);
   const [aiMessage, setAiMessage] = useState('');
   const [chatMessages, setChatMessages] = useState<{text: string, sender: 'user' | 'ai'}[]>([]);
+  const [selectedSubject, setSelectedSubject] = useState<string>('');
 
   const handleLike = (itemId: string) => {
     if (likedItems.includes(itemId)) {
@@ -82,6 +84,23 @@ const Index = () => {
       setAiMessage('');
     }
   };
+
+  const handleSubjectSelect = (subject: string) => {
+    setSelectedSubject(subject);
+    setChatMessages(prev => [...prev, { 
+      text: `${subject} বিষয়ে আপনার প্রশ্ন করুন। আমি সাহায্য করতে প্রস্তুত!`, 
+      sender: 'ai' 
+    }]);
+  };
+
+  const subjects = [
+    { name: 'কী শিখতে চাও?', icon: '🎓' },
+    { name: 'বিষয় নির্বাচন করুন', icon: '📚' },
+    { name: 'নোট দেখা', icon: '📝' },
+    { name: 'নোট আপলোড', icon: '📤' },
+    { name: 'খুঁজে দেখো', icon: '🔍' },
+    { name: 'কমিউনিটি', icon: '👥' }
+  ];
 
   const features = [
     {
@@ -202,6 +221,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Class Selection Section */}
+      <ClassSelection />
 
       {/* Features Grid */}
       <section className="py-16 px-4" aria-labelledby="features-heading">
@@ -389,14 +411,14 @@ const Index = () => {
         </div>
       </section>
 
-      {/* AI Chat Slide Panel */}
+      {/* Enhanced AI Chat Slide Panel */}
       {showAIChat && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
           <div className={`fixed right-0 top-0 h-full w-full md:w-96 bg-[#28282B] border-l border-white/10 transform transition-transform duration-300 ${showAIChat ? 'translate-x-0' : 'translate-x-full'}`}>
             <div className="flex items-center justify-between p-4 border-b border-white/10">
               <h3 className="text-white text-lg font-semibold flex items-center">
                 <MessageCircle className="mr-2 h-5 w-5 text-blue-400" />
-                AI শিক্ষক
+                কী শিখতে চাও?
               </h3>
               <AccessibleButton
                 variant="ghost"
@@ -409,12 +431,34 @@ const Index = () => {
               </AccessibleButton>
             </div>
             
+            <div className="p-4 border-b border-white/10">
+              <p className="text-gray-300 text-center mb-4">
+                প্রশ্ন করো বাংলায় অথবা ইংরেজিতে
+              </p>
+              
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                {subjects.map((subject, index) => (
+                  <AccessibleButton
+                    key={index}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleSubjectSelect(subject.name)}
+                    className="bg-black/30 border-white/20 text-white hover:bg-white/10 text-xs justify-start"
+                    ariaLabel={subject.name}
+                  >
+                    <span className="mr-2">{subject.icon}</span>
+                    {subject.name}
+                  </AccessibleButton>
+                ))}
+              </div>
+            </div>
+            
             <div className="flex flex-col h-full">
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {chatMessages.length === 0 ? (
                   <div className="text-center text-gray-400 mt-8">
                     <MessageCircle className="h-12 w-12 mx-auto mb-4 text-blue-400" />
-                    <p>আপনার প্রশ্ন করুন, আমি সাহায্য করতে এখানে আছি!</p>
+                    <p>উপরের বিষয়গুলো থেকে বেছে নিন অথবা সরাসরি প্রশ্ন করুন!</p>
                   </div>
                 ) : (
                   chatMessages.map((msg, index) => (
@@ -434,7 +478,7 @@ const Index = () => {
               <div className="p-4 border-t border-white/10">
                 <div className="flex gap-2">
                   <Input
-                    placeholder="আপনার প্রশ্ন লিখুন..."
+                    placeholder="তোমার প্রশ্ন লেখো..."
                     value={aiMessage}
                     onChange={(e) => setAiMessage(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && sendAIMessage()}
