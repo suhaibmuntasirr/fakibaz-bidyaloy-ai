@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -7,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, Upload, Filter, BookOpen, FileText, Download, Eye, Heart, Share2, User, Clock, MessageCircle, Star } from 'lucide-react';
+import { Search, Upload, Filter, BookOpen, FileText, Download, Eye, Heart, Share2, User, Clock } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import PDFUpload from '@/components/PDFUpload';
 import PDFViewer from '@/components/PDFViewer';
@@ -26,7 +25,6 @@ const Notes = () => {
   const [selectedSubject, setSelectedSubject] = useState(searchParams.get('subject') || '');
   const [selectedTag, setSelectedTag] = useState('');
   const [sortBy, setSortBy] = useState('latest');
-  const [likedNotes, setLikedNotes] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   const classes = [
@@ -118,30 +116,17 @@ const Notes = () => {
 
   const handleLike = async (noteId: string) => {
     try {
-      const wasLiked = likedNotes.has(noteId);
-      
-      if (wasLiked) {
-        setLikedNotes(prev => {
-          const newSet = new Set(prev);
-          newSet.delete(noteId);
-          return newSet;
-        });
-      } else {
-        setLikedNotes(prev => new Set(prev).add(noteId));
-      }
-
       await notesService.likeNote(noteId, 'currentUserId');
       setNotes(prevNotes => 
         prevNotes.map(note => 
           note.id === noteId 
-            ? { ...note, likes: wasLiked ? (note.likes || 0) - 1 : (note.likes || 0) + 1 }
+            ? { ...note, likes: (note.likes || 0) + 1 }
             : note
         )
       );
-      
       toast({
-        title: wasLiked ? "লাইক সরানো হয়েছে" : "লাইক করা হয়েছে",
-        description: wasLiked ? "নোটটি থেকে লাইক সরানো হয়েছে" : "নোটটি লাইক করা হয়েছে",
+        title: "লাইক করা হয়েছে",
+        description: "নোটটি লাইক করা হয়েছে",
       });
     } catch (error) {
       console.error('Error liking note:', error);
@@ -151,14 +136,6 @@ const Notes = () => {
         variant: "destructive"
       });
     }
-  };
-
-  const handleComment = (noteId: string) => {
-    console.log('Comment on note:', noteId);
-    toast({
-      title: "কমেন্ট",
-      description: "কমেন্ট সিস্টেম শীঘ্রই আসছে",
-    });
   };
 
   const handleShare = (note: Note) => {
@@ -177,21 +154,13 @@ const Notes = () => {
     }
   };
 
-  const handleRating = (noteId: string, rating: number) => {
-    console.log('Rating note:', noteId, 'with rating:', rating);
-    toast({
-      title: "রেটিং দেওয়া হয়েছে",
-      description: `নোটটিকে ${rating} স্টার দিয়েছেন`,
-    });
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+    <div className="min-h-screen bg-[#28282B]">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl font-bold text-white mb-4">
             📚 নোট শেয়ারিং হাব
           </h1>
           <p className="text-gray-300 text-lg">
@@ -200,7 +169,7 @@ const Notes = () => {
         </div>
 
         <Tabs defaultValue="browse" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-800/50 backdrop-blur-lg border border-gray-700/50">
+          <TabsList className="grid w-full grid-cols-2 bg-black/30 backdrop-blur-lg border border-white/10">
             <TabsTrigger value="browse" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600">
               <Search className="mr-2 h-4 w-4" />
               নোট ব্রাউজ করো
@@ -213,7 +182,7 @@ const Notes = () => {
 
           <TabsContent value="browse" className="space-y-6">
             {/* Search and Filter Section */}
-            <Card className="bg-gray-900/60 backdrop-blur-lg border border-gray-700/50">
+            <Card className="bg-black/20 backdrop-blur-lg border border-white/10">
               <CardHeader>
                 <CardTitle className="text-white flex items-center">
                   <Filter className="mr-2 h-5 w-5" />
@@ -226,17 +195,17 @@ const Notes = () => {
                     placeholder="নোট খুঁজুন..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400"
+                    className="bg-black/30 border-white/20 text-white placeholder:text-gray-400"
                   />
                   
                   <Select value={selectedClass} onValueChange={setSelectedClass}>
-                    <SelectTrigger className="bg-gray-800/50 border-gray-600/50 text-white">
+                    <SelectTrigger className="bg-black/30 border-white/20 text-white">
                       <SelectValue placeholder="ক্লাস নির্বাচন" />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-900 border-gray-700">
+                    <SelectContent className="bg-[#28282B] border-white/20">
                       <SelectItem value="all" className="text-white">সব ক্লাস</SelectItem>
                       {classes.map((cls) => (
-                        <SelectItem key={cls} value={cls} className="text-white hover:bg-gray-800">
+                        <SelectItem key={cls} value={cls} className="text-white hover:bg-white/10">
                           {cls}
                         </SelectItem>
                       ))}
@@ -244,13 +213,13 @@ const Notes = () => {
                   </Select>
 
                   <Select value={selectedSubject} onValueChange={setSelectedSubject}>
-                    <SelectTrigger className="bg-gray-800/50 border-gray-600/50 text-white">
+                    <SelectTrigger className="bg-black/30 border-white/20 text-white">
                       <SelectValue placeholder="বিষয় নির্বাচন" />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-900 border-gray-700">
+                    <SelectContent className="bg-[#28282B] border-white/20">
                       <SelectItem value="all" className="text-white">সব বিষয়</SelectItem>
                       {subjects.map((subject) => (
-                        <SelectItem key={subject} value={subject} className="text-white hover:bg-gray-800">
+                        <SelectItem key={subject} value={subject} className="text-white hover:bg-white/10">
                           {subject}
                         </SelectItem>
                       ))}
@@ -258,10 +227,10 @@ const Notes = () => {
                   </Select>
 
                   <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="bg-gray-800/50 border-gray-600/50 text-white">
+                    <SelectTrigger className="bg-black/30 border-white/20 text-white">
                       <SelectValue placeholder="সাজানো" />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-900 border-gray-700">
+                    <SelectContent className="bg-[#28282B] border-white/20">
                       <SelectItem value="latest" className="text-white">নতুন আগে</SelectItem>
                       <SelectItem value="popular" className="text-white">জনপ্রিয়</SelectItem>
                       <SelectItem value="alphabetical" className="text-white">A-Z</SelectItem>
@@ -274,7 +243,7 @@ const Notes = () => {
                     variant={selectedTag === '' ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => setSelectedTag('')}
-                    className="bg-gray-800/50 border-gray-600/50"
+                    className="bg-black/30 border-white/20"
                   >
                     সব ট্যাগ
                   </Button>
@@ -284,7 +253,7 @@ const Notes = () => {
                       variant={selectedTag === tag ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setSelectedTag(tag)}
-                      className="bg-gray-800/50 border-gray-600/50"
+                      className="bg-black/30 border-white/20"
                     >
                       {tag}
                     </Button>
@@ -313,7 +282,7 @@ const Notes = () => {
                 ))
               ) : filteredNotes.length > 0 ? (
                 filteredNotes.map((note) => (
-                  <Card key={note.id} className="bg-gray-900/60 backdrop-blur-lg border border-gray-700/50 hover:border-gray-600/70 transition-all duration-300 cursor-pointer group">
+                  <Card key={note.id} className="bg-black/20 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer group">
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
@@ -352,25 +321,6 @@ const Notes = () => {
                         </div>
                       </div>
 
-                      {/* Rating Display */}
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center space-x-1">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <Star
-                              key={star}
-                              className={`h-4 w-4 cursor-pointer transition-colors ${
-                                star <= (note.rating || 0) ? 'text-yellow-400 fill-current' : 'text-gray-600'
-                              }`}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleRating(note.id, star);
-                              }}
-                            />
-                          ))}
-                          <span className="text-gray-400 text-sm ml-2">({note.rating || 0})</span>
-                        </div>
-                      </div>
-
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
                           <button
@@ -378,29 +328,17 @@ const Notes = () => {
                               e.stopPropagation();
                               handleLike(note.id);
                             }}
-                            className={`flex items-center transition-colors ${
-                              likedNotes.has(note.id) ? 'text-red-400' : 'text-gray-400 hover:text-red-400'
-                            }`}
+                            className="flex items-center text-gray-400 hover:text-red-400 transition-colors"
                           >
-                            <Heart className={`h-4 w-4 mr-1 ${likedNotes.has(note.id) ? 'fill-current' : ''}`} />
+                            <Heart className="h-4 w-4 mr-1" />
                             {note.likes || 0}
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleComment(note.id);
-                            }}
-                            className="flex items-center text-gray-400 hover:text-blue-400 transition-colors"
-                          >
-                            <MessageCircle className="h-4 w-4 mr-1" />
-                            {note.comments || 0}
                           </button>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               handleShare(note);
                             }}
-                            className="flex items-center text-gray-400 hover:text-green-400 transition-colors"
+                            className="flex items-center text-gray-400 hover:text-blue-400 transition-colors"
                           >
                             <Share2 className="h-4 w-4" />
                           </button>
@@ -414,7 +352,7 @@ const Notes = () => {
                               e.stopPropagation();
                               handleNoteClick(note);
                             }}
-                            className="bg-gray-800/50 border-gray-600/50 text-white hover:bg-gray-700/50"
+                            className="bg-black/30 border-white/20 text-white hover:bg-white/10"
                           >
                             <Eye className="h-3 w-3 mr-1" />
                             দেখুন
@@ -426,7 +364,7 @@ const Notes = () => {
                               e.stopPropagation();
                               window.open(note.fileUrl, '_blank');
                             }}
-                            className="bg-gray-800/50 border-gray-600/50 text-white hover:bg-gray-700/50"
+                            className="bg-black/30 border-white/20 text-white hover:bg-white/10"
                           >
                             <Download className="h-3 w-3 mr-1" />
                             ডাউনলোড
@@ -447,7 +385,7 @@ const Notes = () => {
           </TabsContent>
 
           <TabsContent value="upload">
-            <Card className="bg-gray-900/60 backdrop-blur-lg border border-gray-700/50">
+            <Card className="bg-black/20 backdrop-blur-lg border border-white/10">
               <CardHeader>
                 <CardTitle className="text-white text-center">
                   📤 নতুন নোট শেয়ার করুন
@@ -480,7 +418,7 @@ const Notes = () => {
             onClose={() => setSelectedNote(null)}
             onLike={() => handleLike(selectedNote.id)}
             onDownload={() => window.open(selectedNote.fileUrl, '_blank')}
-            isLiked={likedNotes.has(selectedNote.id)}
+            isLiked={false}
           />
         )}
       </div>
