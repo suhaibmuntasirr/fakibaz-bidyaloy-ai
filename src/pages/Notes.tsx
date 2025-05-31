@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, Upload, Filter, BookOpen, FileText, Download, Eye, Heart, Share2, User, Clock } from 'lucide-react';
+import { Search, Upload, Filter, BookOpen, FileText, Download, Eye, Heart, Share2, User, Clock, MessageCircle } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import PDFUpload from '@/components/PDFUpload';
 import PDFViewer from '@/components/PDFViewer';
@@ -25,6 +25,10 @@ const Notes = () => {
   const [selectedSubject, setSelectedSubject] = useState(searchParams.get('subject') || '');
   const [selectedTag, setSelectedTag] = useState('');
   const [sortBy, setSortBy] = useState('latest');
+  const [likedNotes, setLikedNotes] = useState<string[]>([]);
+  const [comments, setComments] = useState<{[key: string]: string[]}>({});
+  const [newComment, setNewComment] = useState('');
+  const [activeCommentBox, setActiveCommentBox] = useState<string | null>(null);
   const { toast } = useToast();
 
   const classes = [
@@ -116,24 +120,54 @@ const Notes = () => {
 
   const handleLike = async (noteId: string) => {
     try {
-      await notesService.likeNote(noteId, 'currentUserId');
-      setNotes(prevNotes => 
-        prevNotes.map(note => 
-          note.id === noteId 
-            ? { ...note, likes: (note.likes || 0) + 1 }
-            : note
-        )
-      );
-      toast({
-        title: "লাইক করা হয়েছে",
-        description: "নোটটি লাইক করা হয়েছে",
-      });
+      if (likedNotes.includes(noteId)) {
+        setLikedNotes(likedNotes.filter(id => id !== noteId));
+        setNotes(prevNotes => 
+          prevNotes.map(note => 
+            note.id === noteId 
+              ? { ...note, likes: Math.max((note.likes || 0) - 1, 0) }
+              : note
+          )
+        );
+        toast({
+          title: "লাইক সরানো হয়েছে",
+          description: "নোট থেকে লাইক সরিয়ে দেওয়া হয়েছে",
+        });
+      } else {
+        setLikedNotes([...likedNotes, noteId]);
+        setNotes(prevNotes => 
+          prevNotes.map(note => 
+            note.id === noteId 
+              ? { ...note, likes: (note.likes || 0) + 1 }
+              : note
+          )
+        );
+        toast({
+          title: "লাইক করা হয়েছে",
+          description: "নোটটি লাইক করা হয়েছে",
+        });
+      }
     } catch (error) {
       console.error('Error liking note:', error);
       toast({
         title: "ত্রুটি",
         description: "লাইক করতে সমস্যা হয়েছে",
         variant: "destructive"
+      });
+    }
+  };
+
+  const handleComment = (noteId: string) => {
+    if (newComment.trim()) {
+      setComments(prev => ({
+        ...prev,
+        [noteId]: [...(prev[noteId] || []), newComment.trim()]
+      }));
+      setNewComment('');
+      setActiveCommentBox(null);
+      toast({
+        title: "মন্তব্য যোগ করা হয়েছে",
+        description: "আপনার মন্তব্য সফলভাবে যোগ করা হয়েছে",
       });
     }
   };
@@ -152,6 +186,14 @@ const Notes = () => {
         description: "নোটের লিংক ক্লিপবোর্ডে কপি করা হয়েছে",
       });
     }
+  };
+
+  const handleDownload = (note: Note) => {
+    window.open(note.fileUrl, '_blank');
+    toast({
+      title: "ডাউনলোড শুরু",
+      description: "নোট ডাউনলোড শুরু হয়েছে",
+    });
   };
 
   return (
@@ -321,55 +363,115 @@ const Notes = () => {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleLike(note.id);
-                            }}
-                            className="flex items-center text-gray-400 hover:text-red-400 transition-colors"
-                          >
-                            <Heart className="h-4 w-4 mr-1" />
-                            {note.likes || 0}
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleShare(note);
-                            }}
-                            className="flex items-center text-gray-400 hover:text-blue-400 transition-colors"
-                          >
-                            <Share2 className="h-4 w-4" />
-                          </button>
+                      {/* Enhanced Action Buttons */}
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleLike(note.id);
+                              }}
+                              className={`flex items-center transition-colors ${
+                                likedNotes.includes(note.id) 
+                                  ? 'text-red-400' 
+                                  : 'text-gray-400 hover:text-red-400'
+                              }`}
+                              aria-label={`${note.title} লাইক করুন`}
+                            >
+                              <Heart className={`h-4 w-4 mr-1 ${likedNotes.includes(note.id) ? 'fill-current' : ''}`} />
+                              {note.likes || 0}
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveCommentBox(activeCommentBox === note.id ? null : note.id);
+                              }}
+                              className="flex items-center text-gray-400 hover:text-blue-400 transition-colors"
+                              aria-label={`${note.title} এ মন্তব্য করুন`}
+                            >
+                              <MessageCircle className="h-4 w-4 mr-1" />
+                              {(comments[note.id] || []).length}
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleShare(note);
+                              }}
+                              className="flex items-center text-gray-400 hover:text-blue-400 transition-colors"
+                              aria-label={`${note.title} শেয়ার করুন`}
+                            >
+                              <Share2 className="h-4 w-4" />
+                            </button>
+                          </div>
+
+                          <div className="flex space-x-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedNote(note);
+                              }}
+                              className="bg-black/30 border-white/20 text-white hover:bg-white/10"
+                              aria-label={`${note.title} দেখুন`}
+                            >
+                              <Eye className="h-3 w-3 mr-1" />
+                              দেখুন
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDownload(note);
+                              }}
+                              className="bg-black/30 border-white/20 text-white hover:bg-white/10"
+                              aria-label={`${note.title} ডাউনলোড করুন`}
+                            >
+                              <Download className="h-3 w-3 mr-1" />
+                              ডাউনলোড
+                            </Button>
+                          </div>
                         </div>
 
-                        <div className="flex space-x-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleNoteClick(note);
-                            }}
-                            className="bg-black/30 border-white/20 text-white hover:bg-white/10"
-                          >
-                            <Eye className="h-3 w-3 mr-1" />
-                            দেখুন
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              window.open(note.fileUrl, '_blank');
-                            }}
-                            className="bg-black/30 border-white/20 text-white hover:bg-white/10"
-                          >
-                            <Download className="h-3 w-3 mr-1" />
-                            ডাউনলোড
-                          </Button>
-                        </div>
+                        {/* Comment Box */}
+                        {activeCommentBox === note.id && (
+                          <div className="mt-3 p-3 bg-black/30 rounded-lg border border-white/10">
+                            <div className="flex gap-2">
+                              <Input
+                                placeholder="মন্তব্য লিখুন..."
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                                className="bg-black/30 border-white/20 text-white placeholder:text-gray-400 text-sm"
+                                onKeyPress={(e) => {
+                                  if (e.key === 'Enter') {
+                                    handleComment(note.id);
+                                  }
+                                }}
+                                aria-label="মন্তব্য লিখুন"
+                              />
+                              <Button
+                                size="sm"
+                                onClick={() => handleComment(note.id)}
+                                className="bg-blue-600 hover:bg-blue-700"
+                                aria-label="মন্তব্য পোস্ট করুন"
+                              >
+                                পোস্ট
+                              </Button>
+                            </div>
+                            {/* Display Comments */}
+                            {comments[note.id] && comments[note.id].length > 0 && (
+                              <div className="mt-3 space-y-2">
+                                {comments[note.id].map((comment, index) => (
+                                  <div key={index} className="p-2 bg-black/20 rounded text-gray-300 text-sm">
+                                    {comment}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -417,8 +519,8 @@ const Notes = () => {
             type="note"
             onClose={() => setSelectedNote(null)}
             onLike={() => handleLike(selectedNote.id)}
-            onDownload={() => window.open(selectedNote.fileUrl, '_blank')}
-            isLiked={false}
+            onDownload={() => handleDownload(selectedNote)}
+            isLiked={likedNotes.includes(selectedNote.id)}
           />
         )}
       </div>
