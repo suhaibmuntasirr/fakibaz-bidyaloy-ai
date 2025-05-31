@@ -1,15 +1,15 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { MessageCircle, BookOpen, Users, Brain, Star, ArrowRight, Search, Play, Heart, Share2, Download, Eye } from 'lucide-react';
+import { MessageCircle, BookOpen, Users, Brain, Star, ArrowRight, Search, Play, Heart, Share2, Download, Eye, X, Send } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import TrendingTopics from '@/components/TrendingTopics';
 import CommunityStats from '@/components/CommunityStats';
 import StudyGroups from '@/components/StudyGroups';
+import AdBanner from '@/components/AdBanner';
 import AccessibleButton from '@/components/AccessibleButton';
 import { useToast } from '@/hooks/use-toast';
 
@@ -18,6 +18,9 @@ const Index = () => {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [likedItems, setLikedItems] = useState<string[]>([]);
+  const [showAIChat, setShowAIChat] = useState(false);
+  const [aiMessage, setAiMessage] = useState('');
+  const [chatMessages, setChatMessages] = useState<{text: string, sender: 'user' | 'ai'}[]>([]);
 
   const handleLike = (itemId: string) => {
     if (likedItems.includes(itemId)) {
@@ -40,6 +43,12 @@ const Index = () => {
       navigator.share({
         title: title,
         url: window.location.href
+      }).catch(() => {
+        navigator.clipboard.writeText(window.location.href);
+        toast({
+          title: "লিংক কপি করা হয়েছে",
+          description: "লিংক ক্লিপবোর্ডে কপি করা হয়েছে",
+        });
       });
     } else {
       navigator.clipboard.writeText(window.location.href);
@@ -56,6 +65,24 @@ const Index = () => {
     }
   };
 
+  const handleAIChat = () => {
+    setShowAIChat(true);
+  };
+
+  const sendAIMessage = () => {
+    if (aiMessage.trim()) {
+      setChatMessages(prev => [...prev, { text: aiMessage, sender: 'user' }]);
+      // Simulate AI response
+      setTimeout(() => {
+        setChatMessages(prev => [...prev, { 
+          text: `আপনার প্রশ্নের উত্তর: "${aiMessage}" - এই বিষয়ে আমি আপনাকে সাহায্য করতে পারি। আরো বিস্তারিত জানতে চাইলে প্রশ্ন করুন।`, 
+          sender: 'ai' 
+        }]);
+      }, 1000);
+      setAiMessage('');
+    }
+  };
+
   const features = [
     {
       id: '1',
@@ -64,7 +91,7 @@ const Index = () => {
       description: 'যেকোনো বিষয়ে প্রশ্ন করুন এবং তাৎক্ষণিক উত্তর পান',
       path: '/',
       gradient: 'from-blue-600 to-cyan-600',
-      action: () => navigate('/')
+      action: handleAIChat
     },
     {
       id: '2',
@@ -131,6 +158,13 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-[#28282B]">
       <Navbar />
+      
+      {/* Ad Banner */}
+      <AdBanner 
+        imageUrl="/lovable-uploads/394575bd-0e65-4fc0-8982-c7aeb2363127.png"
+        altText="শিক্ষামূলক বিজ্ঞাপন"
+        onClick={() => toast({ title: "বিজ্ঞাপন", description: "বিজ্ঞাপনে ক্লিক করা হয়েছে" })}
+      />
       
       {/* Hero Section */}
       <section className="relative py-20 px-4 overflow-hidden" role="banner">
@@ -199,33 +233,6 @@ const Index = () => {
                     </div>
                     <h3 className="text-xl font-semibold text-white mb-2">{feature.title}</h3>
                     <p className="text-gray-300 mb-4">{feature.description}</p>
-                    <div className="flex items-center justify-between">
-                      <AccessibleButton
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleLike(feature.id);
-                        }}
-                        className={`${likedItems.includes(feature.id) ? 'text-red-400' : 'text-gray-400'} hover:text-red-400`}
-                        ariaLabel={`${feature.title} লাইক করুন`}
-                      >
-                        <Heart className={`h-4 w-4 mr-1 ${likedItems.includes(feature.id) ? 'fill-current' : ''}`} />
-                        {likedItems.includes(feature.id) ? 'লাইক করা' : 'লাইক'}
-                      </AccessibleButton>
-                      <AccessibleButton
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleShare(feature.title);
-                        }}
-                        className="text-gray-400 hover:text-blue-400"
-                        ariaLabel={`${feature.title} শেয়ার করুন`}
-                      >
-                        <Share2 className="h-4 w-4" />
-                      </AccessibleButton>
-                    </div>
                   </CardContent>
                 </Card>
               );
@@ -381,6 +388,72 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* AI Chat Slide Panel */}
+      {showAIChat && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
+          <div className={`fixed right-0 top-0 h-full w-full md:w-96 bg-[#28282B] border-l border-white/10 transform transition-transform duration-300 ${showAIChat ? 'translate-x-0' : 'translate-x-full'}`}>
+            <div className="flex items-center justify-between p-4 border-b border-white/10">
+              <h3 className="text-white text-lg font-semibold flex items-center">
+                <MessageCircle className="mr-2 h-5 w-5 text-blue-400" />
+                AI শিক্ষক
+              </h3>
+              <AccessibleButton
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowAIChat(false)}
+                className="text-white hover:bg-white/10"
+                ariaLabel="চ্যাট বন্ধ করুন"
+              >
+                <X className="h-5 w-5" />
+              </AccessibleButton>
+            </div>
+            
+            <div className="flex flex-col h-full">
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {chatMessages.length === 0 ? (
+                  <div className="text-center text-gray-400 mt-8">
+                    <MessageCircle className="h-12 w-12 mx-auto mb-4 text-blue-400" />
+                    <p>আপনার প্রশ্ন করুন, আমি সাহায্য করতে এখানে আছি!</p>
+                  </div>
+                ) : (
+                  chatMessages.map((msg, index) => (
+                    <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-xs p-3 rounded-lg ${
+                        msg.sender === 'user' 
+                          ? 'bg-blue-600 text-white' 
+                          : 'bg-gray-700 text-white'
+                      }`}>
+                        {msg.text}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+              
+              <div className="p-4 border-t border-white/10">
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="আপনার প্রশ্ন লিখুন..."
+                    value={aiMessage}
+                    onChange={(e) => setAiMessage(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && sendAIMessage()}
+                    className="bg-black/30 border-white/20 text-white placeholder:text-gray-400"
+                    aria-label="প্রশ্ন লিখুন"
+                  />
+                  <AccessibleButton
+                    onClick={sendAIMessage}
+                    className="bg-blue-600 hover:bg-blue-700"
+                    ariaLabel="প্রশ্ন পাঠান"
+                  >
+                    <Send className="h-4 w-4" />
+                  </AccessibleButton>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

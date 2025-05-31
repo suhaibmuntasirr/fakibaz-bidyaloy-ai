@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -203,7 +204,7 @@ const Notes = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">
-            📚 নোট শেয়ারিং হাব
+            নোট শেয়ারিং হাব
           </h1>
           <p className="text-gray-300 text-lg">
             সারা দেশের ছাত্রছাত্রীদের নোট এক জায়গায় - শেখো এবং শেখাও
@@ -285,7 +286,7 @@ const Notes = () => {
                     variant={selectedTag === '' ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => setSelectedTag('')}
-                    className="bg-black/30 border-white/20"
+                    className="bg-white/10 border-white/20 text-white hover:bg-white/20"
                   >
                     সব ট্যাগ
                   </Button>
@@ -295,7 +296,7 @@ const Notes = () => {
                       variant={selectedTag === tag ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setSelectedTag(tag)}
-                      className="bg-black/30 border-white/20"
+                      className="bg-white/10 border-white/20 text-white hover:bg-white/20"
                     >
                       {tag}
                     </Button>
@@ -324,7 +325,7 @@ const Notes = () => {
                 ))
               ) : filteredNotes.length > 0 ? (
                 filteredNotes.map((note) => (
-                  <Card key={note.id} className="bg-black/20 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer group">
+                  <Card key={note.id} className="bg-gradient-to-br from-black/30 to-gray-900/30 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer group">
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
