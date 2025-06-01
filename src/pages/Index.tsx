@@ -3,9 +3,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen, Users, Brain, Download, Star, TrendingUp, Award, MessageSquare } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { BookOpen, Users, Brain, Download, Star, TrendingUp, Award, MessageSquare, Search } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import AIAssistant from '@/components/AIAssistant';
+import AdBanner from '@/components/AdBanner';
 
 const Index = () => {
   const features = [
@@ -40,19 +42,38 @@ const Index = () => {
     <div className="min-h-screen bg-[#28282B]">
       <Navbar />
       
-      {/* Hero Section */}
+      {/* Ad Banner */}
+      <AdBanner 
+        imageUrl="/lovable-uploads/86534693-a004-4787-8ce6-8be9d4ed7603.png"
+        altText="প্রমোশনাল অ্যাড"
+        onClick={() => window.open('/subscription', '_blank')}
+      />
+      
+      {/* Hero Section with Search */}
       <section className="relative py-20 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-cyan-600/20"></div>
         <div className="container mx-auto text-center relative z-10">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-            স্বাগতম 
-            <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent">
-              {" "}শিক্ষার্থী বন্ধুরা
-            </span>
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+            ফাকিবাজ বিদ্যালয়
           </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            আপনার পড়াশোনার সম্পূর্ণ সমাধান এক জায়গায়। নোট, প্রশ্ন ব্যাংক, এবং সহপাঠীদের সাথে যোগাযোগ।
+          <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+            AI শিক্ষক, নোট শেয়ারিং, প্রশ্ন ব্যাংক এবং কমিউনিটি - সবকিছু এক জায়গায়
           </p>
+          
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto mb-8">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Input
+                placeholder="কী খুঁজছেন? (যেমন: পদার্থবিজ্ঞান নোট, গণিত প্রশ্ন)"
+                className="pl-12 pr-20 py-4 text-lg bg-black/30 border-white/20 text-white placeholder:text-gray-400 rounded-xl"
+              />
+              <Button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg">
+                <Search className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 text-lg">
               <Link to="/notes">
@@ -120,7 +141,38 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Subscription CTA Section */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto text-center">
+          <Card className="bg-gradient-to-r from-green-600/20 to-teal-600/20 backdrop-blur-lg border border-white/10 p-8 max-w-4xl mx-auto">
+            <CardHeader>
+              <CardTitle className="text-4xl font-bold text-white mb-4">
+                আজই শুরু করুন আপনার শেখার যাত্রা
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xl text-gray-300 mb-8">
+                লাখো ছাত্রছাত্রীর সাথে যুক্ত হয়ে আপনার স্বপ্নের লক্ষ্য অর্জন করুন
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button asChild size="lg" className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white px-8 py-3 text-lg">
+                  <Link to="/subscription">
+                    বিনামূল্যে যোগ দিন
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="lg" className="border-white/20 text-white hover:bg-white/10 px-8 py-3 text-lg">
+                  <Link to="/subscription">
+                    <Star className="mr-2 h-5 w-5" />
+                    প্রিমিয়াম প্ল্যান
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Final CTA Section */}
       <section className="py-20 px-4">
         <div className="container mx-auto text-center">
           <Card className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-lg border border-white/10 p-8">

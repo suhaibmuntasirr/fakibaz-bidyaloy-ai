@@ -1,14 +1,16 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Download, Search, BookOpen, Calendar, User, Filter, Star } from 'lucide-react';
+import { Download, Search, BookOpen, Calendar, User, Filter, Star, Upload, Grid, List } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import ClassSelection from '@/components/ClassSelection';
 import PDFViewer from '@/components/PDFViewer';
 import AIAssistant from '@/components/AIAssistant';
+import AdBanner from '@/components/AdBanner';
 import { useToast } from '@/hooks/use-toast';
 import { notesService } from '@/services/notesService';
 import { Note } from '@/types/common';
@@ -21,6 +23,8 @@ const Notes = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [viewingNote, setViewingNote] = useState<Note | null>(null);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [sortBy, setSortBy] = useState<string>('newest');
   const { toast } = useToast();
 
   const subjects = [
@@ -43,6 +47,31 @@ const Notes = () => {
     'সংস্কৃত'
   ];
 
+  const classes = [
+    'সব ক্লাস',
+    'Class 1',
+    'Class 2', 
+    'Class 3',
+    'Class 4',
+    'Class 5',
+    'Class 6',
+    'Class 7',
+    'Class 8',
+    'Class 9',
+    'Class 10',
+    'Class 11',
+    'Class 12'
+  ];
+
+  const noteTypes = [
+    'সব ধরণ',
+    'Chapter Summary',
+    'Question Bank',
+    'Formula Sheet',
+    'Practice Problems',
+    'Exam Tips'
+  ];
+
   const gradientColors = [
     'from-blue-500 to-cyan-600',
     'from-purple-500 to-pink-600', 
@@ -60,7 +89,7 @@ const Notes = () => {
 
   useEffect(() => {
     filterNotes();
-  }, [notes, selectedClass, selectedSubject, searchQuery]);
+  }, [notes, selectedClass, selectedSubject, searchQuery, sortBy]);
 
   const fetchNotes = async () => {
     try {
@@ -97,6 +126,21 @@ const Notes = () => {
         note.chapter.toLowerCase().includes(searchQuery.toLowerCase()) ||
         note.author.toLowerCase().includes(searchQuery.toLowerCase())
       );
+    }
+
+    // Sort notes
+    switch (sortBy) {
+      case 'popular':
+        filtered.sort((a, b) => b.likes - a.likes);
+        break;
+      case 'downloads':
+        filtered.sort((a, b) => b.downloads - a.downloads);
+        break;
+      case 'rating':
+        filtered.sort((a, b) => b.rating - a.rating);
+        break;
+      default:
+        filtered.sort((a, b) => b.uploadDate.getTime() - a.uploadDate.getTime());
     }
 
     setFilteredNotes(filtered);
@@ -167,36 +211,68 @@ const Notes = () => {
     <div className="min-h-screen bg-[#28282B]">
       <Navbar />
       
+      {/* Ad Banner */}
+      <AdBanner 
+        imageUrl="/lovable-uploads/86534693-a004-4787-8ce6-8be9d4ed7603.png"
+        altText="প্রমোশনাল অ্যাড"
+        onClick={() => window.open('/subscription', '_blank')}
+      />
+
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">
-            📚 ডিজিটাল নোট সংগ্রহ
-          </h1>
-          <p className="text-gray-300 text-lg">
-            সব ক্লাসের পাঠ্যবইয়ের নোট এক জায়গায় - ডাউনলোড করুন এবং পড়াশোনা করুন
-          </p>
+        {/* Main Search and Upload Section */}
+        <div className="mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-3 h-5 w-5 text-white" />
+              <Input
+                placeholder="নোট ব্রাউজ করো"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-12 py-3 bg-gradient-to-r from-blue-600 to-purple-600 border-0 text-white placeholder:text-white/80 text-lg rounded-xl"
+              />
+            </div>
+            
+            {/* Upload */}
+            <Button className="bg-black/30 border border-white/20 text-white hover:bg-white/10 py-3 rounded-xl">
+              <Upload className="mr-2 h-5 w-5" />
+              নোট আপলোড করো
+            </Button>
+          </div>
         </div>
 
-        {/* Class Selection */}
-        <ClassSelection />
-
-        {/* Filters */}
+        {/* Filter Section */}
         <Card className="bg-black/20 backdrop-blur-lg border border-white/10 mb-8">
           <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="নোট খুঁজুন..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-black/30 border-white/20 text-white placeholder:text-gray-400"
-                />
-              </div>
+            <div className="flex items-center mb-4">
+              <Filter className="mr-2 h-5 w-5 text-white" />
+              <h3 className="text-white text-lg font-semibold">খুঁজে দেখো</h3>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+              <Input
+                placeholder="নোট খুঁজো..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-black/30 border-white/20 text-white placeholder:text-gray-400"
+              />
               
+              <Select value={selectedClass} onValueChange={setSelectedClass}>
+                <SelectTrigger className="bg-black/30 border-white/20 text-white">
+                  <SelectValue placeholder="ক্লাস নির্বাচন" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#28282B] border-white/20">
+                  {classes.map((cls) => (
+                    <SelectItem key={cls} value={cls} className="text-white hover:bg-white/10">
+                      {cls}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
               <Select value={selectedSubject} onValueChange={setSelectedSubject}>
                 <SelectTrigger className="bg-black/30 border-white/20 text-white">
-                  <SelectValue placeholder="বিষয় নির্বাচন করুন" />
+                  <SelectValue placeholder="বিষয় নির্বাচন" />
                 </SelectTrigger>
                 <SelectContent className="bg-[#28282B] border-white/20">
                   {subjects.map((subject) => (
@@ -207,21 +283,65 @@ const Notes = () => {
                 </SelectContent>
               </Select>
 
-              <Button 
-                variant="outline" 
-                className="bg-black/30 border-white/20 text-white hover:bg-white/10"
-                onClick={() => {
-                  setSelectedClass('');
-                  setSelectedSubject('');
-                  setSearchQuery('');
-                }}
-              >
-                <Filter className="mr-2 h-4 w-4" />
-                রিসেট করুন
-              </Button>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="bg-black/30 border-white/20 text-white">
+                  <SelectValue placeholder="সাজান আগে" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#28282B] border-white/20">
+                  <SelectItem value="newest" className="text-white hover:bg-white/10">নতুন আগে</SelectItem>
+                  <SelectItem value="popular" className="text-white hover:bg-white/10">জনপ্রিয়</SelectItem>
+                  <SelectItem value="downloads" className="text-white hover:bg-white/10">বেশি ডাউনলোড</SelectItem>
+                  <SelectItem value="rating" className="text-white hover:bg-white/10">রেটিং</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
+
+            {/* Note Type Tags */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              {noteTypes.map((type) => (
+                <Button
+                  key={type}
+                  variant="outline"
+                  size="sm"
+                  className="bg-black/30 border-white/20 text-white hover:bg-white/10"
+                >
+                  {type}
+                </Button>
+              ))}
+            </div>
+
+            {/* Search Button */}
+            <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 py-3 rounded-xl">
+              <Search className="mr-2 h-5 w-5" />
+              খুঁজুন
+            </Button>
           </CardContent>
-        </Card>
+        </View>
+
+        {/* View Mode Toggle */}
+        <div className="flex justify-between items-center mb-6">
+          <p className="text-gray-300">
+            {filteredNotes.length} টি নোট পাওয়া গেছে
+          </p>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant={viewMode === 'grid' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('grid')}
+              className="bg-black/30 border-white/20 text-white hover:bg-white/10"
+            >
+              <Grid className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('list')}
+              className="bg-black/30 border-white/20 text-white hover:bg-white/10"
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
 
         {/* Notes Grid */}
         {loading ? (
@@ -230,7 +350,7 @@ const Notes = () => {
             <p className="text-white mt-4">নোট লোড হচ্ছে...</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"}>
             {filteredNotes.map((note, index) => {
               const colorClass = gradientColors[index % gradientColors.length];
               return (
