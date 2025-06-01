@@ -19,7 +19,7 @@ import { useAuth } from '@/contexts/AuthContext';
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { currentUser, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
@@ -31,7 +31,7 @@ const Navbar = () => {
 
   const handleSignOut = async () => {
     try {
-      await signOut();
+      await logout();
       navigate('/');
     } catch (error) {
       console.error('Sign out error:', error);
@@ -90,12 +90,12 @@ const Navbar = () => {
             </Button>
 
             {/* User Menu */}
-            {user ? (
+            {currentUser ? (
               <div className="flex items-center space-x-3">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={user.photoURL || ''} />
+                  <AvatarImage src={currentUser.photoURL || ''} />
                   <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-sm">
-                    {user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}
+                    {currentUser.displayName?.charAt(0) || currentUser.email?.charAt(0) || 'U'}
                   </AvatarFallback>
                 </Avatar>
                 <div className="hidden md:flex items-center space-x-2">
@@ -157,7 +157,7 @@ const Navbar = () => {
               
               {/* Mobile Auth Buttons */}
               <div className="pt-4 border-t border-white/10">
-                {user ? (
+                {currentUser ? (
                   <div className="space-y-2">
                     <Button variant="ghost" size="sm" className="w-full justify-start" onClick={() => navigate('/settings')}>
                       <Settings className="h-4 w-4 mr-2" />
