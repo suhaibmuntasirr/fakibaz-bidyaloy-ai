@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MessageCircle, Heart, Share2, Users, Plus, Search, Clock, HelpCircle, Lightbulb, Target, UserPlus, Video, ExternalLink } from 'lucide-react';
+import { MessageCircle, Heart, Share2, Users, Plus, Search, Clock, HelpCircle, Lightbulb, Target } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import TrendingTopics from '@/components/TrendingTopics';
 import CommunityStats from '@/components/CommunityStats';
@@ -158,23 +158,6 @@ const Community = () => {
           </p>
         </div>
 
-        {/* Community Dashboard */}
-        <section className="py-8 mb-12" aria-labelledby="community-heading">
-          <div className="container mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-              <div className="lg:col-span-1">
-                <CommunityStats />
-              </div>
-              <div className="lg:col-span-1">
-                <TrendingTopics />
-              </div>
-              <div className="lg:col-span-1">
-                <StudyGroups />
-              </div>
-            </div>
-          </div>
-        </section>
-
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
@@ -320,38 +303,16 @@ const Community = () => {
                   </CardContent>
                 </Card>
 
-                {/* Enhanced Study Groups Component */}
+                {/* Study Groups Component */}
                 <StudyGroups />
               </TabsContent>
             </Tabs>
           </div>
 
-          {/* Sidebar */}
+          {/* Right Sidebar */}
           <div className="space-y-6">
-            {/* Quick Stats */}
-            <Card className="bg-gradient-to-br from-black/40 to-cyan-900/30 backdrop-blur-lg border border-white/10">
-              <CardHeader>
-                <CardTitle className="text-white">কমিউনিটি পরিসংখ্যান</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-300">মোট সদস্য</span>
-                  <span className="text-cyan-300 font-bold">৫,২৩৪</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-300">আজকের পোস্ট</span>
-                  <span className="text-cyan-300 font-bold">১২৮</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-300">সক্রিয় গ্রুপ</span>
-                  <span className="text-cyan-300 font-bold">৪৫</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-300">সমাধানকৃত প্রশ্ন</span>
-                  <span className="text-cyan-300 font-bold">২,৮৯৭</span>
-                </div>
-              </CardContent>
-            </Card>
+            <CommunityStats />
+            <TrendingTopics />
           </div>
         </div>
       </div>

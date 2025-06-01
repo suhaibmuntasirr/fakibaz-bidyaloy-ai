@@ -51,9 +51,6 @@ const Navbar = () => {
             <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
               <BookOpen className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-              ফাকিবাজ বিদ্যালয়
-            </span>
           </Link>
 
           {/* Desktop Navigation */}
