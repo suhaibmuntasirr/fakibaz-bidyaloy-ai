@@ -12,21 +12,7 @@ import PDFViewer from '@/components/PDFViewer';
 import AIAssistant from '@/components/AIAssistant';
 import { useToast } from '@/hooks/use-toast';
 import { notesService } from '@/services/notesService';
-
-interface Note {
-  id: string;
-  title: string;
-  subject: string;
-  class: string;
-  chapter: string;
-  author: string;
-  uploadDate: string;
-  downloadCount: number;
-  rating: number;
-  fileUrl: string;
-  description?: string;
-  tags: string[];
-}
+import { Note } from '@/types/common';
 
 const Notes = () => {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -80,7 +66,7 @@ const Notes = () => {
   const fetchNotes = async () => {
     try {
       setLoading(true);
-      const fetchedNotes = await notesService.getNotes();
+      const fetchedNotes = notesService.getAllNotes();
       setNotes(fetchedNotes);
     } catch (error) {
       console.error('Error fetching notes:', error);
@@ -119,13 +105,13 @@ const Notes = () => {
 
   const handleDownload = async (note: Note) => {
     try {
-      await notesService.downloadNote(note.id);
+      notesService.downloadNote(note.id);
       
       // Update download count locally
       setNotes(prevNotes => 
         prevNotes.map(n => 
           n.id === note.id 
-            ? { ...n, downloadCount: n.downloadCount + 1 }
+            ? { ...n, downloads: n.downloads + 1 }
             : n
         )
       );
@@ -144,12 +130,38 @@ const Notes = () => {
     }
   };
 
-  const handleClassSelect = (className: string) => {
-    setSelectedClass(className);
+  const handleLike = (note: Note) => {
+    // Assuming current user ID, in real app this would come from auth context
+    const userId = 'current-user-id';
+    const isLiked = notesService.likeNote(note.id, userId);
+    
+    // Update local state
+    setNotes(prevNotes => 
+      prevNotes.map(n => 
+        n.id === note.id 
+          ? { 
+              ...n, 
+              likes: isLiked ? n.likes + 1 : n.likes - 1,
+              likedBy: isLiked 
+                ? [...n.likedBy, userId]
+                : n.likedBy.filter(id => id !== userId)
+            }
+          : n
+      )
+    );
   };
 
   if (viewingNote) {
-    return <PDFViewer note={viewingNote} onClose={() => setViewingNote(null)} />;
+    return (
+      <PDFViewer 
+        item={viewingNote} 
+        type="note"
+        onClose={() => setViewingNote(null)}
+        onLike={() => handleLike(viewingNote)}
+        onDownload={() => handleDownload(viewingNote)}
+        isLiked={viewingNote.likedBy?.includes('current-user-id') || false}
+      />
+    );
   }
 
   return (
@@ -167,7 +179,7 @@ const Notes = () => {
         </div>
 
         {/* Class Selection */}
-        <ClassSelection onClassSelect={handleClassSelect} />
+        <ClassSelection />
 
         {/* Filters */}
         <Card className="bg-black/20 backdrop-blur-lg border border-white/10 mb-8">
