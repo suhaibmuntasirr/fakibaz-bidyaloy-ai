@@ -1,38 +1,40 @@
 
 import React, { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Users, MessageCircle, User, HelpCircle, LogOut, Menu, X } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { 
+  BookOpen, 
+  Users, 
+  Brain, 
+  Settings, 
+  Bell,
+  Menu,
+  X,
+  Home
+} from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import AccessibleButton from '@/components/AccessibleButton';
 
 const Navbar = () => {
-  const navigate = useNavigate();
   const location = useLocation();
-  const { currentUser, userProfile, logout } = useAuth();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { name: 'AI শিক্ষক', path: '/', icon: MessageCircle },
-    { name: 'নোট শেয়ার', path: '/notes', icon: BookOpen },
-    { name: 'প্রশ্ন ব্যাংক', path: '/questionbank', icon: HelpCircle },
-    { name: 'কমিউনিটি', path: '/community', icon: Users },
+    { name: 'Home', href: '/', icon: Home },
+    { name: 'নোট', href: '/notes', icon: BookOpen },
+    { name: 'প্রশ্ন ব্যাংক', href: '/questionbank', icon: Brain },
+    { name: 'কমিউনিটি', href: '/community', icon: Users },
   ];
 
-  const handleLogout = async () => {
+  const handleSignOut = async () => {
     try {
-      await logout();
-      navigate('/auth');
+      await signOut();
+      navigate('/');
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('Sign out error:', error);
     }
   };
 
@@ -41,172 +43,139 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-[#28282B]/90 backdrop-blur-lg border-b border-white/10 sticky top-0 z-50" role="navigation" aria-label="প্রধান নেভিগেশন">
+    <nav className="bg-[#28282B]/95 backdrop-blur-md border-b border-white/10 sticky top-0 z-40">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div 
-            className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent cursor-pointer hover:scale-105 transition-transform"
-            onClick={() => navigate('/')}
-            role="button"
-            tabIndex={0}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                navigate('/');
-              }
-            }}
-            aria-label="ফাকিবাজ হোমপেজে যান"
-          >
-            ফাকিবাজ
-          </div>
+          <Link to="/" className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <BookOpen className="h-5 w-5 text-white" />
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+              ফাকিবাজ বিদ্যালয়
+            </span>
+          </Link>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <AccessibleButton
-              variant="ghost"
-              size="icon"
-              onClick={toggleMobileMenu}
-              className="text-white hover:bg-white/10"
-              ariaLabel={isMobileMenuOpen ? "মেনু বন্ধ করুন" : "মেনু খুলুন"}
-            >
-              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </AccessibleButton>
-          </div>
-
-          {/* Desktop Navigation Items */}
-          <div className="hidden md:flex items-center space-x-6">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = location.pathname === item.path;
+              const isActive = location.pathname === item.href;
+              
               return (
-                <AccessibleButton
-                  key={item.path}
-                  variant="ghost"
-                  className={`text-white hover:text-blue-400 hover:bg-white/10 transition-all rounded-xl ${
-                    isActive ? 'text-blue-400 bg-white/10' : ''
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`flex items-center space-x-1 px-3 py-2 rounded-lg transition-all duration-200 ${
+                    isActive
+                      ? 'text-blue-400 bg-blue-500/10'
+                      : 'text-gray-300 hover:text-white hover:bg-white/5'
                   }`}
-                  onClick={() => navigate(item.path)}
-                  ariaLabel={`${item.name} পেজে যান`}
                 >
-                  <Icon className="mr-2 h-4 w-4" aria-hidden="true" />
-                  {item.name}
-                </AccessibleButton>
+                  <Icon className="h-4 w-4" />
+                  <span>{item.name}</span>
+                </Link>
               );
             })}
           </div>
 
-          {/* Desktop User Actions */}
-          <div className="hidden md:flex items-center space-x-3">
-            {currentUser ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <AccessibleButton 
-                    variant="outline"
-                    className="bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl"
-                    ariaLabel="ব্যবহারকারী মেনু"
-                  >
-                    <User className="mr-2 h-4 w-4" aria-hidden="true" />
-                    {userProfile?.fullName || currentUser.email}
-                  </AccessibleButton>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-[#28282B] border-white/20 text-white rounded-xl" align="end">
-                  <DropdownMenuLabel>আমার অ্যাকাউন্ট</DropdownMenuLabel>
-                  <DropdownMenuSeparator className="bg-white/20" />
-                  <DropdownMenuItem className="hover:bg-white/10 rounded-lg focus:bg-white/10">
-                    <User className="mr-2 h-4 w-4" aria-hidden="true" />
-                    প্রোফাইল
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-white/20" />
-                  <DropdownMenuItem 
-                    className="hover:bg-white/10 text-red-400 rounded-lg focus:bg-white/10"
-                    onClick={handleLogout}
-                  >
-                    <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
-                    লগআউট
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+          {/* Right Side */}
+          <div className="flex items-center space-x-4">
+            {/* Notifications */}
+            <Button variant="ghost" size="icon" className="text-gray-300 hover:text-white">
+              <Bell className="h-5 w-5" />
+              <Badge variant="destructive" className="absolute -top-1 -right-1 w-4 h-4 p-0 text-xs">
+                3
+              </Badge>
+            </Button>
+
+            {/* User Menu */}
+            {user ? (
+              <div className="flex items-center space-x-3">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={user.photoURL || ''} />
+                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-sm">
+                    {user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="hidden md:flex items-center space-x-2">
+                  <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                    সাইন আউট
+                  </Button>
+                </div>
+              </div>
             ) : (
-              <AccessibleButton 
-                variant="outline"
-                className="bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl"
-                onClick={() => navigate('/auth')}
-                ariaLabel="লগইন করুন"
-              >
-                <User className="mr-2 h-4 w-4" aria-hidden="true" />
-                লগইন
-              </AccessibleButton>
+              <div className="hidden md:flex items-center space-x-2">
+                <Button variant="ghost" size="sm" onClick={() => navigate('/auth')}>
+                  লগইন
+                </Button>
+                <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                  সাইন আপ
+                </Button>
+              </div>
             )}
+
+            {/* Mobile Menu Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden text-gray-300"
+              onClick={toggleMobileMenu}
+            >
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
           </div>
         </div>
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-white/10" role="menu">
-            <div className="space-y-2">
+          <div className="md:hidden border-t border-white/10 py-4">
+            <div className="flex flex-col space-y-3">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const isActive = location.pathname === item.path;
+                const isActive = location.pathname === item.href;
+                
                 return (
-                  <AccessibleButton
-                    key={item.path}
-                    variant="ghost"
-                    className={`w-full justify-start text-white hover:text-blue-400 hover:bg-white/10 transition-all rounded-xl ${
-                      isActive ? 'text-blue-400 bg-white/10' : ''
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                      isActive
+                        ? 'text-blue-400 bg-blue-500/10'
+                        : 'text-gray-300 hover:text-white hover:bg-white/5'
                     }`}
-                    onClick={() => {
-                      navigate(item.path);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    ariaLabel={`${item.name} পেজে যান`}
-                    role="menuitem"
+                    onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <Icon className="mr-2 h-4 w-4" aria-hidden="true" />
-                    {item.name}
-                  </AccessibleButton>
+                    <Icon className="h-4 w-4" />
+                    <span>{item.name}</span>
+                  </Link>
                 );
               })}
               
-              <div className="pt-4 border-t border-white/10 mt-4">
-                {currentUser ? (
+              {/* Mobile Auth Buttons */}
+              <div className="pt-4 border-t border-white/10">
+                {user ? (
                   <div className="space-y-2">
-                    <div className="px-3 py-2 text-gray-300 text-sm">
-                      {userProfile?.fullName || currentUser.email}
-                    </div>
-                    <AccessibleButton
-                      variant="ghost"
-                      className="w-full justify-start text-white hover:bg-white/10 rounded-xl"
-                      ariaLabel="প্রোফাইল"
-                      role="menuitem"
-                    >
-                      <User className="mr-2 h-4 w-4" aria-hidden="true" />
-                      প্রোফাইল
-                    </AccessibleButton>
-                    <AccessibleButton
-                      variant="ghost"
-                      className="w-full justify-start text-red-400 hover:bg-white/10 rounded-xl"
-                      onClick={handleLogout}
-                      ariaLabel="লগআউট"
-                      role="menuitem"
-                    >
-                      <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
-                      লগআউট
-                    </AccessibleButton>
+                    <Button variant="ghost" size="sm" className="w-full justify-start" onClick={() => navigate('/settings')}>
+                      <Settings className="h-4 w-4 mr-2" />
+                      সেটিংস
+                    </Button>
+                    <Button variant="ghost" size="sm" className="w-full justify-start" onClick={handleSignOut}>
+                      সাইন আউট
+                    </Button>
                   </div>
                 ) : (
-                  <AccessibleButton 
-                    variant="outline"
-                    className="w-full bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl"
-                    onClick={() => {
-                      navigate('/auth');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    ariaLabel="লগইন করুন"
-                    role="menuitem"
-                  >
-                    <User className="mr-2 h-4 w-4" aria-hidden="true" />
-                    লগইন
-                  </AccessibleButton>
+                  <div className="space-y-2">
+                    <Button variant="ghost" size="sm" className="w-full justify-start" onClick={() => navigate('/auth')}>
+                      লগইন
+                    </Button>
+                    <Button size="sm" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                      সাইন আপ
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>

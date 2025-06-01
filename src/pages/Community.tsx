@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,6 +8,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MessageCircle, Heart, Share2, Users, Plus, Search, TrendingUp, Clock, User, BookOpen, HelpCircle, Lightbulb, Target } from 'lucide-react';
 import Navbar from '@/components/Navbar';
+import TrendingTopics from '@/components/TrendingTopics';
+import CommunityStats from '@/components/CommunityStats';
+import StudyGroups from '@/components/StudyGroups';
 import { useToast } from '@/hooks/use-toast';
 
 interface Post {
@@ -215,6 +217,26 @@ const Community = () => {
           </p>
         </div>
 
+        {/* Community Dashboard */}
+        <section className="py-8 mb-12" aria-labelledby="community-heading">
+          <div className="container mx-auto">
+            <h2 id="community-heading" className="text-3xl font-bold text-center text-white mb-12">
+              কমিউনিটি ড্যাশবোর্ড
+            </h2>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+              <div className="lg:col-span-1">
+                <CommunityStats />
+              </div>
+              <div className="lg:col-span-1">
+                <TrendingTopics />
+              </div>
+              <div className="lg:col-span-1">
+                <StudyGroups />
+              </div>
+            </div>
+          </div>
+        </section>
+
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
@@ -415,26 +437,6 @@ const Community = () => {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Trending Topics */}
-            <Card className="bg-gradient-to-br from-black/40 to-orange-900/30 backdrop-blur-lg border border-white/10">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <TrendingUp className="mr-2 h-5 w-5" />
-                  ট্রেন্ডিং বিষয়
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {['SSC ২০২৫ প্রস্তুতি', 'গণিত অলিম্পিয়াড', 'ইংরেজি গ্রামার', 'বিজ্ঞান প্রজেক্ট', 'পরীক্ষার টিপস'].map((topic, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 bg-black/30 rounded-lg">
-                    <span className="text-gray-200 text-sm">{topic}</span>
-                    <Badge variant="secondary" className="bg-orange-900/50 text-orange-300">
-                      #{index + 1}
-                    </Badge>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
             {/* Quick Stats */}
             <Card className="bg-gradient-to-br from-black/40 to-cyan-900/30 backdrop-blur-lg border border-white/10">
               <CardHeader>

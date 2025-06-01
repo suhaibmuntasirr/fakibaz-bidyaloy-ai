@@ -1,14 +1,11 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { MessageCircle, BookOpen, Users, Brain, Star, ArrowRight, Search, Play, Heart, Share2, Download, Eye, X, Send, GraduationCap } from 'lucide-react';
+import { MessageCircle, BookOpen, Users, Brain, Star, ArrowRight, Search, X, Send, MessageSquare } from 'lucide-react';
 import Navbar from '@/components/Navbar';
-import TrendingTopics from '@/components/TrendingTopics';
-import CommunityStats from '@/components/CommunityStats';
-import StudyGroups from '@/components/StudyGroups';
 import AdBanner from '@/components/AdBanner';
 import ClassSelection from '@/components/ClassSelection';
 import AccessibleButton from '@/components/AccessibleButton';
@@ -18,48 +15,10 @@ const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
-  const [likedItems, setLikedItems] = useState<string[]>([]);
   const [showAIChat, setShowAIChat] = useState(false);
   const [aiMessage, setAiMessage] = useState('');
   const [chatMessages, setChatMessages] = useState<{text: string, sender: 'user' | 'ai'}[]>([]);
   const [selectedSubject, setSelectedSubject] = useState<string>('');
-
-  const handleLike = (itemId: string) => {
-    if (likedItems.includes(itemId)) {
-      setLikedItems(likedItems.filter(id => id !== itemId));
-      toast({
-        title: "লাইক সরানো হয়েছে",
-        description: "আইটেম থেকে লাইক সরিয়ে দেওয়া হয়েছে",
-      });
-    } else {
-      setLikedItems([...likedItems, itemId]);
-      toast({
-        title: "লাইক করা হয়েছে",
-        description: "আইটেমটি লাইক করা হয়েছে",
-      });
-    }
-  };
-
-  const handleShare = (title: string) => {
-    if (navigator.share) {
-      navigator.share({
-        title: title,
-        url: window.location.href
-      }).catch(() => {
-        navigator.clipboard.writeText(window.location.href);
-        toast({
-          title: "লিংক কপি করা হয়েছে",
-          description: "লিংক ক্লিপবোর্ডে কপি করা হয়েছে",
-        });
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      toast({
-        title: "লিংক কপি করা হয়েছে",
-        description: "লিংক ক্লিপবোর্ডে কপি করা হয়েছে",
-      });
-    }
-  };
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -138,39 +97,6 @@ const Index = () => {
       path: '/community',
       gradient: 'from-orange-600 to-red-600',
       action: () => navigate('/community')
-    }
-  ];
-
-  const featuredContent = [
-    {
-      id: 'content-1',
-      type: 'video',
-      title: 'পদার্থবিজ্ঞান: নিউটনের প্রথম সূত্র',
-      subject: 'পদার্থবিজ্ঞান',
-      class: 'Class 11',
-      views: 1250,
-      likes: 89,
-      author: 'প্রফেসর রহমান'
-    },
-    {
-      id: 'content-2',
-      type: 'note',
-      title: 'গণিত: ক্যালকুলাস সূত্রাবলী',
-      subject: 'গণিত',
-      class: 'Class 12',
-      views: 892,
-      likes: 67,
-      author: 'মিস খান'
-    },
-    {
-      id: 'content-3',
-      type: 'question',
-      title: 'রসায়ন: জৈব যৌগের বৈশিষ্ট্য',
-      subject: 'রসায়ন',
-      class: 'Class 10',
-      views: 654,
-      likes: 45,
-      author: 'ড. আহমেদ'
     }
   ];
 
@@ -263,121 +189,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Featured Content */}
-      <section className="py-16 px-4 bg-black/10" aria-labelledby="featured-heading">
-        <div className="container mx-auto">
-          <h2 id="featured-heading" className="text-3xl font-bold text-center text-white mb-12">
-            জনপ্রিয় কন্টেন্ট
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {featuredContent.map((content, index) => (
-              <Card 
-                key={content.id}
-                className="bg-black/20 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer animate-fade-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
-                role="article"
-                aria-label={content.title}
-              >
-                <CardHeader className="pb-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <Badge 
-                      variant="outline" 
-                      className="text-blue-300 border-blue-600/30"
-                    >
-                      {content.type === 'video' ? '🎥 ভিডিও' : content.type === 'note' ? '📝 নোট' : '❓ প্রশ্ন'}
-                    </Badge>
-                    <div className="flex items-center space-x-2">
-                      <AccessibleButton
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleLike(content.id)}
-                        className={`${likedItems.includes(content.id) ? 'text-red-400' : 'text-gray-400'} hover:text-red-400`}
-                        ariaLabel={`${content.title} লাইক করুন`}
-                      >
-                        <Heart className={`h-3 w-3 ${likedItems.includes(content.id) ? 'fill-current' : ''}`} />
-                      </AccessibleButton>
-                      <AccessibleButton
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleShare(content.title)}
-                        className="text-gray-400 hover:text-blue-400"
-                        ariaLabel={`${content.title} শেয়ার করুন`}
-                      >
-                        <Share2 className="h-3 w-3" />
-                      </AccessibleButton>
-                    </div>
-                  </div>
-                  <CardTitle className="text-white text-lg leading-tight">{content.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    <Badge variant="outline" className="text-green-300 border-green-600/30 text-xs">
-                      {content.class}
-                    </Badge>
-                    <Badge variant="outline" className="text-purple-300 border-purple-600/30 text-xs">
-                      {content.subject}
-                    </Badge>
-                  </div>
-                  
-                  <div className="flex items-center justify-between text-sm text-gray-400 mb-4">
-                    <span>👨‍🏫 {content.author}</span>
-                    <div className="flex items-center space-x-3">
-                      <span className="flex items-center">
-                        <Eye className="h-3 w-3 mr-1" />
-                        {content.views}
-                      </span>
-                      <span className="flex items-center">
-                        <Heart className="h-3 w-3 mr-1" />
-                        {content.likes}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex space-x-2">
-                    <AccessibleButton 
-                      size="sm" 
-                      className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                      ariaLabel={`${content.title} দেখুন`}
-                    >
-                      {content.type === 'video' ? <Play className="h-3 w-3 mr-1" /> : <Eye className="h-3 w-3 mr-1" />}
-                      দেখুন
-                    </AccessibleButton>
-                    <AccessibleButton 
-                      size="sm" 
-                      variant="outline"
-                      className="bg-black/30 border-white/20 text-white hover:bg-white/10"
-                      ariaLabel={`${content.title} ডাউনলোড করুন`}
-                    >
-                      <Download className="h-3 w-3" />
-                    </AccessibleButton>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Community Dashboard */}
-      <section className="py-16 px-4" aria-labelledby="community-heading">
-        <div className="container mx-auto">
-          <h2 id="community-heading" className="text-3xl font-bold text-center text-white mb-12">
-            কমিউনিটি ড্যাশবোর্ড
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-1">
-              <CommunityStats />
-            </div>
-            <div className="lg:col-span-1">
-              <TrendingTopics />
-            </div>
-            <div className="lg:col-span-1">
-              <StudyGroups />
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20 px-4 bg-gradient-to-r from-blue-900/20 to-purple-900/20" role="region" aria-labelledby="cta-heading">
         <div className="container mx-auto text-center">
@@ -411,6 +222,17 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Floating AI Assistant Button */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <AccessibleButton
+          onClick={handleAIChat}
+          className="w-14 h-14 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group"
+          ariaLabel="AI শিক্ষক চ্যাট"
+        >
+          <MessageSquare className="h-6 w-6 text-white group-hover:scale-110 transition-transform" />
+        </AccessibleButton>
+      </div>
+
       {/* Enhanced AI Chat Slide Panel */}
       {showAIChat && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
@@ -418,7 +240,7 @@ const Index = () => {
             <div className="flex items-center justify-between p-4 border-b border-white/10">
               <h3 className="text-white text-lg font-semibold flex items-center">
                 <MessageCircle className="mr-2 h-5 w-5 text-blue-400" />
-                কী শিখতে চাও?
+                AI শিক্ষক
               </h3>
               <AccessibleButton
                 variant="ghost"
