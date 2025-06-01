@@ -9,7 +9,7 @@ import Navbar from '@/components/Navbar';
 import ClassSelection from '@/components/ClassSelection';
 import PDFViewer from '@/components/PDFViewer';
 import AIAssistant from '@/components/AIAssistant';
-import AdBanner from '@/components/AdBanner';
+import PDFUpload from '@/components/PDFUpload';
 import { useToast } from '@/hooks/use-toast';
 import { notesService } from '@/services/notesService';
 import { Note } from '@/types/common';
@@ -24,6 +24,7 @@ const Notes = () => {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState<string>('newest');
+  const [showUpload, setShowUpload] = useState(false);
   const { toast } = useToast();
 
   const subjects = [
@@ -193,6 +194,15 @@ const Notes = () => {
     );
   };
 
+  const handleUploadSuccess = (uploadedNote: Note) => {
+    setNotes(prevNotes => [uploadedNote, ...prevNotes]);
+    setShowUpload(false);
+    toast({
+      title: "সফল!",
+      description: "নোট সফলভাবে আপলোড হয়েছে",
+    });
+  };
+
   if (viewingNote) {
     return (
       <PDFViewer 
@@ -206,16 +216,25 @@ const Notes = () => {
     );
   }
 
+  if (showUpload) {
+    return (
+      <div className="min-h-screen bg-[#28282B]">
+        <Navbar />
+        <div className="container mx-auto px-4 py-8">
+          <PDFUpload
+            type="note"
+            onSuccess={handleUploadSuccess}
+            onCancel={() => setShowUpload(false)}
+          />
+        </div>
+        <AIAssistant />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#28282B]">
       <Navbar />
-      
-      {/* Ad Banner */}
-      <AdBanner 
-        imageUrl="/lovable-uploads/86534693-a004-4787-8ce6-8be9d4ed7603.png"
-        altText="প্রমোশনাল অ্যাড"
-        onClick={() => window.open('/subscription', '_blank')}
-      />
 
       <div className="container mx-auto px-4 py-8">
         {/* Main Search and Upload Section */}
@@ -233,7 +252,10 @@ const Notes = () => {
             </div>
             
             {/* Upload */}
-            <Button className="bg-black/30 border border-white/20 text-white hover:bg-white/10 py-3 rounded-xl">
+            <Button 
+              onClick={() => setShowUpload(true)}
+              className="bg-black/30 border border-white/20 text-white hover:bg-white/10 py-3 rounded-xl"
+            >
               <Upload className="mr-2 h-5 w-5" />
               নোট আপলোড করো
             </Button>

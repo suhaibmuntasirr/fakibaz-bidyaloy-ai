@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { BookOpen, Users, Brain, Download, Star, TrendingUp, Award, MessageSquare, Search } from 'lucide-react';
+import { BookOpen, Users, Brain, Download, Star, TrendingUp, Award, MessageSquare, Search, HelpCircle } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import AIAssistant from '@/components/AIAssistant';
 import AdBanner from '@/components/AdBanner';
@@ -42,7 +42,7 @@ const Index = () => {
     <div className="min-h-screen bg-[#28282B]">
       <Navbar />
       
-      {/* Ad Banner */}
+      {/* Ad Banner - Only on home screen */}
       <AdBanner 
         imageUrl="/lovable-uploads/86534693-a004-4787-8ce6-8be9d4ed7603.png"
         altText="প্রমোশনাল অ্যাড"
@@ -82,9 +82,9 @@ const Index = () => {
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="border-white/20 text-white hover:bg-white/10 px-8 py-3 text-lg">
-              <Link to="/community">
-                <Users className="mr-2 h-5 w-5" />
-                কমিউনিটিতে যোগ দিন
+              <Link to="/questionbank">
+                <HelpCircle className="mr-2 h-5 w-5" />
+                প্রশ্ন দেখুন
               </Link>
             </Button>
           </div>
@@ -141,57 +141,33 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Subscription CTA Section */}
+      {/* CTA Section with theme from attachment */}
       <section className="py-20 px-4">
         <div className="container mx-auto text-center">
-          <Card className="bg-gradient-to-r from-green-600/20 to-teal-600/20 backdrop-blur-lg border border-white/10 p-8 max-w-4xl mx-auto">
-            <CardHeader>
-              <CardTitle className="text-4xl font-bold text-white mb-4">
+          <div className="relative bg-gradient-to-br from-slate-800 via-slate-700 to-slate-600 backdrop-blur-lg border border-white/10 rounded-3xl p-12 max-w-4xl mx-auto">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-cyan-600/10 rounded-3xl"></div>
+            <div className="relative z-10">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
                 আজই শুরু করুন আপনার শেখার যাত্রা
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xl text-gray-300 mb-8">
+              </h2>
+              <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
                 লাখো ছাত্রছাত্রীর সাথে যুক্ত হয়ে আপনার স্বপ্নের লক্ষ্য অর্জন করুন
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button asChild size="lg" className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white px-8 py-3 text-lg">
-                  <Link to="/subscription">
+                <Button asChild size="lg" className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-8 py-3 text-lg font-semibold rounded-xl">
+                  <Link to="/auth">
                     বিনামূল্যে যোগ দিন
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="border-white/20 text-white hover:bg-white/10 px-8 py-3 text-lg">
+                <Button asChild variant="outline" size="lg" className="border-white/30 bg-black/20 text-white hover:bg-white/10 px-8 py-3 text-lg rounded-xl">
                   <Link to="/subscription">
                     <Star className="mr-2 h-5 w-5" />
                     প্রিমিয়াম প্ল্যান
                   </Link>
                 </Button>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Final CTA Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto text-center">
-          <Card className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-lg border border-white/10 p-8">
-            <CardHeader>
-              <CardTitle className="text-4xl font-bold text-white mb-4">
-                আজই শুরু করুন
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xl text-gray-300 mb-8">
-                হাজারো ছাত্রছাত্রীর সাথে যুক্ত হোন এবং আপনার পড়াশোনায় এগিয়ে থাকুন
-              </p>
-              <Button asChild size="lg" className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white px-8 py-3 text-lg">
-                <Link to="/auth">
-                  একাউন্ট তৈরি করুন
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </section>
 
