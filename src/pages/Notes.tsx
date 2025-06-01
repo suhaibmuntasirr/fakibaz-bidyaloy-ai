@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -316,7 +315,7 @@ const Notes = () => {
               খুঁজুন
             </Button>
           </CardContent>
-        </View>
+        </Card>
 
         {/* View Mode Toggle */}
         <div className="flex justify-between items-center mb-6">
