@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Users, Clock, BookOpen, Plus, UserPlus, MessageCircle, Calendar, Video } from 'lucide-react';
+import { Users, Clock, BookOpen, Plus, UserPlus, MessageCircle, Calendar, Video, ExternalLink } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const StudyGroups = () => {
@@ -13,6 +13,7 @@ const StudyGroups = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [newGroupName, setNewGroupName] = useState('');
   const [newGroupSubject, setNewGroupSubject] = useState('');
+  const [newGroupMeetingLink, setNewGroupMeetingLink] = useState('');
   const [studyGroups, setStudyGroups] = useState([
     {
       id: 1,
@@ -102,6 +103,16 @@ const StudyGroups = () => {
     });
   };
 
+  const generateMeetLink = () => {
+    const meetCode = Math.random().toString(36).substring(2, 15);
+    const meetLink = `https://meet.google.com/${meetCode}`;
+    setNewGroupMeetingLink(meetLink);
+    toast({
+      title: "Google Meet লিংক তৈরি হয়েছে",
+      description: "নতুন মিটিং লিংক তৈরি করা হয়েছে",
+    });
+  };
+
   const handleCreateGroup = () => {
     if (newGroupName.trim() && newGroupSubject.trim()) {
       const newGroup = {
@@ -113,13 +124,14 @@ const StudyGroups = () => {
         maxMembers: 30,
         nextSession: 'আজ রাত ৯ PM',
         description: 'নতুন স্টাডি গ্রুপ',
-        meetingLink: 'https://meet.google.com/new-group',
+        meetingLink: newGroupMeetingLink || 'https://meet.google.com/new-group',
         isLive: false
       };
       setStudyGroups([...studyGroups, newGroup]);
       setJoinedGroups([...joinedGroups, newGroup.id]);
       setNewGroupName('');
       setNewGroupSubject('');
+      setNewGroupMeetingLink('');
       setShowCreateDialog(false);
       toast({
         title: "নতুন গ্রুপ তৈরি হয়েছে",
@@ -163,6 +175,37 @@ const StudyGroups = () => {
                   onChange={(e) => setNewGroupSubject(e.target.value)}
                   className="bg-black/30 border-white/20 text-white placeholder:text-gray-400"
                 />
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="মিটিং লিংক (ঐচ্ছিক)"
+                      value={newGroupMeetingLink}
+                      onChange={(e) => setNewGroupMeetingLink(e.target.value)}
+                      className="bg-black/30 border-white/20 text-white placeholder:text-gray-400 flex-1"
+                    />
+                    <Button 
+                      onClick={generateMeetLink}
+                      variant="outline"
+                      className="bg-black/30 border-white/20 text-white hover:bg-white/10"
+                    >
+                      <Video className="mr-1 h-4 w-4" />
+                      Meet তৈরি করুন
+                    </Button>
+                  </div>
+                  {newGroupMeetingLink && (
+                    <div className="flex items-center gap-2 p-2 bg-black/20 rounded border border-white/10">
+                      <span className="text-sm text-gray-300 flex-1 truncate">{newGroupMeetingLink}</span>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => window.open(newGroupMeetingLink, '_blank')}
+                        className="text-blue-400 hover:text-blue-300"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
                 <Button 
                   onClick={handleCreateGroup}
                   className="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700"

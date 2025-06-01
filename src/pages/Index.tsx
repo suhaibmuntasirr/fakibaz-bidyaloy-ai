@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { MessageCircle, BookOpen, Users, Brain, Star, ArrowRight, Search, X, Send, MessageSquare } from 'lucide-react';
+import { MessageCircle, BookOpen, Users, Brain, Star, ArrowRight, Search, X, Send, MessageSquare, Paperclip, Mic } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import AdBanner from '@/components/AdBanner';
 import ClassSelection from '@/components/ClassSelection';
@@ -17,8 +17,9 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showAIChat, setShowAIChat] = useState(false);
   const [aiMessage, setAiMessage] = useState('');
-  const [chatMessages, setChatMessages] = useState<{text: string, sender: 'user' | 'ai'}[]>([]);
+  const [chatMessages, setChatMessages] = useState<{text: string, sender: 'user' | 'ai', timestamp: Date}[]>([]);
   const [selectedSubject, setSelectedSubject] = useState<string>('');
+  const [isRecording, setIsRecording] = useState(false);
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -32,13 +33,17 @@ const Index = () => {
 
   const sendAIMessage = () => {
     if (aiMessage.trim()) {
-      setChatMessages(prev => [...prev, { text: aiMessage, sender: 'user' }]);
+      const userMessage = { text: aiMessage, sender: 'user' as const, timestamp: new Date() };
+      setChatMessages(prev => [...prev, userMessage]);
+      
       // Simulate AI response
       setTimeout(() => {
-        setChatMessages(prev => [...prev, { 
+        const aiResponse = { 
           text: `আপনার প্রশ্নের উত্তর: "${aiMessage}" - এই বিষয়ে আমি আপনাকে সাহায্য করতে পারি। আরো বিস্তারিত জানতে চাইলে প্রশ্ন করুন।`, 
-          sender: 'ai' 
-        }]);
+          sender: 'ai' as const,
+          timestamp: new Date()
+        };
+        setChatMessages(prev => [...prev, aiResponse]);
       }, 1000);
       setAiMessage('');
     }
@@ -46,10 +51,20 @@ const Index = () => {
 
   const handleSubjectSelect = (subject: string) => {
     setSelectedSubject(subject);
-    setChatMessages(prev => [...prev, { 
+    const aiResponse = { 
       text: `${subject} বিষয়ে আপনার প্রশ্ন করুন। আমি সাহায্য করতে প্রস্তুত!`, 
-      sender: 'ai' 
-    }]);
+      sender: 'ai' as const,
+      timestamp: new Date()
+    };
+    setChatMessages(prev => [...prev, aiResponse]);
+  };
+
+  const handleVoiceRecord = () => {
+    setIsRecording(!isRecording);
+    toast({
+      title: isRecording ? "রেকর্ডিং বন্ধ" : "রেকর্ডিং শুরু",
+      description: isRecording ? "ভয়েস রেকর্ডিং বন্ধ করা হয়েছে" : "ভয়েস রেকর্ডিং শুরু হয়েছে",
+    });
   };
 
   const subjects = [
@@ -290,7 +305,10 @@ const Index = () => {
                           ? 'bg-blue-600 text-white' 
                           : 'bg-gray-700 text-white'
                       }`}>
-                        {msg.text}
+                        <p>{msg.text}</p>
+                        <span className="text-xs opacity-70">
+                          {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
                       </div>
                     </div>
                   ))
@@ -298,13 +316,13 @@ const Index = () => {
               </div>
               
               <div className="p-4 border-t border-white/10">
-                <div className="flex gap-2">
+                <div className="flex gap-2 mb-2">
                   <Input
                     placeholder="তোমার প্রশ্ন লেখো..."
                     value={aiMessage}
                     onChange={(e) => setAiMessage(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && sendAIMessage()}
-                    className="bg-black/30 border-white/20 text-white placeholder:text-gray-400"
+                    className="bg-black/30 border-white/20 text-white placeholder:text-gray-400 flex-1"
                     aria-label="প্রশ্ন লিখুন"
                   />
                   <AccessibleButton
@@ -313,6 +331,29 @@ const Index = () => {
                     ariaLabel="প্রশ্ন পাঠান"
                   >
                     <Send className="h-4 w-4" />
+                  </AccessibleButton>
+                </div>
+                <div className="flex gap-2">
+                  <AccessibleButton
+                    variant="outline"
+                    size="sm"
+                    className="bg-black/30 border-white/20 text-white hover:bg-white/10 flex-1"
+                    ariaLabel="ফাইল সংযুক্ত করুন"
+                  >
+                    <Paperclip className="h-4 w-4 mr-1" />
+                    ফাইল
+                  </AccessibleButton>
+                  <AccessibleButton
+                    variant="outline"
+                    size="sm"
+                    onClick={handleVoiceRecord}
+                    className={`border-white/20 hover:bg-white/10 flex-1 ${
+                      isRecording ? 'bg-red-600 text-white' : 'bg-black/30 text-white'
+                    }`}
+                    ariaLabel={isRecording ? "রেকর্ডিং বন্ধ করুন" : "ভয়েস রেকর্ড করুন"}
+                  >
+                    <Mic className="h-4 w-4 mr-1" />
+                    {isRecording ? 'বন্ধ' : 'ভয়েস'}
                   </AccessibleButton>
                 </div>
               </div>

@@ -82,7 +82,7 @@ const Navbar = () => {
           {/* Right Side */}
           <div className="flex items-center space-x-4">
             {/* Notifications */}
-            <Button variant="ghost" size="icon" className="text-gray-300 hover:text-white">
+            <Button variant="ghost" size="icon" className="text-gray-300 hover:text-white relative">
               <Bell className="h-5 w-5" />
               <Badge variant="destructive" className="absolute -top-1 -right-1 w-4 h-4 p-0 text-xs">
                 3
@@ -102,7 +102,12 @@ const Navbar = () => {
                   <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                     <Settings className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleSignOut}
+                    className="bg-red-600/20 border-red-600/50 text-red-300 hover:bg-red-600/30 hover:border-red-600"
+                  >
                     সাইন আউট
                   </Button>
                 </div>
@@ -163,7 +168,12 @@ const Navbar = () => {
                       <Settings className="h-4 w-4 mr-2" />
                       সেটিংস
                     </Button>
-                    <Button variant="ghost" size="sm" className="w-full justify-start" onClick={handleSignOut}>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full justify-start bg-red-600/20 border-red-600/50 text-red-300 hover:bg-red-600/30" 
+                      onClick={handleSignOut}
+                    >
                       সাইন আউট
                     </Button>
                   </div>

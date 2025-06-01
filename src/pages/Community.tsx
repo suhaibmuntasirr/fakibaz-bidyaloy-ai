@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MessageCircle, Heart, Share2, Users, Plus, Search, TrendingUp, Clock, User, BookOpen, HelpCircle, Lightbulb, Target } from 'lucide-react';
+import { MessageCircle, Heart, Share2, Users, Plus, Search, Clock, HelpCircle, Lightbulb, Target, UserPlus, Video, ExternalLink } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import TrendingTopics from '@/components/TrendingTopics';
 import CommunityStats from '@/components/CommunityStats';
@@ -29,20 +30,8 @@ interface Post {
   type: 'question' | 'discussion' | 'study-tip' | 'achievement';
 }
 
-interface StudyGroup {
-  id: string;
-  name: string;
-  description: string;
-  subject: string;
-  class: string;
-  members: number;
-  isJoined: boolean;
-  lastActivity: Date;
-}
-
 const Community = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [studyGroups, setStudyGroups] = useState<StudyGroup[]>([]);
   const [newPost, setNewPost] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -96,39 +85,6 @@ const Community = () => {
         type: 'achievement'
       }
     ]);
-
-    setStudyGroups([
-      {
-        id: '1',
-        name: 'SSC গণিত মাস্টার্স',
-        description: 'SSC গণিতের সব অধ্যায় নিয়ে আলোচনা এবং প্র্যাকটিস',
-        subject: 'গণিত',
-        class: 'Class 9-10',
-        members: 150,
-        isJoined: false,
-        lastActivity: new Date(Date.now() - 1 * 60 * 60 * 1000)
-      },
-      {
-        id: '2',
-        name: 'ইংরেজি গ্রামার গুরুরা',
-        description: 'ইংরেজি গ্রামার এবং রাইটিং স্কিল উন্নতির জন্য',
-        subject: 'ইংরেজি',
-        class: 'Class 6-12',
-        members: 200,
-        isJoined: true,
-        lastActivity: new Date(Date.now() - 30 * 60 * 1000)
-      },
-      {
-        id: '3',
-        name: 'HSC পদার্থবিজ্ঞান চ্যালেঞ্জ',
-        description: 'কঠিন পদার্থবিজ্ঞানের সমস্যা সমাধান এবং আলোচনা',
-        subject: 'পদার্থবিজ্ঞান',
-        class: 'Class 11-12',
-        members: 89,
-        isJoined: false,
-        lastActivity: new Date(Date.now() - 2 * 60 * 60 * 1000)
-      }
-    ]);
   }, []);
 
   const handleCreatePost = () => {
@@ -175,21 +131,6 @@ const Community = () => {
     );
   };
 
-  const handleJoinGroup = (groupId: string) => {
-    setStudyGroups(prevGroups =>
-      prevGroups.map(group =>
-        group.id === groupId
-          ? { ...group, isJoined: !group.isJoined, members: group.isJoined ? group.members - 1 : group.members + 1 }
-          : group
-      )
-    );
-
-    toast({
-      title: "গ্রুপে যোগদান",
-      description: "আপনি সফলভাবে গ্রুপে যোগদান করেছেন",
-    });
-  };
-
   const getPostIcon = (type: Post['type']) => {
     switch (type) {
       case 'question':
@@ -210,7 +151,7 @@ const Community = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">
-            🤝 ছাত্রছাত্রী কমিউনিটি
+            ছাত্রছাত্রী কমিউনিটি
           </h1>
           <p className="text-gray-300 text-lg">
             সারাদেশের ছাত্রছাত্রীদের সাথে যুক্ত হোন - প্রশ্ন করুন, সাহায্য করুন, একসাথে শিখুন
@@ -220,9 +161,6 @@ const Community = () => {
         {/* Community Dashboard */}
         <section className="py-8 mb-12" aria-labelledby="community-heading">
           <div className="container mx-auto">
-            <h2 id="community-heading" className="text-3xl font-bold text-center text-white mb-12">
-              কমিউনিটি ড্যাশবোর্ড
-            </h2>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
               <div className="lg:col-span-1">
                 <CommunityStats />
@@ -382,55 +320,8 @@ const Community = () => {
                   </CardContent>
                 </Card>
 
-                {/* Study Groups List */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {studyGroups.map((group) => (
-                    <Card key={group.id} className={`bg-gradient-to-br ${
-                      group.id === '1' ? 'from-black/40 to-blue-900/30' :
-                      group.id === '2' ? 'from-black/40 to-green-900/30' :
-                      'from-black/40 to-purple-900/30'
-                    } backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all duration-300`}>
-                      <CardHeader>
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="text-white text-lg">{group.name}</CardTitle>
-                          <Badge variant="outline" className="text-gray-300 border-gray-600">
-                            {group.subject}
-                          </Badge>
-                        </div>
-                        <p className="text-gray-300 text-sm">{group.description}</p>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between text-sm text-gray-400">
-                          <div className="flex items-center">
-                            <Users className="h-4 w-4 mr-1" />
-                            {group.members} সদস্য
-                          </div>
-                          <div className="flex items-center">
-                            <BookOpen className="h-4 w-4 mr-1" />
-                            {group.class}
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center justify-between">
-                          <div className="text-xs text-gray-500">
-                            শেষ কার্যকলাপ: {Math.floor((Date.now() - group.lastActivity.getTime()) / (1000 * 60))}m ago
-                          </div>
-                          <Button
-                            size="sm"
-                            variant={group.isJoined ? 'outline' : 'default'}
-                            onClick={() => handleJoinGroup(group.id)}
-                            className={group.isJoined 
-                              ? "bg-black/30 border-white/20 text-white hover:bg-red-600" 
-                              : "bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700"
-                            }
-                          >
-                            {group.isJoined ? 'ছেড়ে দিন' : 'যোগ দিন'}
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                {/* Enhanced Study Groups Component */}
+                <StudyGroups />
               </TabsContent>
             </Tabs>
           </div>
