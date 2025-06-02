@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,9 +17,10 @@ import { useAuth } from '@/contexts/AuthContext';
 interface PDFUploadProps {
   type: 'note' | 'question';
   onUploadSuccess: () => void;
+  onCancel: () => void;
 }
 
-const PDFUpload = ({ type, onUploadSuccess }: PDFUploadProps) => {
+const PDFUpload = ({ type, onUploadSuccess, onCancel }: PDFUploadProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -285,6 +285,18 @@ const PDFUpload = ({ type, onUploadSuccess }: PDFUploadProps) => {
 
   return (
     <div className="max-w-4xl mx-auto">
+      {/* Cancel Button */}
+      <div className="mb-4">
+        <Button
+          onClick={onCancel}
+          variant="outline"
+          className="bg-black/30 border-white/20 text-white hover:bg-white/10"
+        >
+          <X className="mr-2 h-4 w-4" />
+          ফিরে যান
+        </Button>
+      </div>
+
       <Card className="bg-black/20 backdrop-blur-lg border border-white/10">
         <CardHeader className="text-center pb-6">
           <div className="flex items-center justify-center mb-4">
