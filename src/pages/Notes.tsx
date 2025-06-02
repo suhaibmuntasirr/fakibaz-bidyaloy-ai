@@ -194,8 +194,8 @@ const Notes = () => {
     );
   };
 
-  const handleUploadSuccess = (uploadedNote: Note) => {
-    setNotes(prevNotes => [uploadedNote, ...prevNotes]);
+  const handleUploadSuccess = () => {
+    fetchNotes(); // Refresh the notes list
     setShowUpload(false);
     toast({
       title: "সফল!",
@@ -223,9 +223,15 @@ const Notes = () => {
         <div className="container mx-auto px-4 py-8">
           <PDFUpload
             type="note"
-            onSuccess={handleUploadSuccess}
-            onCancel={() => setShowUpload(false)}
+            onUploadSuccess={handleUploadSuccess}
           />
+          <Button 
+            onClick={() => setShowUpload(false)}
+            variant="outline"
+            className="mt-4 bg-black/30 border-white/20 text-white hover:bg-white/10"
+          >
+            বাতিল করুন
+          </Button>
         </div>
         <AIAssistant />
       </div>
