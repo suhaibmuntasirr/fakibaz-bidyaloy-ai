@@ -1,9 +1,10 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { LogIn, LogOut, Menu, X, BookOpen, FileText, Users, Crown, Bell, ChevronDown, Settings } from 'lucide-react';
+import { LogIn, LogOut, Menu, X, BookOpen, FileText, Users, Crown, Bell, ChevronDown, Settings as SettingsIcon } from 'lucide-react';
 import NotificationPanel from '@/components/NotificationPanel';
 import Settings from '@/components/Settings';
 
@@ -17,6 +18,26 @@ const Navbar = () => {
 
   const hasUnreadNotifications = true;
 
+  // Mock notifications data
+  const mockNotifications = [
+    {
+      id: '1',
+      title: 'নতুন নোট',
+      message: 'গণিত বিষয়ে নতুন নোট আপলোড হয়েছে',
+      type: 'note' as const,
+      timestamp: new Date(),
+      read: false
+    },
+    {
+      id: '2',
+      title: 'কমিউনিটি আপডেট',
+      message: 'নতুন আলোচনায় যোগ দিন',
+      type: 'community' as const,
+      timestamp: new Date(),
+      read: true
+    }
+  ];
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -24,6 +45,21 @@ const Navbar = () => {
     } catch (error) {
       console.error("Logout failed:", error);
     }
+  };
+
+  const handleMarkAsRead = (id: string) => {
+    // Handle mark as read logic
+    console.log('Mark as read:', id);
+  };
+
+  const handleMarkAllAsRead = () => {
+    // Handle mark all as read logic
+    console.log('Mark all as read');
+  };
+
+  const handleDeleteNotification = (id: string) => {
+    // Handle delete notification logic
+    console.log('Delete notification:', id);
   };
 
   return (
@@ -90,11 +126,14 @@ const Navbar = () => {
                 )}
               </Button>
               
-              {showNotifications && (
-                <div className="absolute right-0 top-12 w-80 max-h-96 bg-[#28282B] border border-white/20 rounded-lg shadow-lg overflow-hidden z-50">
-                  <NotificationPanel />
-                </div>
-              )}
+              <NotificationPanel
+                isOpen={showNotifications}
+                onClose={() => setShowNotifications(false)}
+                notifications={mockNotifications}
+                onMarkAsRead={handleMarkAsRead}
+                onMarkAllAsRead={handleMarkAllAsRead}
+                onDelete={handleDeleteNotification}
+              />
             </div>
 
             {/* User Menu */}
@@ -130,7 +169,7 @@ const Navbar = () => {
                       }}
                       className="w-full text-left px-4 py-2 text-white hover:bg-white/10 flex items-center"
                     >
-                      <Settings className="mr-2 h-4 w-4" />
+                      <SettingsIcon className="mr-2 h-4 w-4" />
                       সেটিংস
                     </button>
                     

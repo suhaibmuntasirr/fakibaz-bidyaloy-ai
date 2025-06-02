@@ -206,15 +206,6 @@ const Notes = () => {
 
   const handleView = (note: Note) => {
     setViewingNote(note);
-    
-    // Update view count
-    setNotes(prevNotes => 
-      prevNotes.map(n => 
-        n.id === note.id 
-          ? { ...n, views: (n.views || 0) + 1 }
-          : n
-      )
-    );
   };
 
   if (viewingNote) {
@@ -238,14 +229,8 @@ const Notes = () => {
           <PDFUpload
             type="note"
             onUploadSuccess={handleUploadSuccess}
+            onCancel={() => setShowUpload(false)}
           />
-          <Button 
-            onClick={() => setShowUpload(false)}
-            variant="outline"
-            className="mt-4 bg-black/30 border-white/20 text-white hover:bg-white/10"
-          >
-            বাতিল করুন
-          </Button>
         </div>
         <AIAssistant />
       </div>
