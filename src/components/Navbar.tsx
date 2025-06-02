@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -263,7 +264,21 @@ const Navbar = () => {
 
       {/* Settings Modal */}
       {showSettings && (
-        <SettingsModal onClose={() => setShowSettings(false)} />
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">সেটিংস</h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowSettings(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <SettingsModal />
+          </div>
+        </div>
       )}
     </nav>
   );
