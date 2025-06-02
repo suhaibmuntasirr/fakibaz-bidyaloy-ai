@@ -143,37 +143,39 @@ const QuestionBank = () => {
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'Easy': return 'bg-green-600/20 text-green-300 border-green-600/30';
-      case 'Medium': return 'bg-yellow-600/20 text-yellow-300 border-yellow-600/30';
-      case 'Hard': return 'bg-red-600/20 text-red-300 border-red-600/30';
-      default: return 'bg-gray-600/20 text-gray-300 border-gray-600/30';
+      case 'Easy': return 'bg-green-500/20 text-green-300 border-green-500/30';
+      case 'Medium': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
+      case 'Hard': return 'bg-red-500/20 text-red-300 border-red-500/30';
+      default: return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
     }
   };
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'mcq': return 'bg-blue-600/20 text-blue-300 border-blue-600/30';
-      case 'cq': return 'bg-purple-600/20 text-purple-300 border-purple-600/30';
-      case 'mixed': return 'bg-indigo-600/20 text-indigo-300 border-indigo-600/30';
-      default: return 'bg-gray-600/20 text-gray-300 border-gray-600/30';
+      case 'mcq': return 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+      case 'cq': return 'bg-purple-500/20 text-purple-300 border-purple-500/30';
+      case 'mixed': return 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30';
+      default: return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#28282B] text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">প্রশ্ন ব্যাংক</h1>
-            <p className="text-gray-400">বিভিন্ন বোর্ড ও পরীক্ষার প্রশ্নপত্র</p>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
+              প্রশ্ন ব্যাংক
+            </h1>
+            <p className="text-gray-300">বিভিন্ন বোর্ড ও পরীক্ষার প্রশ্নপত্র</p>
           </div>
           
           {currentUser && (
             <Button 
               onClick={() => setShowUpload(true)}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
             >
               <FileText className="mr-2 h-4 w-4" />
               প্রশ্ন আপলোড করুন
@@ -182,7 +184,7 @@ const QuestionBank = () => {
         </div>
 
         <Tabs defaultValue="browse" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-black/30 border border-white/20">
+          <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-sm border border-white/20">
             <TabsTrigger value="browse" className="text-white data-[state=active]:bg-white/20">
               <Search className="mr-2 h-4 w-4" />
               খুঁজে দেখুন
@@ -207,7 +209,7 @@ const QuestionBank = () => {
                     placeholder="প্রশ্নপত্র খুঁজুন..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-black/30 border-white/20 text-white placeholder:text-gray-400"
+                    className="pl-10 bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400"
                   />
                 </div>
               </div>
@@ -215,10 +217,10 @@ const QuestionBank = () => {
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-black/30 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-md px-3 py-2"
               >
                 {classes.map(cls => (
-                  <option key={cls} value={cls === 'All' ? '' : cls} className="bg-[#28282B]">
+                  <option key={cls} value={cls === 'All' ? '' : cls} className="bg-slate-800">
                     {cls === 'All' ? 'সব ক্লাস' : cls}
                   </option>
                 ))}
@@ -227,10 +229,10 @@ const QuestionBank = () => {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-black/30 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-md px-3 py-2"
               >
                 {subjects.map(subject => (
-                  <option key={subject} value={subject === 'All' ? '' : subject} className="bg-[#28282B]">
+                  <option key={subject} value={subject === 'All' ? '' : subject} className="bg-slate-800">
                     {subject === 'All' ? 'সব বিষয়' : subject}
                   </option>
                 ))}
@@ -240,7 +242,7 @@ const QuestionBank = () => {
             {/* Question Papers Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredPapers.map((paper) => (
-                <Card key={paper.id} className="bg-black/30 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all group">
+                <Card key={paper.id} className="bg-white/10 backdrop-blur-lg border border-white/20 hover:border-white/40 transition-all group">
                   
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
@@ -256,13 +258,13 @@ const QuestionBank = () => {
                             {paper.difficulty}
                           </Badge>
                           {paper.likes > 50 && (
-                            <Badge className="bg-orange-600/20 text-orange-300 border-orange-600/30">
+                            <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30">
                               <Star className="mr-1 h-3 w-3" />
                               জনপ্রিয়
                             </Badge>
                           )}
                           {paper.views > 1000 && (
-                            <Badge className="bg-pink-600/20 text-pink-300 border-pink-600/30">
+                            <Badge className="bg-pink-500/20 text-pink-300 border-pink-500/30">
                               <TrendingUp className="mr-1 h-3 w-3" />
                               ট্রেন্ডিং
                             </Badge>
@@ -314,7 +316,7 @@ const QuestionBank = () => {
                         size="sm" 
                         variant="outline"
                         onClick={() => handleView(paper)}
-                        className="flex-1 bg-blue-600/20 border-blue-600 text-blue-300 hover:bg-blue-600/30"
+                        className="flex-1 bg-blue-500/20 border-blue-500 text-blue-300 hover:bg-blue-500/30"
                       >
                         <Eye className="mr-1 h-3 w-3" />
                         দেখুন
@@ -340,7 +342,7 @@ const QuestionBank = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {questionPapers.filter(paper => paper.likes > 50).map((paper) => (
                 
-                <Card key={paper.id} className="bg-black/30 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all group">
+                <Card key={paper.id} className="bg-white/10 backdrop-blur-lg border border-white/20 hover:border-white/40 transition-all group">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -355,13 +357,13 @@ const QuestionBank = () => {
                             {paper.difficulty}
                           </Badge>
                           {paper.likes > 50 && (
-                            <Badge className="bg-orange-600/20 text-orange-300 border-orange-600/30">
+                            <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30">
                               <Star className="mr-1 h-3 w-3" />
                               জনপ্রিয়
                             </Badge>
                           )}
                           {paper.views > 1000 && (
-                            <Badge className="bg-pink-600/20 text-pink-300 border-pink-600/30">
+                            <Badge className="bg-pink-500/20 text-pink-300 border-pink-500/30">
                               <TrendingUp className="mr-1 h-3 w-3" />
                               ট্রেন্ডিং
                             </Badge>
@@ -413,7 +415,7 @@ const QuestionBank = () => {
                         size="sm" 
                         variant="outline"
                         onClick={() => handleView(paper)}
-                        className="flex-1 bg-blue-600/20 border-blue-600 text-blue-300 hover:bg-blue-600/30"
+                        className="flex-1 bg-blue-500/20 border-blue-500 text-blue-300 hover:bg-blue-500/30"
                       >
                         <Eye className="mr-1 h-3 w-3" />
                         দেখুন
@@ -439,7 +441,7 @@ const QuestionBank = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {questionPapers.sort((a, b) => new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime()).map((paper) => (
                 
-                <Card key={paper.id} className="bg-black/30 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all group">
+                <Card key={paper.id} className="bg-white/10 backdrop-blur-lg border border-white/20 hover:border-white/40 transition-all group">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -454,13 +456,13 @@ const QuestionBank = () => {
                             {paper.difficulty}
                           </Badge>
                           {paper.likes > 50 && (
-                            <Badge className="bg-orange-600/20 text-orange-300 border-orange-600/30">
+                            <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30">
                               <Star className="mr-1 h-3 w-3" />
                               জনপ্রিয়
                             </Badge>
                           )}
                           {paper.views > 1000 && (
-                            <Badge className="bg-pink-600/20 text-pink-300 border-pink-600/30">
+                            <Badge className="bg-pink-500/20 text-pink-300 border-pink-500/30">
                               <TrendingUp className="mr-1 h-3 w-3" />
                               ট্রেন্ডিং
                             </Badge>
@@ -512,7 +514,7 @@ const QuestionBank = () => {
                         size="sm" 
                         variant="outline"
                         onClick={() => handleView(paper)}
-                        className="flex-1 bg-blue-600/20 border-blue-600 text-blue-300 hover:bg-blue-600/30"
+                        className="flex-1 bg-blue-500/20 border-blue-500 text-blue-300 hover:bg-blue-500/30"
                       >
                         <Eye className="mr-1 h-3 w-3" />
                         দেখুন
@@ -550,7 +552,7 @@ const QuestionBank = () => {
       {/* Upload Modal */}
       {showUpload && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-[#28282B] rounded-lg p-6 max-w-md w-full border border-white/20">
+          <div className="bg-slate-800 rounded-lg p-6 max-w-md w-full border border-white/20">
             <h3 className="text-white text-lg font-semibold mb-4">প্রশ্ন আপলোড করুন</h3>
             <PDFUpload 
               type="question"

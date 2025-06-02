@@ -7,6 +7,7 @@ import { Search, BookOpen, FileText, Star, Award, Users, Trophy } from 'lucide-r
 import Navbar from '@/components/Navbar';
 import ClassSelection from '@/components/ClassSelection';
 import Footer from '@/components/Footer';
+import AdBanner from '@/components/AdBanner';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Index = () => {
@@ -18,55 +19,45 @@ const Index = () => {
     <div className="min-h-screen bg-[#28282B] text-white">
       <Navbar />
       
-      {/* Ad Banner - Only on home page */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-2">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center space-x-4">
-            <span className="text-white font-medium">🎉 বিশেষ অফার! প্রিমিয়াম সাবস্ক্রিপশন এখন ৫০% ছাড়ে!</span>
-            <Button size="sm" variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30">
-              বিস্তারিত
-            </Button>
-          </div>
-        </div>
-      </div>
+      {/* Ad Banner below navbar */}
+      <AdBanner 
+        imageUrl="/lovable-uploads/e283b105-0747-4859-9cef-ef35fb06dd9d.png"
+        altText="বিশেষ অফার"
+        onClick={() => console.log('Ad clicked')}
+      />
 
       {/* Hero Section */}
       <section className="relative py-20 px-4 text-center">
         <div className="container mx-auto max-w-4xl">
-          <h1 className="text-5xl font-bold text-white mb-6">
-            আপনার শেখার যাত্রাকে সহজ করুন
+          <h1 className="text-5xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            ফাকিবাজ বিদ্যালয়
           </h1>
           <p className="text-xl text-gray-300 mb-8">
-            নোট, প্রশ্নপত্র এবং শিক্ষামূলক সামগ্রী এক জায়গায়।
+            AI শিক্ষক, নোট শেয়ারিং, প্রশ্ন ব্যাংক এবং কমিউনিটি - সবকিছু এক জায়গায়
           </p>
-          <Button
-            onClick={() => navigate('/auth')}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 px-8 rounded-xl text-lg font-medium"
-          >
-            বিনামূল্যে শুরু করুন
-          </Button>
         </div>
       </section>
 
       {/* Search Section */}
       <section className="py-16 px-4">
         <div className="container mx-auto max-w-4xl">
-          <h2 className="text-3xl font-bold text-center mb-8">কি খুঁজছেন?</h2>
-          
           <div className="relative mb-8">
             <Search className="absolute left-4 top-4 h-6 w-6 text-white/70" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="নোট, প্রশ্ন বা বিষয় খুঁজুন..."
+              placeholder="কি খুঁজছেন? (যেমন: পদার্থবিজ্ঞান নোট, গণিত প্রশ্ন)"
               className="pl-12 py-4 text-lg bg-white/10 border-white/20 text-white placeholder:text-white/60 rounded-xl"
             />
+            <Button className="absolute right-2 top-2 bg-blue-600 hover:bg-blue-700">
+              <Search className="h-4 w-4" />
+            </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
             <Button
               onClick={() => navigate('/notes')}
-              className="bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl text-lg font-medium"
+              className="bg-blue-600 hover:bg-blue-700 text-white py-6 rounded-xl text-lg font-medium"
             >
               <BookOpen className="mr-2 h-5 w-5" />
               নোট দেখুন
@@ -74,14 +65,17 @@ const Index = () => {
             
             <Button
               onClick={() => navigate('/question-bank')}
-              className="bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-xl text-lg font-medium"
+              className="bg-purple-600 hover:bg-purple-700 text-white py-6 rounded-xl text-lg font-medium"
             >
               <FileText className="mr-2 h-5 w-5" />
               প্রশ্ন দেখুন
             </Button>
           </div>
 
-          <ClassSelection />
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-center mb-6">যে কোন ক্লাসের নোট পাও এখানেই</h2>
+            <ClassSelection />
+          </div>
         </div>
       </section>
 

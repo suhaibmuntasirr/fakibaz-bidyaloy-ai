@@ -1,162 +1,97 @@
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Clock, FileText, CheckCircle, Timer, BookOpen } from 'lucide-react';
+import { Clock, Upload, FileText, Timer, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { db } from '@/lib/firebase';
-import { collection, addDoc, doc, getDoc } from 'firebase/firestore';
-
-interface ExamQuestion {
-  id: string;
-  type: 'mcq' | 'cq';
-  question: string;
-  options?: string[];
-  correctAnswer?: string;
-  marks: number;
-}
-
-interface Exam {
-  id: string;
-  title: string;
-  type: 'mcq' | 'cq';
-  duration: number; // in minutes
-  questions: ExamQuestion[];
-  totalMarks: number;
-}
+import { chatGPTService } from '@/services/chatgptService';
 
 const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
   const [showExamModal, setShowExamModal] = useState(false);
-  const [currentExam, setCurrentExam] = useState<Exam | null>(null);
   const [timeLeft, setTimeLeft] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
   const [examStarted, setExamStarted] = useState(false);
   const [examCompleted, setExamCompleted] = useState(false);
-  const [score, setScore] = useState<number | null>(null);
+  const [userAnswer, setUserAnswer] = useState('');
+  const [evaluation, setEvaluation] = useState<string | null>(null);
+  const [isEvaluating, setIsEvaluating] = useState(false);
+  const [apiKey, setApiKey] = useState('');
   const { currentUser } = useAuth();
   const { toast } = useToast();
 
-  // Sample exam data based on question paper type
-  const createExamFromQuestionPaper = (paper: any): Exam => {
-    const isMCQ = paper.type === 'mcq' || paper.title.toLowerCase().includes('mcq');
-    
-    if (isMCQ) {
-      return {
-        id: paper.id,
-        title: `${paper.title} - পরীক্ষা`,
-        type: 'mcq',
-        duration: 30,
-        totalMarks: 50,
-        questions: [
-          {
-            id: '1',
-            type: 'mcq',
-            question: 'বাংলাদেশের রাজধানী কোনটি?',
-            options: ['ঢাকা', 'চট্টগ্রাম', 'সিলেট', 'রাজশাহী'],
-            correctAnswer: 'ঢাকা',
-            marks: 2
-          },
-          {
-            id: '2',
-            type: 'mcq',
-            question: 'পৃথিবীর সবচেয়ে বড় মহাদেশ কোনটি?',
-            options: ['এশিয়া', 'আফ্রিকা', 'ইউরোপ', 'উত্তর আমেরিকা'],
-            correctAnswer: 'এশিয়া',
-            marks: 2
-          }
-        ]
-      };
-    } else {
-      return {
-        id: paper.id,
-        title: `${paper.title} - পরীক্ষা`,
-        type: 'cq',
-        duration: 180,
-        totalMarks: 100,
-        questions: [
-          {
-            id: '1',
-            type: 'cq',
-            question: 'বাংলাদেশের মুক্তিযুদ্ধের তাৎপর্য বর্ণনা করুন।',
-            marks: 20
-          },
-          {
-            id: '2',
-            type: 'cq',
-            question: 'গণিতে ক্যালকুলাসের গুরুত্ব আলোচনা করুন।',
-            marks: 25
-          }
-        ]
-      };
-    }
-  };
+  // Set timer based on question type (MCQ: 30 min, CQ: 3 hours)
+  const examDuration = questionPaper.title.toLowerCase().includes('mcq') ? 30 : 180;
 
   const startExam = () => {
-    const exam = createExamFromQuestionPaper(questionPaper);
-    setCurrentExam(exam);
-    setTimeLeft(exam.duration * 60); // Convert to seconds
+    setTimeLeft(examDuration * 60); // Convert to seconds
     setExamStarted(true);
     setExamCompleted(false);
-    setAnswers({});
-    setScore(null);
+    setUserAnswer('');
+    setEvaluation(null);
     setShowExamModal(true);
     
     toast({
       title: "পরীক্ষা শুরু হয়েছে",
-      description: `${exam.duration} মিনিটের পরীক্ষা শুরু হয়েছে`,
+      description: `${examDuration} মিনিটের পরীক্ষা শুরু হয়েছে`,
     });
   };
 
-  const submitExam = async () => {
-    if (!currentExam || !currentUser) return;
+  const submitAnswer = async () => {
+    if (!userAnswer.trim()) {
+      toast({
+        title: "ত্রুটি",
+        description: "দয়া করে আপনার উত্তর লিখুন",
+        variant: "destructive"
+      });
+      return;
+    }
 
     setExamStarted(false);
     setExamCompleted(true);
 
-    // Calculate score for MCQ
-    let calculatedScore = 0;
-    if (currentExam.type === 'mcq') {
-      currentExam.questions.forEach(question => {
-        if (question.correctAnswer && answers[question.id] === question.correctAnswer) {
-          calculatedScore += question.marks;
-        }
-      });
-    } else {
-      // For CQ, assign a random score between 60-90% for demo
-      calculatedScore = Math.floor(currentExam.totalMarks * (0.6 + Math.random() * 0.3));
+    if (apiKey) {
+      setIsEvaluating(true);
+      try {
+        chatGPTService.setApiKey(apiKey);
+        const evaluationPrompt = `
+          প্রশ্নপত্র: ${questionPaper.title}
+          বিষয়: ${questionPaper.subject}
+          ক্লাস: ${questionPaper.class}
+          
+          শিক্ষার্থীর উত্তর: ${userAnswer}
+          
+          দয়া করে এই উত্তরটি মূল্যায়ন করুন এবং:
+          1. নম্বর প্রদান করুন (${questionPaper.marks} এর মধ্যে)
+          2. ভালো দিকগুলো উল্লেখ করুন
+          3. উন্নতির জন্য পরামর্শ দিন
+          4. সঠিক উত্তরের দিকনির্দেশনা দিন
+          
+          বাংলায় বিস্তারিত ফিডব্যাক দিন।
+        `;
+
+        const result = await chatGPTService.sendMessage(evaluationPrompt, {
+          class: questionPaper.class,
+          subject: questionPaper.subject
+        });
+        
+        setEvaluation(result);
+      } catch (error) {
+        toast({
+          title: "মূল্যায়ন করতে সমস্যা",
+          description: "AI মূল্যায়ন সেবা সাময়িক অনুপলব্ধ",
+          variant: "destructive"
+        });
+      } finally {
+        setIsEvaluating(false);
+      }
     }
 
-    setScore(calculatedScore);
-
-    // Save exam result to Firebase
-    try {
-      await addDoc(collection(db, 'examResults'), {
-        userId: currentUser.uid,
-        examId: currentExam.id,
-        examTitle: currentExam.title,
-        score: calculatedScore,
-        totalMarks: currentExam.totalMarks,
-        answers: answers,
-        completedAt: new Date(),
-        type: currentExam.type
-      });
-
-      toast({
-        title: "পরীক্ষা সম্পন্ন হয়েছে",
-        description: `আপনার স্কোর: ${calculatedScore}/${currentExam.totalMarks}`,
-      });
-    } catch (error) {
-      console.error('Error saving exam result:', error);
-      toast({
-        title: "ত্রুটি",
-        description: "পরীক্ষার ফলাফল সেভ করতে সমস্যা হয়েছে",
-        variant: "destructive"
-      });
-    }
+    toast({
+      title: "উত্তর জমা দেওয়া হয়েছে",
+      description: "আপনার উত্তর সফলভাবে জমা হয়েছে",
+    });
   };
 
   // Timer effect
@@ -167,7 +102,7 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
       }, 1000);
       return () => clearTimeout(timer);
     } else if (examStarted && timeLeft === 0) {
-      submitExam();
+      submitAnswer();
     }
   }, [examStarted, timeLeft]);
 
@@ -198,10 +133,10 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
       </Button>
 
       <Dialog open={showExamModal} onOpenChange={setShowExamModal}>
-        <DialogContent className="bg-[#28282B] border-white/20 text-white max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="bg-[#1a1a1a] border-white/20 text-white max-w-6xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-white flex items-center justify-between">
-              <span>{currentExam?.title}</span>
+              <span>{questionPaper.title}</span>
               {examStarted && !examCompleted && (
                 <Badge className="bg-red-600/20 text-red-300 border-red-600/30 flex items-center">
                   <Timer className="mr-1 h-3 w-3" />
@@ -211,109 +146,120 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
             </DialogTitle>
           </DialogHeader>
 
-          {currentExam && (
-            <div className="space-y-6">
-              {!examStarted && !examCompleted && (
-                <div className="text-center space-y-4">
-                  <div className="space-y-2">
-                    <p className="text-lg">পরীক্ষার তথ্য:</p>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div className="bg-black/30 p-3 rounded">
-                        <Clock className="h-4 w-4 mb-1" />
-                        সময়: {currentExam.duration} মিনিট
-                      </div>
-                      <div className="bg-black/30 p-3 rounded">
-                        <BookOpen className="h-4 w-4 mb-1" />
-                        মোট নম্বর: {currentExam.totalMarks}
-                      </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* PDF Viewer Section */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">প্রশ্নপত্র</h3>
+              <div className="bg-white rounded-lg p-4 h-96 flex items-center justify-center">
+                {questionPaper.questionFileUrl ? (
+                  <iframe
+                    src={questionPaper.questionFileUrl}
+                    className="w-full h-full border-0 rounded"
+                    title="Question Paper"
+                  />
+                ) : (
+                  <div className="text-center text-gray-500">
+                    <FileText className="h-12 w-12 mx-auto mb-2" />
+                    <p>প্রশ্নপত্র লোড হচ্ছে...</p>
+                  </div>
+                )}
+              </div>
+              
+              <div className="text-sm text-gray-400">
+                <p>সময়: {examDuration} মিনিট</p>
+                <p>পূর্ণমান: {questionPaper.marks} নম্বর</p>
+              </div>
+            </div>
+
+            {/* Answer Section */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">আপনার উত্তর</h3>
+              
+              {!examCompleted ? (
+                <div className="space-y-4">
+                  {!examStarted ? (
+                    <div className="text-center">
+                      <Button 
+                        onClick={() => setExamStarted(true)}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        <Clock className="mr-2 h-4 w-4" />
+                        পরীক্ষা শুরু করুন
+                      </Button>
                     </div>
-                  </div>
-                  <Button 
-                    onClick={() => setExamStarted(true)}
-                    className="bg-green-600 hover:bg-green-700"
-                  >
-                    পরীক্ষা শুরু করুন
-                  </Button>
+                  ) : (
+                    <>
+                      <Textarea
+                        placeholder="এখানে আপনার উত্তর লিখুন..."
+                        value={userAnswer}
+                        onChange={(e) => setUserAnswer(e.target.value)}
+                        className="bg-black/30 border-white/20 text-white placeholder:text-gray-400 min-h-[200px]"
+                      />
+                      
+                      <Button 
+                        onClick={submitAnswer}
+                        className="w-full bg-blue-600 hover:bg-blue-700"
+                      >
+                        <Upload className="mr-2 h-4 w-4" />
+                        উত্তর জমা দিন
+                      </Button>
+                    </>
+                  )}
                 </div>
-              )}
-
-              {examStarted && !examCompleted && (
-                <div className="space-y-6">
-                  {currentExam.questions.map((question, index) => (
-                    <Card key={question.id} className="bg-black/30 border-white/20">
-                      <CardHeader>
-                        <CardTitle className="text-white text-sm">
-                          প্রশ্ন {index + 1} ({question.marks} নম্বর)
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-white mb-4">{question.question}</p>
-                        
-                        {question.type === 'mcq' && question.options ? (
-                          <div className="space-y-2">
-                            {question.options.map((option, optIndex) => (
-                              <label key={optIndex} className="flex items-center space-x-2 cursor-pointer">
-                                <input
-                                  type="radio"
-                                  name={`question_${question.id}`}
-                                  value={option}
-                                  onChange={(e) => setAnswers({...answers, [question.id]: e.target.value})}
-                                  className="text-blue-600"
-                                />
-                                <span className="text-white">{option}</span>
-                              </label>
-                            ))}
-                          </div>
-                        ) : (
-                          <Textarea
-                            placeholder="এখানে আপনার উত্তর লিখুন..."
-                            value={answers[question.id] || ''}
-                            onChange={(e) => setAnswers({...answers, [question.id]: e.target.value})}
-                            className="bg-black/30 border-white/20 text-white placeholder:text-gray-400 min-h-[100px]"
-                          />
-                        )}
-                      </CardContent>
-                    </Card>
-                  ))}
+              ) : (
+                <div className="space-y-4">
+                  <div className="bg-green-600/20 border border-green-600/30 rounded-lg p-4">
+                    <CheckCircle className="h-8 w-8 text-green-400 mx-auto mb-2" />
+                    <h4 className="text-center text-green-400 font-semibold">উত্তর জমা হয়েছে!</h4>
+                  </div>
                   
-                  <div className="flex justify-center">
-                    <Button 
-                      onClick={submitExam}
-                      className="bg-blue-600 hover:bg-blue-700"
-                    >
-                      <CheckCircle className="mr-2 h-4 w-4" />
-                      পরীক্ষা জমা দিন
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              {examCompleted && score !== null && (
-                <div className="text-center space-y-4">
-                  <div className="bg-green-600/20 border border-green-600/30 rounded-lg p-6">
-                    <CheckCircle className="h-12 w-12 text-green-400 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-white mb-2">পরীক্ষা সম্পন্ন হয়েছে!</h3>
-                    <p className="text-2xl font-bold text-green-400">
-                      আপনার স্কোর: {score}/{currentExam.totalMarks}
-                    </p>
-                    <p className="text-gray-300 mt-2">
-                      শতকরা নম্বর: {Math.round((score / currentExam.totalMarks) * 100)}%
-                    </p>
-                  </div>
+                  {!apiKey && (
+                    <div className="bg-blue-600/20 border border-blue-600/30 rounded-lg p-4">
+                      <h4 className="font-semibold mb-2">AI মূল্যায়নের জন্য OpenAI API Key দিন:</h4>
+                      <input
+                        type="password"
+                        placeholder="আপনার OpenAI API Key"
+                        value={apiKey}
+                        onChange={(e) => setApiKey(e.target.value)}
+                        className="w-full p-2 bg-black/30 border border-white/20 rounded text-white"
+                      />
+                      <Button 
+                        onClick={submitAnswer}
+                        className="w-full mt-2 bg-purple-600 hover:bg-purple-700"
+                        disabled={!apiKey}
+                      >
+                        AI মূল্যায়ন করুন
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {isEvaluating && (
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
+                      <p className="mt-2">AI আপনার উত্তর মূল্যায়ন করছে...</p>
+                    </div>
+                  )}
+                  
+                  {evaluation && (
+                    <div className="bg-purple-600/20 border border-purple-600/30 rounded-lg p-4">
+                      <h4 className="font-semibold mb-2">AI মূল্যায়ন:</h4>
+                      <div className="whitespace-pre-wrap text-sm">{evaluation}</div>
+                    </div>
+                  )}
+                  
                   <Button 
                     onClick={() => {
                       setShowExamModal(false);
-                      setCurrentExam(null);
                       setExamCompleted(false);
                     }}
-                    className="bg-blue-600 hover:bg-blue-700"
+                    className="w-full bg-gray-600 hover:bg-gray-700"
                   >
                     বন্ধ করুন
                   </Button>
                 </div>
               )}
             </div>
-          )}
+          </div>
         </DialogContent>
       </Dialog>
     </>
