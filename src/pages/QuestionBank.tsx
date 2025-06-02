@@ -255,13 +255,13 @@ const QuestionBank = () => {
                           <Badge variant="outline" className={getDifficultyColor(paper.difficulty)}>
                             {paper.difficulty}
                           </Badge>
-                          {paper.popular && (
+                          {paper.likes > 50 && (
                             <Badge className="bg-orange-600/20 text-orange-300 border-orange-600/30">
                               <Star className="mr-1 h-3 w-3" />
                               জনপ্রিয়
                             </Badge>
                           )}
-                          {paper.trending && (
+                          {paper.views > 1000 && (
                             <Badge className="bg-pink-600/20 text-pink-300 border-pink-600/30">
                               <TrendingUp className="mr-1 h-3 w-3" />
                               ট্রেন্ডিং
@@ -354,13 +354,13 @@ const QuestionBank = () => {
                           <Badge variant="outline" className={getDifficultyColor(paper.difficulty)}>
                             {paper.difficulty}
                           </Badge>
-                          {paper.popular && (
+                          {paper.likes > 50 && (
                             <Badge className="bg-orange-600/20 text-orange-300 border-orange-600/30">
                               <Star className="mr-1 h-3 w-3" />
                               জনপ্রিয়
                             </Badge>
                           )}
-                          {paper.trending && (
+                          {paper.views > 1000 && (
                             <Badge className="bg-pink-600/20 text-pink-300 border-pink-600/30">
                               <TrendingUp className="mr-1 h-3 w-3" />
                               ট্রেন্ডিং
@@ -453,13 +453,13 @@ const QuestionBank = () => {
                           <Badge variant="outline" className={getDifficultyColor(paper.difficulty)}>
                             {paper.difficulty}
                           </Badge>
-                          {paper.popular && (
+                          {paper.likes > 50 && (
                             <Badge className="bg-orange-600/20 text-orange-300 border-orange-600/30">
                               <Star className="mr-1 h-3 w-3" />
                               জনপ্রিয়
                             </Badge>
                           )}
-                          {paper.trending && (
+                          {paper.views > 1000 && (
                             <Badge className="bg-pink-600/20 text-pink-300 border-pink-600/30">
                               <TrendingUp className="mr-1 h-3 w-3" />
                               ট্রেন্ডিং
