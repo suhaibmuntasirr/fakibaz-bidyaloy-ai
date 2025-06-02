@@ -20,7 +20,7 @@ import {
   ThumbsUp
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
-import PDFViewer from '@/components/PDFViewer';
+import PDFViewer, { Question } from '@/components/PDFViewer';
 import PDFUpload from '@/components/PDFUpload';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -30,68 +30,83 @@ const QuestionBank = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
-  const [selectedPaper, setSelectedPaper] = useState<any>(null);
+  const [selectedPaper, setSelectedPaper] = useState<Question | null>(null);
   const [showUpload, setShowUpload] = useState(false);
+  const [likedQuestions, setLikedQuestions] = useState<string[]>([]);
   const { currentUser } = useAuth();
   const { toast } = useToast();
 
   // Sample question papers data
-  const [questionPapers] = useState([
+  const [questionPapers] = useState<Question[]>([
     {
       id: '1',
       title: 'HSC Physics MCQ - 2024',
       subject: 'পদার্থবিজ্ঞান',
       class: 'HSC',
-      type: 'mcq',
-      year: '2024',
-      board: 'ঢাকা বোর্ড',
-      difficulty: 'মধ্যম',
-      duration: '30 মিনিট',
-      marks: '50',
-      downloads: 1250,
-      rating: 4.5,
-      uploadedBy: 'শিক্ষক রহমান',
-      uploadDate: '2024-01-15',
-      thumbnailUrl: '/lovable-uploads/394575bd-0e65-4fc0-8982-c7aeb2363127.png',
-      pdfUrl: '/sample-mcq.pdf',
-      popular: true
+      school: 'ঢাকা কলেজ',
+      year: 2024,
+      examType: 'বার্ষিক পরীক্ষা',
+      difficulty: 'Medium',
+      marks: 50,
+      uploader: 'শিক্ষক রহমান',
+      uploaderId: 'teacher1',
+      views: 1250,
+      likes: 85,
+      answers: 12,
+      hasAnswerKey: true,
+      uploadDate: new Date('2024-01-15'),
+      verified: true,
+      questionFileUrl: '/sample-mcq.pdf',
+      answerFileUrl: '/sample-mcq-answers.pdf',
+      fileName: 'HSC_Physics_MCQ_2024.pdf',
+      answerFileName: 'HSC_Physics_MCQ_2024_Answers.pdf',
+      likedBy: []
     },
     {
       id: '2',
       title: 'SSC Mathematics CQ - 2023',
       subject: 'গণিত',
       class: 'SSC',
-      type: 'cq',
-      year: '2023',
-      board: 'চট্টগ্রাম বোর্ড',
-      difficulty: 'কঠিন',
-      duration: '3 ঘন্টা',
-      marks: '100',
-      downloads: 890,
-      rating: 4.3,
-      uploadedBy: 'শিক্ষক করিম',
-      uploadDate: '2023-12-20',
-      thumbnailUrl: '/lovable-uploads/38c39eea-85c1-42df-a76e-abc6c534d2db.png',
-      pdfUrl: '/sample-cq.pdf',
-      trending: true
+      school: 'চট্টগ্রাম কলেজিয়েট স্কুল',
+      year: 2023,
+      examType: 'নির্বাচনী পরীক্ষা',
+      difficulty: 'Hard',
+      marks: 100,
+      uploader: 'শিক্ষক করিম',
+      uploaderId: 'teacher2',
+      views: 890,
+      likes: 63,
+      answers: 8,
+      hasAnswerKey: false,
+      uploadDate: new Date('2023-12-20'),
+      verified: true,
+      questionFileUrl: '/sample-cq.pdf',
+      fileName: 'SSC_Mathematics_CQ_2023.pdf',
+      likedBy: []
     },
     {
       id: '3',
       title: 'Class 10 Chemistry Model Test',
       subject: 'রসায়ন',
       class: 'Class 10',
-      type: 'mixed',
-      year: '2024',
-      board: 'সিলেট বোর্ড',
-      difficulty: 'সহজ',
-      duration: '2 ঘন্টা',
-      marks: '75',
-      downloads: 567,
-      rating: 4.7,
-      uploadedBy: 'শিক্ষক আলম',
-      uploadDate: '2024-02-10',
-      thumbnailUrl: '/lovable-uploads/86534693-a004-4787-8ce6-8be9d4ed7603.png',
-      pdfUrl: '/sample-mixed.pdf'
+      school: 'সিলেট সরকারি উচ্চ বিদ্যালয়',
+      year: 2024,
+      examType: 'মডেল টেস্ট',
+      difficulty: 'Easy',
+      marks: 75,
+      uploader: 'শিক্ষক আলম',
+      uploaderId: 'teacher3',
+      views: 567,
+      likes: 45,
+      answers: 15,
+      hasAnswerKey: true,
+      uploadDate: new Date('2024-02-10'),
+      verified: false,
+      questionFileUrl: '/sample-mixed.pdf',
+      answerFileUrl: '/sample-mixed-answers.pdf',
+      fileName: 'Class10_Chemistry_Model_2024.pdf',
+      answerFileName: 'Class10_Chemistry_Model_2024_Answers.pdf',
+      likedBy: []
     }
   ]);
 
@@ -107,22 +122,30 @@ const QuestionBank = () => {
     return matchesSearch && matchesClass && matchesSubject;
   });
 
-  const handleDownload = (paper: any) => {
+  const handleDownload = (paper: Question) => {
     toast({
       title: "ডাউনলোড শুরু হয়েছে",
       description: `"${paper.title}" ডাউনলোড হচ্ছে`,
     });
   };
 
-  const handleView = (paper: any) => {
+  const handleView = (paper: Question) => {
     setSelectedPaper(paper);
+  };
+
+  const handleLike = (questionId: string) => {
+    setLikedQuestions(prev => 
+      prev.includes(questionId) 
+        ? prev.filter(id => id !== questionId)
+        : [...prev, questionId]
+    );
   };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'সহজ': return 'bg-green-600/20 text-green-300 border-green-600/30';
-      case 'মধ্যম': return 'bg-yellow-600/20 text-yellow-300 border-yellow-600/30';
-      case 'কঠিন': return 'bg-red-600/20 text-red-300 border-red-600/30';
+      case 'Easy': return 'bg-green-600/20 text-green-300 border-green-600/30';
+      case 'Medium': return 'bg-yellow-600/20 text-yellow-300 border-yellow-600/30';
+      case 'Hard': return 'bg-red-600/20 text-red-300 border-red-600/30';
       default: return 'bg-gray-600/20 text-gray-300 border-gray-600/30';
     }
   };
@@ -218,6 +241,7 @@ const QuestionBank = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredPapers.map((paper) => (
                 <Card key={paper.id} className="bg-black/30 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all group">
+                  
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -225,8 +249,8 @@ const QuestionBank = () => {
                           {paper.title}
                         </CardTitle>
                         <div className="flex flex-wrap gap-2 mb-3">
-                          <Badge variant="outline" className={getTypeColor(paper.type)}>
-                            {paper.type === 'mcq' ? 'MCQ' : paper.type === 'cq' ? 'CQ' : 'Mixed'}
+                          <Badge variant="outline" className={getTypeColor(paper.examType)}>
+                            {paper.examType}
                           </Badge>
                           <Badge variant="outline" className={getDifficultyColor(paper.difficulty)}>
                             {paper.difficulty}
@@ -260,7 +284,7 @@ const QuestionBank = () => {
                       </div>
                       <div className="flex items-center">
                         <Clock className="mr-2 h-4 w-4" />
-                        {paper.duration}
+                        {paper.year}
                       </div>
                       <div className="flex items-center">
                         <FileText className="mr-2 h-4 w-4" />
@@ -271,16 +295,16 @@ const QuestionBank = () => {
                     <div className="flex items-center justify-between text-xs text-gray-500">
                       <div className="flex items-center">
                         <User className="mr-1 h-3 w-3" />
-                        {paper.uploadedBy}
+                        {paper.uploader}
                       </div>
                       <div className="flex items-center space-x-3">
                         <span className="flex items-center">
                           <Download className="mr-1 h-3 w-3" />
-                          {paper.downloads}
+                          {paper.views}
                         </span>
                         <span className="flex items-center">
                           <ThumbsUp className="mr-1 h-3 w-3" />
-                          {paper.rating}
+                          {paper.likes}
                         </span>
                       </div>
                     </div>
@@ -312,8 +336,9 @@ const QuestionBank = () => {
           </TabsContent>
 
           <TabsContent value="popular">
+            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {questionPapers.filter(paper => paper.popular).map((paper) => (
+              {questionPapers.filter(paper => paper.likes > 50).map((paper) => (
                 
                 <Card key={paper.id} className="bg-black/30 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all group">
                   <CardHeader className="pb-3">
@@ -323,8 +348,8 @@ const QuestionBank = () => {
                           {paper.title}
                         </CardTitle>
                         <div className="flex flex-wrap gap-2 mb-3">
-                          <Badge variant="outline" className={getTypeColor(paper.type)}>
-                            {paper.type === 'mcq' ? 'MCQ' : paper.type === 'cq' ? 'CQ' : 'Mixed'}
+                          <Badge variant="outline" className={getTypeColor(paper.examType)}>
+                            {paper.examType}
                           </Badge>
                           <Badge variant="outline" className={getDifficultyColor(paper.difficulty)}>
                             {paper.difficulty}
@@ -358,7 +383,7 @@ const QuestionBank = () => {
                       </div>
                       <div className="flex items-center">
                         <Clock className="mr-2 h-4 w-4" />
-                        {paper.duration}
+                        {paper.year}
                       </div>
                       <div className="flex items-center">
                         <FileText className="mr-2 h-4 w-4" />
@@ -369,16 +394,16 @@ const QuestionBank = () => {
                     <div className="flex items-center justify-between text-xs text-gray-500">
                       <div className="flex items-center">
                         <User className="mr-1 h-3 w-3" />
-                        {paper.uploadedBy}
+                        {paper.uploader}
                       </div>
                       <div className="flex items-center space-x-3">
                         <span className="flex items-center">
                           <Download className="mr-1 h-3 w-3" />
-                          {paper.downloads}
+                          {paper.views}
                         </span>
                         <span className="flex items-center">
                           <ThumbsUp className="mr-1 h-3 w-3" />
-                          {paper.rating}
+                          {paper.likes}
                         </span>
                       </div>
                     </div>
@@ -410,6 +435,7 @@ const QuestionBank = () => {
           </TabsContent>
 
           <TabsContent value="recent">
+            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {questionPapers.sort((a, b) => new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime()).map((paper) => (
                 
@@ -421,8 +447,8 @@ const QuestionBank = () => {
                           {paper.title}
                         </CardTitle>
                         <div className="flex flex-wrap gap-2 mb-3">
-                          <Badge variant="outline" className={getTypeColor(paper.type)}>
-                            {paper.type === 'mcq' ? 'MCQ' : paper.type === 'cq' ? 'CQ' : 'Mixed'}
+                          <Badge variant="outline" className={getTypeColor(paper.examType)}>
+                            {paper.examType}
                           </Badge>
                           <Badge variant="outline" className={getDifficultyColor(paper.difficulty)}>
                             {paper.difficulty}
@@ -456,7 +482,7 @@ const QuestionBank = () => {
                       </div>
                       <div className="flex items-center">
                         <Clock className="mr-2 h-4 w-4" />
-                        {paper.duration}
+                        {paper.year}
                       </div>
                       <div className="flex items-center">
                         <FileText className="mr-2 h-4 w-4" />
@@ -467,16 +493,16 @@ const QuestionBank = () => {
                     <div className="flex items-center justify-between text-xs text-gray-500">
                       <div className="flex items-center">
                         <User className="mr-1 h-3 w-3" />
-                        {paper.uploadedBy}
+                        {paper.uploader}
                       </div>
                       <div className="flex items-center space-x-3">
                         <span className="flex items-center">
                           <Download className="mr-1 h-3 w-3" />
-                          {paper.downloads}
+                          {paper.views}
                         </span>
                         <span className="flex items-center">
                           <ThumbsUp className="mr-1 h-3 w-3" />
-                          {paper.rating}
+                          {paper.likes}
                         </span>
                       </div>
                     </div>
@@ -512,9 +538,12 @@ const QuestionBank = () => {
       {/* PDF Viewer Modal */}
       {selectedPaper && (
         <PDFViewer
-          pdfUrl={selectedPaper.pdfUrl}
-          title={selectedPaper.title}
+          item={selectedPaper}
+          type="question"
           onClose={() => setSelectedPaper(null)}
+          onLike={() => handleLike(selectedPaper.id)}
+          onDownload={() => handleDownload(selectedPaper)}
+          isLiked={likedQuestions.includes(selectedPaper.id)}
         />
       )}
 
