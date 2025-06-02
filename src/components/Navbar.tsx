@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { LogIn, LogOut, Menu, X, BookOpen, FileText, Users, Crown, Bell, ChevronDown, Settings as SettingsIcon } from 'lucide-react';
 import NotificationPanel from '@/components/NotificationPanel';
-import Settings from '@/components/Settings';
+import SettingsModal from '@/components/Settings';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -264,7 +263,7 @@ const Navbar = () => {
 
       {/* Settings Modal */}
       {showSettings && (
-        <Settings onClose={() => setShowSettings(false)} />
+        <SettingsModal onClose={() => setShowSettings(false)} />
       )}
     </nav>
   );

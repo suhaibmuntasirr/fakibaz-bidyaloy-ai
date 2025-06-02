@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -483,7 +482,11 @@ const QuestionBank = () => {
 
           {/* Upload Tab */}
           <TabsContent value="upload">
-            <PDFUpload type="question" onUploadSuccess={handleUploadSuccess} />
+            <PDFUpload 
+              type="question" 
+              onUploadSuccess={handleUploadSuccess} 
+              onCancel={() => setActiveTab('questions')}
+            />
           </TabsContent>
 
           {/* Leaderboard Tab */}
