@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { Clock, Upload, FileText, Timer, CheckCircle } from 'lucide-react';
+import { Clock, Upload, FileText, Timer, CheckCircle, File } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { chatGPTService } from '@/services/chatgptService';
@@ -15,6 +15,7 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
   const [examStarted, setExamStarted] = useState(false);
   const [examCompleted, setExamCompleted] = useState(false);
   const [userAnswer, setUserAnswer] = useState('');
+  const [answerFile, setAnswerFile] = useState<File | null>(null);
   const [evaluation, setEvaluation] = useState<string | null>(null);
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [apiKey, setApiKey] = useState('');
@@ -29,6 +30,7 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
     setExamStarted(true);
     setExamCompleted(false);
     setUserAnswer('');
+    setAnswerFile(null);
     setEvaluation(null);
     setShowExamModal(true);
     
@@ -38,11 +40,28 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
     });
   };
 
-  const submitAnswer = async () => {
-    if (!userAnswer.trim()) {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type === 'application/pdf') {
+      setAnswerFile(file);
+      toast({
+        title: "ফাইল আপলোড হয়েছে",
+        description: `${file.name} সফলভাবে আপলোড হয়েছে`,
+      });
+    } else {
       toast({
         title: "ত্রুটি",
-        description: "দয়া করে আপনার উত্তর লিখুন",
+        description: "শুধুমাত্র PDF ফাইল আপলোড করুন",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const submitAnswer = async () => {
+    if (!userAnswer.trim() && !answerFile) {
+      toast({
+        title: "ত্রুটি",
+        description: "দয়া করে আপনার উত্তর লিখুন অথবা PDF ফাইল আপলোড করুন",
         variant: "destructive"
       });
       return;
@@ -55,20 +74,31 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
       setIsEvaluating(true);
       try {
         chatGPTService.setApiKey(apiKey);
+        
+        let answerContent = userAnswer;
+        if (answerFile) {
+          answerContent += `\n\n[PDF ফাইল আপলোড করা হয়েছে: ${answerFile.name}]`;
+          // Note: In a real implementation, you would extract text from the PDF
+          // For now, we're just noting that a PDF was uploaded
+        }
+
         const evaluationPrompt = `
           প্রশ্নপত্র: ${questionPaper.title}
           বিষয়: ${questionPaper.subject}
           ক্লাস: ${questionPaper.class}
+          পূর্ণমান: ${questionPaper.marks}
           
-          শিক্ষার্থীর উত্তর: ${userAnswer}
+          শিক্ষার্থীর উত্তর: ${answerContent}
           
           দয়া করে এই উত্তরটি মূল্যায়ন করুন এবং:
           1. নম্বর প্রদান করুন (${questionPaper.marks} এর মধ্যে)
-          2. ভালো দিকগুলো উল্লেখ করুন
-          3. উন্নতির জন্য পরামর্শ দিন
-          4. সঠিক উত্তরের দিকনির্দেশনা দিন
+          2. প্রতিটি প্রশ্নের জন্য আলাদা নম্বর দিন
+          3. ভালো দিকগুলো উল্লেখ করুন
+          4. ভুল বা অসম্পূর্ণ উত্তরের জন্য সংশোধনী দিন
+          5. উন্নতির জন্য পরামর্শ দিন
+          6. সঠিক উত্তরের দিকনির্দেশনা দিন
           
-          বাংলায় বিস্তারিত ফিডব্যাক দিন।
+          বাংলায় বিস্তারিত ফিডব্যাক দিন এবং একটি স্ট্রাকচার্ড মার্কিং স্কিম অনুসরণ করুন।
         `;
 
         const result = await chatGPTService.sendMessage(evaluationPrompt, {
@@ -115,8 +145,8 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
 
   if (!currentUser) {
     return (
-      <Button disabled className="bg-gray-600">
-        <FileText className="mr-2 h-4 w-4" />
+      <Button disabled className="bg-gray-600 text-xs px-2 py-1">
+        <FileText className="mr-1 h-3 w-3" />
         পরীক্ষা দিতে লগইন করুন
       </Button>
     );
@@ -126,14 +156,14 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
     <>
       <Button 
         onClick={startExam}
-        className="bg-green-600 hover:bg-green-700 text-white"
+        className="bg-green-600 hover:bg-green-700 text-white text-xs px-2 py-1"
       >
-        <FileText className="mr-2 h-4 w-4" />
+        <FileText className="mr-1 h-3 w-3" />
         পরীক্ষা দিন
       </Button>
 
       <Dialog open={showExamModal} onOpenChange={setShowExamModal}>
-        <DialogContent className="bg-[#1a1a1a] border-white/20 text-white max-w-6xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="bg-[#1a1a1a] border-white/20 text-white max-w-7xl max-h-[95vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-white flex items-center justify-between">
               <span>{questionPaper.title}</span>
@@ -150,7 +180,7 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
             {/* PDF Viewer Section */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">প্রশ্নপত্র</h3>
-              <div className="bg-white rounded-lg p-4 h-96 flex items-center justify-center">
+              <div className="bg-white rounded-lg p-4 h-[500px] flex items-center justify-center">
                 {questionPaper.questionFileUrl ? (
                   <iframe
                     src={questionPaper.questionFileUrl}
@@ -189,12 +219,36 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
                     </div>
                   ) : (
                     <>
-                      <Textarea
-                        placeholder="এখানে আপনার উত্তর লিখুন..."
-                        value={userAnswer}
-                        onChange={(e) => setUserAnswer(e.target.value)}
-                        className="bg-black/30 border-white/20 text-white placeholder:text-gray-400 min-h-[200px]"
-                      />
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium mb-2">লিখিত উত্তর:</label>
+                          <Textarea
+                            placeholder="এখানে আপনার উত্তর লিখুন..."
+                            value={userAnswer}
+                            onChange={(e) => setUserAnswer(e.target.value)}
+                            className="bg-black/30 border-white/20 text-white placeholder:text-gray-400 min-h-[150px]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium mb-2">অথবা PDF আপলোড করুন:</label>
+                          <div className="border-2 border-dashed border-white/20 rounded-lg p-4 text-center">
+                            <input
+                              type="file"
+                              accept=".pdf"
+                              onChange={handleFileUpload}
+                              className="hidden"
+                              id="answer-upload"
+                            />
+                            <label htmlFor="answer-upload" className="cursor-pointer">
+                              <File className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                              <p className="text-sm text-gray-400">
+                                {answerFile ? answerFile.name : 'PDF ফাইল আপলোড করতে ক্লিক করুন'}
+                              </p>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
                       
                       <Button 
                         onClick={submitAnswer}
@@ -211,6 +265,11 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
                   <div className="bg-green-600/20 border border-green-600/30 rounded-lg p-4">
                     <CheckCircle className="h-8 w-8 text-green-400 mx-auto mb-2" />
                     <h4 className="text-center text-green-400 font-semibold">উত্তর জমা হয়েছে!</h4>
+                    {answerFile && (
+                      <p className="text-center text-sm text-gray-300 mt-2">
+                        আপলোড করা ফাইল: {answerFile.name}
+                      </p>
+                    )}
                   </div>
                   
                   {!apiKey && (
@@ -221,11 +280,11 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
                         placeholder="আপনার OpenAI API Key"
                         value={apiKey}
                         onChange={(e) => setApiKey(e.target.value)}
-                        className="w-full p-2 bg-black/30 border border-white/20 rounded text-white"
+                        className="w-full p-2 bg-black/30 border border-white/20 rounded text-white mb-2"
                       />
                       <Button 
                         onClick={submitAnswer}
-                        className="w-full mt-2 bg-purple-600 hover:bg-purple-700"
+                        className="w-full bg-purple-600 hover:bg-purple-700"
                         disabled={!apiKey}
                       >
                         AI মূল্যায়ন করুন
@@ -241,7 +300,7 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
                   )}
                   
                   {evaluation && (
-                    <div className="bg-purple-600/20 border border-purple-600/30 rounded-lg p-4">
+                    <div className="bg-purple-600/20 border border-purple-600/30 rounded-lg p-4 max-h-[300px] overflow-y-auto">
                       <h4 className="font-semibold mb-2">AI মূল্যায়ন:</h4>
                       <div className="whitespace-pre-wrap text-sm">{evaluation}</div>
                     </div>
@@ -251,6 +310,7 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
                     onClick={() => {
                       setShowExamModal(false);
                       setExamCompleted(false);
+                      setAnswerFile(null);
                     }}
                     className="w-full bg-gray-600 hover:bg-gray-700"
                   >

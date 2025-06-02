@@ -26,38 +26,37 @@ const Index = () => {
         onClick={() => console.log('Ad clicked')}
       />
 
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 text-center">
-        <div className="container mx-auto max-w-4xl">
-          <h1 className="text-5xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+      {/* Hero Section with Gradient Background */}
+      <section className="relative py-12 px-4 text-center">
+        {/* Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/30 via-purple-900/20 to-indigo-900/30 rounded-3xl mx-4"></div>
+        
+        <div className="container mx-auto max-w-4xl relative z-10">
+          <h1 className="text-5xl font-bold text-white mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             ফাকিবাজ বিদ্যালয়
           </h1>
-          <p className="text-xl text-gray-300 mb-8">
+          <p className="text-xl text-gray-300 mb-6">
             AI শিক্ষক, নোট শেয়ারিং, প্রশ্ন ব্যাংক এবং কমিউনিটি - সবকিছু এক জায়গায়
           </p>
-        </div>
-      </section>
 
-      {/* Search Section */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto max-w-4xl">
-          <div className="relative mb-8">
+          {/* Search Section with reduced spacing */}
+          <div className="relative mb-6">
             <Search className="absolute left-4 top-4 h-6 w-6 text-white/70" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="কি খুঁজছেন? (যেমন: পদার্থবিজ্ঞান নোট, গণিত প্রশ্ন)"
-              className="pl-12 py-4 text-lg bg-white/10 border-white/20 text-white placeholder:text-white/60 rounded-xl"
+              className="pl-12 py-4 text-lg bg-white/10 border-white/20 text-white placeholder:text-white/60 rounded-xl backdrop-blur-lg"
             />
             <Button className="absolute right-2 top-2 bg-blue-600 hover:bg-blue-700">
               <Search className="h-4 w-4" />
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Button
               onClick={() => navigate('/notes')}
-              className="bg-blue-600 hover:bg-blue-700 text-white py-6 rounded-xl text-lg font-medium"
+              className="bg-blue-600 hover:bg-blue-700 text-white py-6 rounded-xl text-lg font-medium backdrop-blur-lg"
             >
               <BookOpen className="mr-2 h-5 w-5" />
               নোট দেখুন
@@ -65,17 +64,20 @@ const Index = () => {
             
             <Button
               onClick={() => navigate('/question-bank')}
-              className="bg-purple-600 hover:bg-purple-700 text-white py-6 rounded-xl text-lg font-medium"
+              className="bg-purple-600 hover:bg-purple-700 text-white py-6 rounded-xl text-lg font-medium backdrop-blur-lg"
             >
               <FileText className="mr-2 h-5 w-5" />
               প্রশ্ন দেখুন
             </Button>
           </div>
+        </div>
+      </section>
 
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-center mb-6">যে কোন ক্লাসের নোট পাও এখানেই</h2>
-            <ClassSelection />
-          </div>
+      {/* Class Selection with better spacing */}
+      <section className="py-16 px-4">
+        <div className="container mx-auto max-w-5xl">
+          <h2 className="text-2xl font-bold text-center mb-8">যে কোন ক্লাসের নোট পাও এখানেই</h2>
+          <ClassSelection />
         </div>
       </section>
 
@@ -130,7 +132,7 @@ const Index = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
-              onClick={() => navigate('/auth')}
+              onClick={() => navigate('/subscription')}
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-8 py-4 text-lg font-semibold rounded-xl"
             >
               <Star className="mr-2 h-5 w-5" />

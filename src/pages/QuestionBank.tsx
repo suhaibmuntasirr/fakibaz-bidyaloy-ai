@@ -160,7 +160,7 @@ const QuestionBank = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+    <div className="min-h-screen bg-gradient-to-br from-[#28282B] via-[#1a1a1d] to-[#28282B]">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
@@ -549,10 +549,10 @@ const QuestionBank = () => {
         />
       )}
 
-      {/* Upload Modal */}
+      {/* Upload Modal - Fixed for landscape mode */}
       {showUpload && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-800 rounded-lg p-6 max-w-md w-full border border-white/20">
+          <div className="bg-[#1a1a1a] rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-white/20">
             <h3 className="text-white text-lg font-semibold mb-4">প্রশ্ন আপলোড করুন</h3>
             <PDFUpload 
               type="question"
