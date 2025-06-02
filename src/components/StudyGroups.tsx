@@ -13,7 +13,6 @@ const StudyGroups = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [newGroupName, setNewGroupName] = useState('');
   const [newGroupSubject, setNewGroupSubject] = useState('');
-  const [newGroupMeetingLink, setNewGroupMeetingLink] = useState('');
   const [studyGroups, setStudyGroups] = useState([
     {
       id: 1,
@@ -24,7 +23,6 @@ const StudyGroups = () => {
       maxMembers: 50,
       nextSession: '২ ঘন্টা পরে',
       description: 'নিউটনের সূত্র ও গতিবিদ্যা নিয়ে আলোচনা',
-      meetingLink: 'https://meet.google.com/xyz-abc-def',
       isLive: false
     },
     {
@@ -36,7 +34,6 @@ const StudyGroups = () => {
       maxMembers: 40,
       nextSession: 'আগামীকাল ৮ PM',
       description: 'ক্যালকুলাস ও সমাকলন সমস্যা সমাধান',
-      meetingLink: 'https://meet.google.com/abc-def-ghi',
       isLive: true
     },
     {
@@ -48,7 +45,6 @@ const StudyGroups = () => {
       maxMembers: 35,
       nextSession: 'রবিবার ৬ PM',
       description: 'জৈব রসায়ন ও বিক্রিয়া নিয়ে আলোচনা',
-      meetingLink: 'https://meet.google.com/def-ghi-jkl',
       isLive: false
     }
   ]);
@@ -96,20 +92,18 @@ const StudyGroups = () => {
       });
       return;
     }
-    window.open(group.meetingLink, '_blank');
+    window.open('https://meet.google.com', '_blank');
     toast({
-      title: "মিটিং এ যোগদান",
-      description: `"${group.name}" এর মিটিং এ যোগ দিচ্ছেন`,
+      title: "Google Meet খোলা হচ্ছে",
+      description: `"${group.name}" এর জন্য Google Meet খোলা হচ্ছে`,
     });
   };
 
-  const generateMeetLink = () => {
-    const meetCode = Math.random().toString(36).substring(2, 15);
-    const meetLink = `https://meet.google.com/${meetCode}`;
-    setNewGroupMeetingLink(meetLink);
+  const openGoogleMeet = () => {
+    window.open('https://meet.google.com', '_blank');
     toast({
-      title: "Google Meet লিংক তৈরি হয়েছে",
-      description: "নতুন মিটিং লিংক তৈরি করা হয়েছে",
+      title: "Google Meet খোলা হচ্ছে",
+      description: "নতুন মিটিং তৈরি করতে Google Meet এ যাচ্ছেন",
     });
   };
 
@@ -124,14 +118,12 @@ const StudyGroups = () => {
         maxMembers: 30,
         nextSession: 'আজ রাত ৯ PM',
         description: 'নতুন স্টাডি গ্রুপ',
-        meetingLink: newGroupMeetingLink || 'https://meet.google.com/new-group',
         isLive: false
       };
       setStudyGroups([...studyGroups, newGroup]);
       setJoinedGroups([...joinedGroups, newGroup.id]);
       setNewGroupName('');
       setNewGroupSubject('');
-      setNewGroupMeetingLink('');
       setShowCreateDialog(false);
       toast({
         title: "নতুন গ্রুপ তৈরি হয়েছে",
@@ -176,35 +168,14 @@ const StudyGroups = () => {
                   className="bg-black/30 border-white/20 text-white placeholder:text-gray-400"
                 />
                 <div className="space-y-2">
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="মিটিং লিংক (ঐচ্ছিক)"
-                      value={newGroupMeetingLink}
-                      onChange={(e) => setNewGroupMeetingLink(e.target.value)}
-                      className="bg-black/30 border-white/20 text-white placeholder:text-gray-400 flex-1"
-                    />
-                    <Button 
-                      onClick={generateMeetLink}
-                      variant="outline"
-                      className="bg-black/30 border-white/20 text-white hover:bg-white/10"
-                    >
-                      <Video className="mr-1 h-4 w-4" />
-                      Meet তৈরি করুন
-                    </Button>
-                  </div>
-                  {newGroupMeetingLink && (
-                    <div className="flex items-center gap-2 p-2 bg-black/20 rounded border border-white/10">
-                      <span className="text-sm text-gray-300 flex-1 truncate">{newGroupMeetingLink}</span>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => window.open(newGroupMeetingLink, '_blank')}
-                        className="text-blue-400 hover:text-blue-300"
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  )}
+                  <Button 
+                    onClick={openGoogleMeet}
+                    variant="outline"
+                    className="w-full bg-black/30 border-white/20 text-white hover:bg-white/10"
+                  >
+                    <Video className="mr-2 h-4 w-4" />
+                    Meet তৈরি করুন
+                  </Button>
                 </div>
                 <Button 
                   onClick={handleCreateGroup}

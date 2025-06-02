@@ -3,43 +3,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, BookOpen, FileText, Star, Award, Users, Trophy, Crown, Menu, X } from 'lucide-react';
+import { Search, BookOpen, FileText, Star, Award, Users, Trophy } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import ClassSelection from '@/components/ClassSelection';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Bell, Settings, LogOut, LogIn } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { ChevronDown } from "lucide-react"
-import NotificationPanel from '@/components/NotificationPanel';
 
 const Index = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedClass, setSelectedClass] = useState('');
-  const { currentUser, logout } = useAuth();
-  const [showUserMenu, setShowUserMenu] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const hasUnreadNotifications = true;
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/auth');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
+  const { currentUser } = useAuth();
 
   return (
     <div className="min-h-screen bg-[#28282B] text-white">
@@ -58,14 +31,13 @@ const Index = () => {
       </div>
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4 text-center overflow-hidden">
+      <section className="relative py-20 px-4 text-center">
         <div className="container mx-auto max-w-4xl">
-          <h1 className="text-5xl font-extrabold text-white mb-6">
+          <h1 className="text-5xl font-bold text-white mb-6">
             আপনার শেখার যাত্রাকে সহজ করুন
           </h1>
-          <p className="text-xl text-gray-300 mb-12 leading-relaxed">
-            নোট, প্রশ্নপত্র এবং আরও অনেক শিক্ষামূলক সামগ্রী এক জায়গায় খুঁজুন।
-            আজই শুরু করুন এবং আপনার পড়াশোনাকে আরও কার্যকর করুন।
+          <p className="text-xl text-gray-300 mb-8">
+            নোট, প্রশ্নপত্র এবং শিক্ষামূলক সামগ্রী এক জায়গায়।
           </p>
           <Button
             onClick={() => navigate('/auth')}
@@ -74,7 +46,6 @@ const Index = () => {
             বিনামূল্যে শুরু করুন
           </Button>
         </div>
-        <div className="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-[#28282B] to-transparent"></div>
       </section>
 
       {/* Search Section */}
@@ -126,7 +97,7 @@ const Index = () => {
               </div>
               <h3 className="text-xl font-semibold mb-2">নোট এবং সারাংশ</h3>
               <p className="text-gray-300">
-                সহজ ভাষায় লেখা নোট এবং সারাংশ দিয়ে যেকোনো বিষয় সহজে বুঝুন।
+                সহজ ভাষায় লেখা নোট এবং সারাংশ।
               </p>
             </div>
 
@@ -137,7 +108,7 @@ const Index = () => {
               </div>
               <h3 className="text-xl font-semibold mb-2">প্রশ্ন ব্যাংক</h3>
               <p className="text-gray-300">
-                বিভিন্ন পরীক্ষার প্রশ্নপত্র দিয়ে নিজেকে প্রস্তুত করুন।
+                বিভিন্ন পরীক্ষার প্রশ্নপত্র।
               </p>
             </div>
 
@@ -148,105 +119,29 @@ const Index = () => {
               </div>
               <h3 className="text-xl font-semibold mb-2">কমিউনিটি</h3>
               <p className="text-gray-300">
-                অন্যান্য শিক্ষার্থীদের সাথে আলোচনা করুন এবং সাহায্য পান।
+                অন্যান্য শিক্ষার্থীদের সাথে আলোচনা।
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto max-w-4xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            {/* Stat 1 */}
-            <div>
-              <div className="text-4xl font-bold text-blue-400 mb-2">১০,০০০+</div>
-              <p className="text-gray-300">নোট আপলোড করা হয়েছে</p>
-            </div>
-
-            {/* Stat 2 */}
-            <div>
-              <div className="text-4xl font-bold text-purple-400 mb-2">৫,০০০+</div>
-              <p className="text-gray-300">প্রশ্নপত্র রয়েছে</p>
-            </div>
-
-            {/* Stat 3 */}
-            <div>
-              <div className="text-4xl font-bold text-green-400 mb-2">২,০০০+</div>
-              <p className="text-gray-300">শিক্ষার্থী যুক্ত আছে</p>
-            </div>
-
-            {/* Stat 4 */}
-            <div>
-              <div className="text-4xl font-bold text-yellow-400 mb-2">১০০+</div>
-              <p className="text-gray-300">শিক্ষক দ্বারা তৈরি</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-blue-900/50 to-purple-900/50 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/lovable-uploads/48bd98a0-c7ee-4b45-adf1-cca6b79289b4.png')] opacity-5 bg-center bg-no-repeat bg-contain"></div>
-        <div className="container mx-auto max-w-4xl text-center relative z-10">
-          <div className="flex items-center justify-center mb-6">
-            <img 
-              src="/lovable-uploads/48bd98a0-c7ee-4b45-adf1-cca6b79289b4.png" 
-              alt="Fakibaz Logo"
-              className="w-20 h-20 mr-4"
-            />
-            <h2 className="text-4xl font-bold text-white">আজই শুরু করুন আপনার শেখার যাত্রা</h2>
-          </div>
-          
-          <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-            হাজারো নোট, প্রশ্ন এবং শিক্ষামূলক সামগ্রী এখনই আপনার হাতের মুঠোয়। 
-            বিনামূল্যে যোগ দিন এবং আপনার পড়াশোনাকে আরো সহজ করুন।
+      <section className="py-20 px-4 bg-gradient-to-br from-blue-900/50 to-purple-900/50">
+        <div className="container mx-auto max-w-4xl text-center">
+          <h2 className="text-4xl font-bold text-white mb-6">আজই শুরু করুন</h2>
+          <p className="text-xl text-gray-300 mb-8">
+            বিনামূল্যে যোগ দিন এবং আপনার পড়াশোনাকে সহজ করুন।
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
               onClick={() => navigate('/auth')}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-8 py-4 text-lg font-semibold rounded-xl shadow-2xl transform hover:scale-105 transition-all duration-300"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-8 py-4 text-lg font-semibold rounded-xl"
             >
               <Star className="mr-2 h-5 w-5" />
               বিনামূল্যে যোগ দিন
             </Button>
-            
-            <Button 
-              onClick={() => navigate('/subscription')}
-              variant="outline"
-              className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg font-semibold rounded-xl backdrop-blur-sm"
-            >
-              <Award className="mr-2 h-5 w-5" />
-              প্রিমিয়াম দেখুন
-            </Button>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <BookOpen className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">সহজ শিক্ষা</h3>
-              <p className="text-gray-300 text-sm">বিভিন্ন বিষয়ের সহজবোধ্য নোট ও ব্যাখ্যা</p>
-            </div>
-            
-            <div className="text-center bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-              <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">কমিউনিটি</h3>
-              <p className="text-gray-300 text-sm">সহপাঠীদের সাথে জ্ঞান ভাগাভাগি করুন</p>
-            </div>
-            
-            <div className="text-center bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-              <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Trophy className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">সফলতা</h3>
-              <p className="text-gray-300 text-sm">পরীক্ষায় ভাল ফলাফলের জন্য প্রস্তুতি</p>
-            </div>
           </div>
         </div>
       </section>
