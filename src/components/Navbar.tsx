@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { LogIn, LogOut, Menu, X, BookOpen, FileText, Users, Crown, Bell, ChevronDown, Settings as SettingsIcon } from 'lucide-react';
+import { LogIn, LogOut, Menu, X, BookOpen, FileText, Users, Crown, Bell, ChevronDown, Settings as SettingsIcon, Home } from 'lucide-react';
 import NotificationPanel from '@/components/NotificationPanel';
 import SettingsModal from '@/components/Settings';
 
@@ -79,6 +79,13 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <Link 
+              to="/" 
+              className="text-white hover:text-blue-400 transition-colors flex items-center"
+            >
+              <Home className="mr-1 h-4 w-4" />
+              হোম
+            </Link>
+            <Link 
               to="/notes" 
               className="text-white hover:text-blue-400 transition-colors flex items-center"
             >
@@ -98,13 +105,6 @@ const Navbar = () => {
             >
               <Users className="mr-1 h-4 w-4" />
               কমিউনিটি
-            </Link>
-            <Link 
-              to="/subscription" 
-              className="text-white hover:text-blue-400 transition-colors flex items-center"
-            >
-              <Crown className="mr-1 h-4 w-4" />
-              প্রিমিয়াম
             </Link>
           </div>
 
@@ -226,6 +226,14 @@ const Navbar = () => {
           <div className="md:hidden bg-black/40 backdrop-blur-lg border-t border-white/10 py-4">
             <div className="flex flex-col space-y-4">
               <Link 
+                to="/" 
+                className="text-white hover:text-blue-400 transition-colors flex items-center px-4"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <Home className="mr-2 h-4 w-4" />
+                হোম
+              </Link>
+              <Link 
                 to="/notes" 
                 className="text-white hover:text-blue-400 transition-colors flex items-center px-4"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -248,14 +256,6 @@ const Navbar = () => {
               >
                 <Users className="mr-2 h-4 w-4" />
                 কমিউনিটি
-              </Link>
-              <Link 
-                to="/subscription" 
-                className="text-white hover:text-blue-400 transition-colors flex items-center px-4"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <Crown className="mr-2 h-4 w-4" />
-                প্রিমিয়াম
               </Link>
             </div>
           </div>
