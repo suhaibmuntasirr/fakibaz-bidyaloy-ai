@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Download, Search, BookOpen, Calendar, User, Filter, Star, Upload, Grid, List } from 'lucide-react';
+import { Download, Search, BookOpen, Calendar, User, Filter, Star, Upload, Grid, List, Eye } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import ClassSelection from '@/components/ClassSelection';
 import PDFViewer from '@/components/PDFViewer';
@@ -13,6 +13,7 @@ import PDFUpload from '@/components/PDFUpload';
 import { useToast } from '@/hooks/use-toast';
 import { notesService } from '@/services/notesService';
 import { Note } from '@/types/common';
+import Footer from '@/components/Footer';
 
 const Notes = () => {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -203,6 +204,19 @@ const Notes = () => {
     });
   };
 
+  const handleView = (note: Note) => {
+    setViewingNote(note);
+    
+    // Update view count
+    setNotes(prevNotes => 
+      prevNotes.map(n => 
+        n.id === note.id 
+          ? { ...n, views: (n.views || 0) + 1 }
+          : n
+      )
+    );
+  };
+
   if (viewingNote) {
     return (
       <PDFViewer 
@@ -245,6 +259,15 @@ const Notes = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Main Search and Upload Section */}
         <div className="mb-8">
+          <div className="flex items-center justify-center mb-6">
+            <img 
+              src="/lovable-uploads/48bd98a0-c7ee-4b45-adf1-cca6b79289b4.png" 
+              alt="Book Icon"
+              className="w-12 h-12 mr-4"
+            />
+            <h1 className="text-4xl font-bold text-white">নোট ব্যাংক</h1>
+          </div>
+          
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Search */}
             <div className="relative">
@@ -383,8 +406,7 @@ const Notes = () => {
               return (
                 <Card 
                   key={note.id} 
-                  className="bg-black/20 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all duration-300 group cursor-pointer"
-                  onClick={() => setViewingNote(note)}
+                  className="bg-black/20 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all duration-300 group"
                 >
                   <CardHeader className="pb-3">
                     <div className={`w-full h-32 bg-gradient-to-br ${colorClass} rounded-lg flex items-center justify-center mb-4 group-hover:scale-105 transition-transform`}>
@@ -433,17 +455,24 @@ const Notes = () => {
                       {new Date(note.uploadDate).toLocaleDateString('bn-BD')}
                     </div>
 
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDownload(note);
-                      }}
-                      className={`w-full bg-gradient-to-r ${colorClass} hover:opacity-90 transition-opacity`}
-                      size="sm"
-                    >
-                      <Download className="mr-2 h-4 w-4" />
-                      ডাউনলোড করুন
-                    </Button>
+                    <div className="flex space-x-2">
+                      <Button
+                        onClick={() => handleView(note)}
+                        className="flex-1 bg-black/40 border border-white/20 text-white hover:bg-white/10"
+                        size="sm"
+                      >
+                        <Eye className="mr-2 h-4 w-4" />
+                        দেখুন
+                      </Button>
+                      <Button
+                        onClick={() => handleDownload(note)}
+                        className={`flex-1 bg-gradient-to-r ${colorClass} hover:opacity-90 transition-opacity`}
+                        size="sm"
+                      >
+                        <Download className="mr-2 h-4 w-4" />
+                        ডাউনলোড
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               );
@@ -462,6 +491,9 @@ const Notes = () => {
 
       {/* AI Assistant */}
       <AIAssistant />
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
