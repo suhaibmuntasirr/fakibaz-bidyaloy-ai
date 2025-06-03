@@ -1,594 +1,378 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Search, 
-  Filter, 
-  Download, 
-  Eye, 
-  Star, 
-  Clock, 
-  User, 
-  BookOpen,
-  FileText,
-  GraduationCap,
-  TrendingUp,
-  Calendar,
-  ThumbsUp,
-  School
-} from 'lucide-react';
+import { Search, BookOpen, Download, Eye, Calendar, Clock, School, MapPin } from 'lucide-react';
 import Navbar from '@/components/Navbar';
-import PDFViewer, { Question } from '@/components/PDFViewer';
-import PDFUpload from '@/components/PDFUpload';
-import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
 import ExamSystem from '@/components/ExamSystem';
+import { useToast } from '@/hooks/use-toast';
+
+interface QuestionPaper {
+  id: string;
+  title: string;
+  subject: string;
+  class: string;
+  school: string;
+  district: string;
+  year: number;
+  type: 'test' | 'annual' | 'half-yearly' | 'model';
+  duration: string;
+  marks: number;
+  downloadUrl: string;
+  previewUrl?: string;
+  tags: string[];
+}
 
 const QuestionBank = () => {
+  const [questions, setQuestions] = useState<QuestionPaper[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedSchool, setSelectedSchool] = useState('');
-  const [selectedPaper, setSelectedPaper] = useState<Question | null>(null);
-  const [showUpload, setShowUpload] = useState(false);
-  const [likedQuestions, setLikedQuestions] = useState<string[]>([]);
-  const { currentUser } = useAuth();
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+  const [selectedType, setSelectedType] = useState('');
+  const [showExamSystem, setShowExamSystem] = useState(false);
+  const [selectedQuestionPaper, setSelectedQuestionPaper] = useState<QuestionPaper | null>(null);
   const { toast } = useToast();
 
-  // Sample question papers data
-  const [questionPapers] = useState<Question[]>([
-    {
-      id: '1',
-      title: 'HSC Physics MCQ - 2024',
-      subject: 'পদার্থবিজ্ঞান',
-      class: 'HSC',
-      school: 'ঢাকা কলেজ',
-      year: 2024,
-      examType: 'বার্ষিক পরীক্ষা',
-      difficulty: 'Medium',
-      marks: 50,
-      uploader: 'শিক্ষক রহমান',
-      uploaderId: 'teacher1',
-      views: 1250,
-      likes: 85,
-      answers: 12,
-      hasAnswerKey: true,
-      uploadDate: new Date('2024-01-15'),
-      verified: true,
-      questionFileUrl: '/sample-mcq.pdf',
-      answerFileUrl: '/sample-mcq-answers.pdf',
-      fileName: 'HSC_Physics_MCQ_2024.pdf',
-      answerFileName: 'HSC_Physics_MCQ_2024_Answers.pdf',
-      likedBy: []
-    },
-    {
-      id: '2',
-      title: 'SSC Mathematics CQ - 2023',
-      subject: 'গণিত',
-      class: 'SSC',
-      school: 'চট্টগ্রাম কলেজিয়েট স্কুল',
-      year: 2023,
-      examType: 'নির্বাচনী পরীক্ষা',
-      difficulty: 'Hard',
-      marks: 100,
-      uploader: 'শিক্ষক করিম',
-      uploaderId: 'teacher2',
-      views: 890,
-      likes: 63,
-      answers: 8,
-      hasAnswerKey: false,
-      uploadDate: new Date('2023-12-20'),
-      verified: true,
-      questionFileUrl: '/sample-cq.pdf',
-      fileName: 'SSC_Mathematics_CQ_2023.pdf',
-      likedBy: []
-    },
-    {
-      id: '3',
-      title: 'Class 10 Chemistry Model Test',
-      subject: 'রসায়ন',
-      class: 'Class 10',
-      school: 'সিলেট সরকারি উচ্চ বিদ্যালয়',
-      year: 2024,
-      examType: 'মডেল টেস্ট',
-      difficulty: 'Easy',
-      marks: 75,
-      uploader: 'শিক্ষক আলম',
-      uploaderId: 'teacher3',
-      views: 567,
-      likes: 45,
-      answers: 15,
-      hasAnswerKey: true,
-      uploadDate: new Date('2024-02-10'),
-      verified: false,
-      questionFileUrl: '/sample-mixed.pdf',
-      answerFileUrl: '/sample-mixed-answers.pdf',
-      fileName: 'Class10_Chemistry_Model_2024.pdf',
-      answerFileName: 'Class10_Chemistry_Model_2024_Answers.pdf',
-      likedBy: []
-    },
-    {
-      id: '4',
-      title: 'SSC English Final Exam',
-      subject: 'ইংরেজি',
-      class: 'SSC',
-      school: 'রাজশাহী কলেজিয়েট স্কুল',
-      year: 2024,
-      examType: 'ফাইনাল পরীক্ষা',
-      difficulty: 'Medium',
-      marks: 100,
-      uploader: 'শিক্ষক হাসান',
-      uploaderId: 'teacher4',
-      views: 720,
-      likes: 52,
-      answers: 18,
-      hasAnswerKey: true,
-      uploadDate: new Date('2024-01-25'),
-      verified: true,
-      questionFileUrl: '/sample-english.pdf',
-      answerFileUrl: '/sample-english-answers.pdf',
-      fileName: 'SSC_English_Final_2024.pdf',
-      answerFileName: 'SSC_English_Final_2024_Answers.pdf',
-      likedBy: []
-    }
-  ]);
+  // Sample data
+  useEffect(() => {
+    const sampleQuestions: QuestionPaper[] = [
+      {
+        id: '1',
+        title: 'গণিত - বার্ষিক পরীক্ষা ২০২৩',
+        subject: 'গণিত',
+        class: 'Class 10',
+        school: 'ঢাকা কলেজিয়েট স্কুল',
+        district: 'ঢাকা',
+        year: 2023,
+        type: 'annual',
+        duration: '৩ ঘণ্টা',
+        marks: 100,
+        downloadUrl: '/sample-question.pdf',
+        tags: ['বীজগণিত', 'জ্যামিতি', 'পরিসংখ্যান']
+      },
+      {
+        id: '2',
+        title: 'পদার্থবিজ্ঞান - অর্ধবার্ষিক পরীক্ষা ২০২৩',
+        subject: 'পদার্থবিজ্ঞান',
+        class: 'Class 12',
+        school: 'ভিকারুননিসা নূন স্কুল',
+        district: 'ঢাকা',
+        year: 2023,
+        type: 'half-yearly',
+        duration: '৩ ঘণ্টা',
+        marks: 100,
+        downloadUrl: '/sample-physics.pdf',
+        tags: ['বলবিদ্যা', 'তাপগতিবিদ্যা', 'আলোকবিদ্যা']
+      },
+      {
+        id: '3',
+        title: 'ইংরেজি - টেস্ট পরীক্ষা ২০২৩',
+        subject: 'ইংরেজি',
+        class: 'Class 9',
+        school: 'নটরডেম কলেজ',
+        district: 'ঢাকা',
+        year: 2023,
+        type: 'test',
+        duration: '২ ঘণ্টা',
+        marks: 75,
+        downloadUrl: '/sample-english.pdf',
+        tags: ['Grammar', 'Composition', 'Reading Comprehension']
+      }
+    ];
+    setQuestions(sampleQuestions);
+  }, []);
 
-  const classes = ['All', 'HSC', 'SSC', 'Class 10', 'Class 9', 'Class 8'];
-  const subjects = ['All', 'গণিত', 'পদার্থবিজ্ঞান', 'রসায়ন', 'বাংলা', 'ইংরেজি'];
-  const schools = ['All', 'ঢাকা কলেজ', 'চট্টগ্রাম কলেজিয়েট স্কুল', 'সিলেট সরকারি উচ্চ বিদ্যালয়', 'রাজশাহী কলেজিয়েট স্কুল'];
-
-  const filteredPapers = questionPapers.filter(paper => {
-    const matchesSearch = paper.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         paper.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         paper.school.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesClass = selectedClass === '' || selectedClass === 'All' || paper.class === selectedClass;
-    const matchesSubject = selectedSubject === '' || selectedSubject === 'All' || paper.subject === selectedSubject;
-    const matchesSchool = selectedSchool === '' || selectedSchool === 'All' || paper.school === selectedSchool;
-    
-    return matchesSearch && matchesClass && matchesSubject && matchesSchool;
+  const filteredQuestions = questions.filter(question => {
+    return (
+      (searchQuery === '' || 
+       question.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+       question.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+       question.school.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      (selectedClass === '' || question.class === selectedClass) &&
+      (selectedSubject === '' || question.subject === selectedSubject) &&
+      (selectedSchool === '' || question.school === selectedSchool) &&
+      (selectedDistrict === '' || question.district === selectedDistrict) &&
+      (selectedYear === '' || question.year.toString() === selectedYear) &&
+      (selectedType === '' || question.type === selectedType)
+    );
   });
 
-  const handleDownload = (paper: Question) => {
+  const handleDownload = (question: QuestionPaper) => {
+    // Simulate download
     toast({
       title: "ডাউনলোড শুরু হয়েছে",
-      description: `"${paper.title}" ডাউনলোড হচ্ছে`,
+      description: `${question.title} ডাউনলোড হচ্ছে...`,
     });
   };
 
-  const handleView = (paper: Question) => {
-    setSelectedPaper(paper);
+  const handlePreview = (question: QuestionPaper) => {
+    toast({
+      title: "প্রিভিউ খোলা হচ্ছে",
+      description: `${question.title} প্রিভিউ মোডে খোলা হচ্ছে...`,
+    });
   };
 
-  const handleLike = (questionId: string) => {
-    setLikedQuestions(prev => 
-      prev.includes(questionId) 
-        ? prev.filter(id => id !== questionId)
-        : [...prev, questionId]
-    );
-  };
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'Easy': return 'bg-green-500/20 text-green-300 border-green-500/30';
-      case 'Medium': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
-      case 'Hard': return 'bg-red-500/20 text-red-300 border-red-500/30';
-      default: return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
-    }
+  const handleStartExam = (question: QuestionPaper) => {
+    setSelectedQuestionPaper(question);
+    setShowExamSystem(true);
   };
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'mcq': return 'bg-blue-500/20 text-blue-300 border-blue-500/30';
-      case 'cq': return 'bg-purple-500/20 text-purple-300 border-purple-500/30';
-      case 'mixed': return 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30';
-      default: return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
+      case 'annual': return 'bg-red-500/20 text-red-300';
+      case 'half-yearly': return 'bg-blue-500/20 text-blue-300';
+      case 'test': return 'bg-green-500/20 text-green-300';
+      case 'model': return 'bg-purple-500/20 text-purple-300';
+      default: return 'bg-gray-500/20 text-gray-300';
     }
   };
 
+  const getTypeName = (type: string) => {
+    switch (type) {
+      case 'annual': return 'বার্ষিক';
+      case 'half-yearly': return 'অর্ধবার্ষিক';
+      case 'test': return 'টেস্ট';
+      case 'model': return 'মডেল';
+      default: return type;
+    }
+  };
+
+  if (showExamSystem && selectedQuestionPaper) {
+    return (
+      <ExamSystem 
+        questionPaper={selectedQuestionPaper}
+        onExit={() => {
+          setShowExamSystem(false);
+          setSelectedQuestionPaper(null);
+        }}
+      />
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900/30 via-blue-800/20 to-indigo-900/40">
+    <div className="min-h-screen bg-gradient-to-br from-sky-100 via-blue-50 to-indigo-100">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-300 to-white bg-clip-text text-transparent mb-2">
-              প্রশ্ন ব্যাংক
-            </h1>
-            <p className="text-blue-100">বিভিন্ন বোর্ড ও পরীক্ষার প্রশ্নপত্র</p>
-          </div>
-          
-          {currentUser && (
-            <Button 
-              onClick={() => setShowUpload(true)}
-              className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-            >
-              <FileText className="mr-2 h-4 w-4" />
-              প্রশ্ন আপলোড করুন
-            </Button>
-          )}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+            প্রশ্ন ব্যাংক
+          </h1>
+          <p className="text-gray-600 text-lg">
+            বিভিন্ন স্কুল ও কলেজের পরীক্ষার প্রশ্নপত্র এবং মডেল টেস্ট
+          </p>
         </div>
 
-        <Tabs defaultValue="browse" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-white/20 backdrop-blur-md border border-white/30">
-            <TabsTrigger value="browse" className="text-white data-[state=active]:bg-white/30">
-              <Search className="mr-2 h-4 w-4" />
-              খুঁজে দেখুন
-            </TabsTrigger>
-            <TabsTrigger value="popular" className="text-white data-[state=active]:bg-white/30">
-              <TrendingUp className="mr-2 h-4 w-4" />
-              জনপ্রিয়
-            </TabsTrigger>
-            <TabsTrigger value="recent" className="text-white data-[state=active]:bg-white/30">
-              <Calendar className="mr-2 h-4 w-4" />
-              সাম্প্রতিক
-            </TabsTrigger>
-          </TabsList>
+        {/* Filters */}
+        <Card className="mb-8 bg-white/80 backdrop-blur-lg border-white/50 shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-gray-800 flex items-center">
+              <Search className="mr-2 h-5 w-5" />
+              খুঁজে নিন
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="প্রশ্নপত্র খুঁজুন..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 bg-white/50 border-gray-200"
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              <Select value={selectedClass} onValueChange={setSelectedClass}>
+                <SelectTrigger className="bg-white/50 border-gray-200">
+                  <SelectValue placeholder="ক্লাস" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">সব ক্লাস</SelectItem>
+                  <SelectItem value="Class 6">Class 6</SelectItem>
+                  <SelectItem value="Class 7">Class 7</SelectItem>
+                  <SelectItem value="Class 8">Class 8</SelectItem>
+                  <SelectItem value="Class 9">Class 9</SelectItem>
+                  <SelectItem value="Class 10">Class 10</SelectItem>
+                  <SelectItem value="Class 11">Class 11</SelectItem>
+                  <SelectItem value="Class 12">Class 12</SelectItem>
+                </SelectContent>
+              </Select>
 
-          <TabsContent value="browse" className="space-y-6">
-            {/* Search and Filter Section */}
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              <div className="md:col-span-2">
-                <div className="relative">
-                  <Search className="absolute left-3 top-3 h-4 w-4 text-gray-300" />
-                  <Input
-                    placeholder="প্রশ্নপত্র বা স্কুল খুঁজুন..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-white/20 backdrop-blur-md border-white/30 text-white placeholder:text-gray-300"
-                  />
+              <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+                <SelectTrigger className="bg-white/50 border-gray-200">
+                  <SelectValue placeholder="বিষয়" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">সব বিষয়</SelectItem>
+                  <SelectItem value="গণিত">গণিত</SelectItem>
+                  <SelectItem value="পদার্থবিজ্ঞান">পদার্থবিজ্ঞান</SelectItem>
+                  <SelectItem value="রসায়ন">রসায়ন</SelectItem>
+                  <SelectItem value="জীববিজ্ঞান">জীববিজ্ঞান</SelectItem>
+                  <SelectItem value="ইংরেজি">ইংরেজি</SelectItem>
+                  <SelectItem value="বাংলা">বাংলা</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedSchool} onValueChange={setSelectedSchool}>
+                <SelectTrigger className="bg-white/50 border-gray-200">
+                  <SelectValue placeholder="প্রতিষ্ঠান" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">সব প্রতিষ্ঠান</SelectItem>
+                  <SelectItem value="ঢাকা কলেজিয়েট স্কুল">ঢাকা কলেজিয়েট স্কুল</SelectItem>
+                  <SelectItem value="ভিকারুননিসা নূন স্কুল">ভিকারুননিসা নূন স্কুল</SelectItem>
+                  <SelectItem value="নটরডেম কলেজ">নটরডেম কলেজ</SelectItem>
+                  <SelectItem value="ধানমন্ডি গভর্নমেন্ট বয়েজ হাই স্কুল">ধানমন্ডি গভর্নমেন্ট বয়েজ হাই স্কুল</SelectItem>
+                  <SelectItem value="আইডিয়াল স্কুল এন্ড কলেজ">আইডিয়াল স্কুল এন্ড কলেজ</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedDistrict} onValueChange={setSelectedDistrict}>
+                <SelectTrigger className="bg-white/50 border-gray-200">
+                  <SelectValue placeholder="জেলা" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">সব জেলা</SelectItem>
+                  <SelectItem value="ঢাকা">ঢাকা</SelectItem>
+                  <SelectItem value="চট্টগ্রাম">চট্টগ্রাম</SelectItem>
+                  <SelectItem value="সিলেট">সিলেট</SelectItem>
+                  <SelectItem value="রাজশাহী">রাজশাহী</SelectItem>
+                  <SelectItem value="খুলনা">খুলনা</SelectItem>
+                  <SelectItem value="বরিশাল">বরিশাল</SelectItem>
+                  <SelectItem value="রংপুর">রংপুর</SelectItem>
+                  <SelectItem value="ময়মনসিংহ">ময়মনসিংহ</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedYear} onValueChange={setSelectedYear}>
+                <SelectTrigger className="bg-white/50 border-gray-200">
+                  <SelectValue placeholder="বছর" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">সব বছর</SelectItem>
+                  <SelectItem value="2024">২০২৪</SelectItem>
+                  <SelectItem value="2023">২০২৩</SelectItem>
+                  <SelectItem value="2022">২০২২</SelectItem>
+                  <SelectItem value="2021">২০২১</SelectItem>
+                  <SelectItem value="2020">২০২০</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedType} onValueChange={setSelectedType}>
+                <SelectTrigger className="bg-white/50 border-gray-200">
+                  <SelectValue placeholder="ধরন" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">সব ধরন</SelectItem>
+                  <SelectItem value="annual">বার্ষিক</SelectItem>
+                  <SelectItem value="half-yearly">অর্ধবার্ষিক</SelectItem>
+                  <SelectItem value="test">টেস্ট</SelectItem>
+                  <SelectItem value="model">মডেল</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Results */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredQuestions.map((question) => (
+            <Card key={question.id} className="bg-white/80 backdrop-blur-lg border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between">
+                  <CardTitle className="text-lg text-gray-800 line-clamp-2">
+                    {question.title}
+                  </CardTitle>
+                  <Badge className={`${getTypeColor(question.type)} border-0 text-xs`}>
+                    {getTypeName(question.type)}
+                  </Badge>
                 </div>
-              </div>
+              </CardHeader>
               
-              <select
-                value={selectedClass}
-                onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-md px-3 py-2"
-              >
-                {classes.map(cls => (
-                  <option key={cls} value={cls === 'All' ? '' : cls} className="bg-slate-800">
-                    {cls === 'All' ? 'সব ক্লাস' : cls}
-                  </option>
-                ))}
-              </select>
-              
-              <select
-                value={selectedSubject}
-                onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-md px-3 py-2"
-              >
-                {subjects.map(subject => (
-                  <option key={subject} value={subject === 'All' ? '' : subject} className="bg-slate-800">
-                    {subject === 'All' ? 'সব বিষয়' : subject}
-                  </option>
-                ))}
-              </select>
+              <CardContent className="space-y-4">
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center text-gray-600">
+                    <BookOpen className="mr-2 h-4 w-4" />
+                    <span>{question.subject} • {question.class}</span>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <School className="mr-2 h-4 w-4" />
+                    <span className="line-clamp-1">{question.school}</span>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <MapPin className="mr-2 h-4 w-4" />
+                    <span>{question.district}</span>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <Calendar className="mr-2 h-4 w-4" />
+                    <span>{question.year}</span>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <Clock className="mr-2 h-4 w-4" />
+                    <span>{question.duration} • {question.marks} নম্বর</span>
+                  </div>
+                </div>
 
-              <select
-                value={selectedSchool}
-                onChange={(e) => setSelectedSchool(e.target.value)}
-                className="bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-md px-3 py-2"
-              >
-                {schools.map(school => (
-                  <option key={school} value={school === 'All' ? '' : school} className="bg-slate-800">
-                    {school === 'All' ? 'সব স্কুল' : school}
-                  </option>
-                ))}
-              </select>
-            </div>
+                <div className="flex flex-wrap gap-1">
+                  {question.tags.slice(0, 3).map((tag, index) => (
+                    <Badge key={index} variant="outline" className="text-xs bg-blue-50 text-blue-600 border-blue-200">
+                      {tag}
+                    </Badge>
+                  ))}
+                  {question.tags.length > 3 && (
+                    <Badge variant="outline" className="text-xs bg-gray-50 text-gray-500 border-gray-200">
+                      +{question.tags.length - 3}
+                    </Badge>
+                  )}
+                </div>
 
-            {/* Question Papers Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredPapers.map((paper) => (
-                <Card key={paper.id} className="bg-white/15 backdrop-blur-lg border border-white/30 hover:border-white/50 transition-all group hover:bg-white/20">
-                  
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-white text-lg mb-2 group-hover:text-blue-200 transition-colors">
-                          {paper.title}
-                        </CardTitle>
-                        <div className="flex flex-wrap gap-2 mb-3">
-                          <Badge variant="outline" className="bg-blue-500/30 text-blue-200 border-blue-400/50">
-                            {paper.examType}
-                          </Badge>
-                          <Badge variant="outline" className="bg-purple-500/30 text-purple-200 border-purple-400/50">
-                            {paper.difficulty}
-                          </Badge>
-                          {paper.likes > 50 && (
-                            <Badge className="bg-orange-500/30 text-orange-200 border-orange-400/50">
-                              <Star className="mr-1 h-3 w-3" />
-                              জনপ্রিয়
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4 text-sm text-blue-200">
-                      <div className="flex items-center">
-                        <GraduationCap className="mr-2 h-4 w-4" />
-                        {paper.class}
-                      </div>
-                      <div className="flex items-center">
-                        <BookOpen className="mr-2 h-4 w-4" />
-                        {paper.subject}
-                      </div>
-                      <div className="flex items-center">
-                        <School className="mr-2 h-4 w-4" />
-                        {paper.school}
-                      </div>
-                      <div className="flex items-center">
-                        <Clock className="mr-2 h-4 w-4" />
-                        {paper.year}
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between text-xs text-blue-300">
-                      <div className="flex items-center">
-                        <User className="mr-1 h-3 w-3" />
-                        {paper.uploader}
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <span className="flex items-center">
-                          <Download className="mr-1 h-3 w-3" />
-                          {paper.views}
-                        </span>
-                        <span className="flex items-center">
-                          <ThumbsUp className="mr-1 h-3 w-3" />
-                          {paper.likes}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        onClick={() => handleView(paper)}
-                        className="flex-1 bg-blue-500/30 border-blue-400 text-blue-200 hover:bg-blue-500/40"
-                      >
-                        <Eye className="mr-1 h-3 w-3" />
-                        দেখুন
-                      </Button>
-                      <Button 
-                        size="sm"
-                        onClick={() => handleDownload(paper)}
-                        className="flex-1 bg-green-500/80 hover:bg-green-500/90 text-white border-0"
-                      >
-                        <Download className="mr-1 h-3 w-3" />
-                        ডাউনলোড
-                      </Button>
-                      <ExamSystem questionPaper={paper} />
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="popular">
-            {/* Popular questions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {questionPapers.filter(paper => paper.likes > 50).map((paper) => (
-                <Card key={paper.id} className="bg-white/15 backdrop-blur-lg border border-white/30 hover:border-white/50 transition-all group hover:bg-white/20">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-white text-lg mb-2 group-hover:text-blue-200 transition-colors">
-                          {paper.title}
-                        </CardTitle>
-                        <div className="flex flex-wrap gap-2 mb-3">
-                          <Badge variant="outline" className="bg-blue-500/30 text-blue-200 border-blue-400/50">
-                            {paper.examType}
-                          </Badge>
-                          <Badge variant="outline" className="bg-purple-500/30 text-purple-200 border-purple-400/50">
-                            {paper.difficulty}
-                          </Badge>
-                          {paper.likes > 50 && (
-                            <Badge className="bg-orange-500/30 text-orange-200 border-orange-400/50">
-                              <Star className="mr-1 h-3 w-3" />
-                              জনপ্রিয়
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4 text-sm text-blue-200">
-                      <div className="flex items-center">
-                        <GraduationCap className="mr-2 h-4 w-4" />
-                        {paper.class}
-                      </div>
-                      <div className="flex items-center">
-                        <BookOpen className="mr-2 h-4 w-4" />
-                        {paper.subject}
-                      </div>
-                      <div className="flex items-center">
-                        <School className="mr-2 h-4 w-4" />
-                        {paper.school}
-                      </div>
-                      <div className="flex items-center">
-                        <Clock className="mr-2 h-4 w-4" />
-                        {paper.year}
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between text-xs text-blue-300">
-                      <div className="flex items-center">
-                        <User className="mr-1 h-3 w-3" />
-                        {paper.uploader}
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <span className="flex items-center">
-                          <Download className="mr-1 h-3 w-3" />
-                          {paper.views}
-                        </span>
-                        <span className="flex items-center">
-                          <ThumbsUp className="mr-1 h-3 w-3" />
-                          {paper.likes}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        onClick={() => handleView(paper)}
-                        className="flex-1 bg-blue-500/30 border-blue-400 text-blue-200 hover:bg-blue-500/40"
-                      >
-                        <Eye className="mr-1 h-3 w-3" />
-                        দেখুন
-                      </Button>
-                      <Button 
-                        size="sm"
-                        onClick={() => handleDownload(paper)}
-                        className="flex-1 bg-green-500/80 hover:bg-green-500/90 text-white border-0"
-                      >
-                        <Download className="mr-1 h-3 w-3" />
-                        ডাউনলোড
-                      </Button>
-                      <ExamSystem questionPaper={paper} />
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="recent">
-            {/* Recent questions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {questionPapers.sort((a, b) => new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime()).map((paper) => (
-                <Card key={paper.id} className="bg-white/15 backdrop-blur-lg border border-white/30 hover:border-white/50 transition-all group hover:bg-white/20">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-white text-lg mb-2 group-hover:text-blue-200 transition-colors">
-                          {paper.title}
-                        </CardTitle>
-                        <div className="flex flex-wrap gap-2 mb-3">
-                          <Badge variant="outline" className="bg-blue-500/30 text-blue-200 border-blue-400/50">
-                            {paper.examType}
-                          </Badge>
-                          <Badge variant="outline" className="bg-purple-500/30 text-purple-200 border-purple-400/50">
-                            {paper.difficulty}
-                          </Badge>
-                          {paper.likes > 50 && (
-                            <Badge className="bg-orange-500/30 text-orange-200 border-orange-400/50">
-                              <Star className="mr-1 h-3 w-3" />
-                              জনপ্রিয়
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4 text-sm text-blue-200">
-                      <div className="flex items-center">
-                        <GraduationCap className="mr-2 h-4 w-4" />
-                        {paper.class}
-                      </div>
-                      <div className="flex items-center">
-                        <BookOpen className="mr-2 h-4 w-4" />
-                        {paper.subject}
-                      </div>
-                      <div className="flex items-center">
-                        <School className="mr-2 h-4 w-4" />
-                        {paper.school}
-                      </div>
-                      <div className="flex items-center">
-                        <Clock className="mr-2 h-4 w-4" />
-                        {paper.year}
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between text-xs text-blue-300">
-                      <div className="flex items-center">
-                        <User className="mr-1 h-3 w-3" />
-                        {paper.uploader}
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <span className="flex items-center">
-                          <Download className="mr-1 h-3 w-3" />
-                          {paper.views}
-                        </span>
-                        <span className="flex items-center">
-                          <ThumbsUp className="mr-1 h-3 w-3" />
-                          {paper.likes}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        onClick={() => handleView(paper)}
-                        className="flex-1 bg-blue-500/30 border-blue-400 text-blue-200 hover:bg-blue-500/40"
-                      >
-                        <Eye className="mr-1 h-3 w-3" />
-                        দেখুন
-                      </Button>
-                      <Button 
-                        size="sm"
-                        onClick={() => handleDownload(paper)}
-                        className="flex-1 bg-green-500/80 hover:bg-green-500/90 text-white border-0"
-                      >
-                        <Download className="mr-1 h-3 w-3" />
-                        ডাউনলোড
-                      </Button>
-                      <ExamSystem questionPaper={paper} />
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
-
-      {/* PDF Viewer Modal */}
-      {selectedPaper && (
-        <PDFViewer
-          item={selectedPaper}
-          type="question"
-          onClose={() => setSelectedPaper(null)}
-          onLike={() => handleLike(selectedPaper.id)}
-          onDownload={() => handleDownload(selectedPaper)}
-          isLiked={likedQuestions.includes(selectedPaper.id)}
-        />
-      )}
-
-      {/* Upload Modal */}
-      {showUpload && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-[#1a1a1a] rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-white/20">
-            <h3 className="text-white text-lg font-semibold mb-4">প্রশ্ন আপলোড করুন</h3>
-            <PDFUpload 
-              type="question"
-              onUploadSuccess={() => {
-                setShowUpload(false);
-                toast({
-                  title: "আপলোড সফল!",
-                  description: "আপনার প্রশ্নপত্র সফলভাবে আপলোড হয়েছে",
-                });
-              }}
-              onCancel={() => setShowUpload(false)}
-            />
-          </div>
+                <div className="flex gap-2 pt-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePreview(question)}
+                    className="flex-1 bg-white/70 border-blue-200 text-blue-600 hover:bg-blue-50"
+                  >
+                    <Eye className="mr-1 h-3 w-3" />
+                    প্রিভিউ
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDownload(question)}
+                    className="flex-1 bg-white/70 border-green-200 text-green-600 hover:bg-green-50"
+                  >
+                    <Download className="mr-1 h-3 w-3" />
+                    ডাউনলোড
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => handleStartExam(question)}
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white"
+                  >
+                    পরীক্ষা দিন
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      )}
+
+        {filteredQuestions.length === 0 && (
+          <div className="text-center py-12">
+            <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">কোনো প্রশ্নপত্র পাওয়া যায়নি</h3>
+            <p className="text-gray-500">অন্য ফিল্টার ব্যবহার করে চেষ্টা করুন</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

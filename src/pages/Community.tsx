@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { MessageCircle, Heart, Share2, Users, Plus, Search, Clock, HelpCircle, Lightbulb, Target, Send } from 'lucide-react';
+import { MessageCircle, Heart, Share2, Users, Plus, Search, Clock, HelpCircle, Lightbulb, Target, Send, Image, X } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import TrendingTopics from '@/components/TrendingTopics';
 import CommunityStats from '@/components/CommunityStats';
@@ -37,6 +37,7 @@ interface Post {
   tags: string[];
   type: 'question' | 'discussion' | 'study-tip' | 'achievement';
   likedBy: string[];
+  images?: string[];
 }
 
 const Community = () => {
@@ -46,6 +47,9 @@ const Community = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [newComment, setNewComment] = useState<{[key: string]: string}>({});
   const [showComments, setShowComments] = useState<{[key: string]: boolean}>({});
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const postTags = ['প্রশ্ন', 'আলোচনা', 'স্টাডি টিপস', 'পরীক্ষা', 'গণিত', 'বিজ্ঞান', 'ইংরেজি', 'বাংলা'];
@@ -107,6 +111,27 @@ const Community = () => {
     ]);
   }, []);
 
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    if (files.length > 0) {
+      setSelectedImages(prev => [...prev, ...files].slice(0, 3)); // Max 3 images
+      
+      // Create preview URLs
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setImagePreviewUrls(prev => [...prev, e.target?.result as string]);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setSelectedImages(prev => prev.filter((_, i) => i !== index));
+    setImagePreviewUrls(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleCreatePost = () => {
     if (!newPost.trim()) {
       toast({
@@ -130,12 +155,15 @@ const Community = () => {
       comments: [],
       tags: selectedTags,
       type: 'discussion',
-      likedBy: []
+      likedBy: [],
+      images: imagePreviewUrls.length > 0 ? imagePreviewUrls : undefined
     };
 
     setPosts([post, ...posts]);
     setNewPost('');
     setSelectedTags([]);
+    setSelectedImages([]);
+    setImagePreviewUrls([]);
     toast({
       title: "পোস্ট প্রকাশিত হয়েছে",
       description: "আপনার পোস্ট সফলভাবে প্রকাশিত হয়েছে",
@@ -194,21 +222,38 @@ const Community = () => {
     });
   };
 
-  const handleSharePost = (post: Post) => {
-    const shareText = `${post.content}\n\n- ${post.author.name}, ${post.author.class}`;
+  const handleSharePost = async (post: Post) => {
+    const shareText = `${post.content}\n\n- ${post.author.name}, ${post.author.class}\n\nFakibaz বিদ্যালয় কমিউনিটি`;
+    const shareUrl = `${window.location.origin}/community?post=${post.id}`;
     
     if (navigator.share) {
-      navigator.share({
-        title: 'ফাকিবাজ বিদ্যালয় - কমিউনিটি পোস্ট',
-        text: shareText,
-        url: window.location.href
-      });
+      try {
+        await navigator.share({
+          title: 'ফাকিবাজ বিদ্যালয় - কমিউনিটি পোস্ট',
+          text: shareText,
+          url: shareUrl
+        });
+        toast({
+          title: "শেয়ার করা হয়েছে",
+          description: "পোস্টটি সফলভাবে শেয়ার করা হয়েছে",
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
     } else {
-      navigator.clipboard.writeText(shareText);
-      toast({
-        title: "কপি করা হয়েছে",
-        description: "পোস্টটি ক্লিপবোর্ডে কপি করা হয়েছে",
-      });
+      try {
+        await navigator.clipboard.writeText(`${shareText}\n\n${shareUrl}`);
+        toast({
+          title: "কপি করা হয়েছে",
+          description: "পোস্টের লিংক ক্লিপবোর্ডে কপি করা হয়েছে",
+        });
+      } catch (err) {
+        console.error('Error copying to clipboard:', err);
+        toast({
+          title: "শেয়ার করুন",
+          description: shareText,
+        });
+      }
     }
   };
 
@@ -299,6 +344,52 @@ const Community = () => {
                       className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 min-h-[100px]"
                     />
                     
+                    {/* Image Preview */}
+                    {imagePreviewUrls.length > 0 && (
+                      <div className="grid grid-cols-3 gap-2">
+                        {imagePreviewUrls.map((url, index) => (
+                          <div key={index} className="relative">
+                            <img
+                              src={url}
+                              alt={`Preview ${index + 1}`}
+                              className="w-full h-24 object-cover rounded-lg"
+                            />
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              className="absolute top-1 right-1 h-6 w-6"
+                              onClick={() => removeImage(index)}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleImageSelect}
+                          className="hidden"
+                        />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                          disabled={selectedImages.length >= 3}
+                        >
+                          <Image className="mr-2 h-4 w-4" />
+                          ছবি যোগ করুন ({selectedImages.length}/3)
+                        </Button>
+                      </div>
+                    </div>
+                    
                     <div className="space-y-2">
                       <p className="text-sm text-gray-300">ট্যাগ যোগ করুন:</p>
                       <div className="flex flex-wrap gap-2">
@@ -360,6 +451,24 @@ const Community = () => {
                             </div>
 
                             <p className="text-gray-200 leading-relaxed">{post.content}</p>
+
+                            {/* Post Images */}
+                            {post.images && post.images.length > 0 && (
+                              <div className="grid grid-cols-2 gap-2 mt-3">
+                                {post.images.map((image, index) => (
+                                  <img
+                                    key={index}
+                                    src={image}
+                                    alt={`Post image ${index + 1}`}
+                                    className="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
+                                    onClick={() => {
+                                      // Open image in modal or lightbox
+                                      window.open(image, '_blank');
+                                    }}
+                                  />
+                                ))}
+                              </div>
+                            )}
 
                             <div className="flex flex-wrap gap-2">
                               {post.tags.map((tag, index) => (

@@ -4,39 +4,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { LogIn, LogOut, Menu, X, BookOpen, FileText, Users, Crown, Bell, ChevronDown, Settings as SettingsIcon, Home } from 'lucide-react';
-import NotificationPanel from '@/components/NotificationPanel';
-import SettingsModal from '@/components/Settings';
+import { LogIn, LogOut, Menu, X, BookOpen, FileText, Users, Crown, ChevronDown, Settings as SettingsIcon, Home } from 'lucide-react';
+import NotificationDropdown from '@/components/NotificationDropdown';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
-
-  const hasUnreadNotifications = true;
-
-  // Mock notifications data
-  const mockNotifications = [
-    {
-      id: '1',
-      title: 'নতুন নোট',
-      message: 'গণিত বিষয়ে নতুন নোট আপলোড হয়েছে',
-      type: 'note' as const,
-      timestamp: new Date(),
-      read: false
-    },
-    {
-      id: '2',
-      title: 'কমিউনিটি আপডেট',
-      message: 'নতুন আলোচনায় যোগ দিন',
-      type: 'community' as const,
-      timestamp: new Date(),
-      read: true
-    }
-  ];
 
   const handleLogout = async () => {
     try {
@@ -45,21 +20,6 @@ const Navbar = () => {
     } catch (error) {
       console.error("Logout failed:", error);
     }
-  };
-
-  const handleMarkAsRead = (id: string) => {
-    // Handle mark as read logic
-    console.log('Mark as read:', id);
-  };
-
-  const handleMarkAllAsRead = () => {
-    // Handle mark all as read logic
-    console.log('Mark all as read');
-  };
-
-  const handleDeleteNotification = (id: string) => {
-    // Handle delete notification logic
-    console.log('Delete notification:', id);
   };
 
   return (
@@ -111,30 +71,7 @@ const Navbar = () => {
           {/* User Actions */}
           <div className="flex items-center space-x-4">
             {/* Notifications */}
-            <div className="relative">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowNotifications(!showNotifications)}
-                className="text-white hover:bg-white/10 relative"
-              >
-                <Bell className="h-5 w-5" />
-                {hasUnreadNotifications && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                    3
-                  </span>
-                )}
-              </Button>
-              
-              <NotificationPanel
-                isOpen={showNotifications}
-                onClose={() => setShowNotifications(false)}
-                notifications={mockNotifications}
-                onMarkAsRead={handleMarkAsRead}
-                onMarkAllAsRead={handleMarkAllAsRead}
-                onDelete={handleDeleteNotification}
-              />
-            </div>
+            <NotificationDropdown />
 
             {/* User Menu */}
             {currentUser ? (
@@ -165,7 +102,7 @@ const Navbar = () => {
                     <button
                       onClick={() => {
                         setShowUserMenu(false);
-                        setShowSettings(true);
+                        navigate('/settings');
                       }}
                       className="w-full text-left px-4 py-2 text-white hover:bg-white/10 flex items-center"
                     >
@@ -261,25 +198,6 @@ const Navbar = () => {
           </div>
         )}
       </div>
-
-      {/* Settings Modal */}
-      {showSettings && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">সেটিংস</h2>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowSettings(false)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            <SettingsModal />
-          </div>
-        </div>
-      )}
     </nav>
   );
 };

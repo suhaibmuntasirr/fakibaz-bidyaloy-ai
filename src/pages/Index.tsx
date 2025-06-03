@@ -122,9 +122,13 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-blue-900/50 to-purple-900/50">
-        <div className="container mx-auto max-w-4xl text-center">
+      {/* CTA Section with gradient extending to footer */}
+      <section className="py-20 px-4 bg-gradient-to-br from-blue-900/50 to-purple-900/50 relative">
+        {/* Gradient that extends to footer */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/50 to-purple-900/50"></div>
+        <div className="absolute inset-x-0 bottom-0 h-96 bg-gradient-to-t from-blue-900/30 to-transparent"></div>
+        
+        <div className="container mx-auto max-w-4xl text-center relative z-10">
           <h2 className="text-4xl font-bold text-white mb-6">আজই শুরু করুন</h2>
           <p className="text-xl text-gray-300 mb-8">
             বিনামূল্যে যোগ দিন এবং আপনার পড়াশোনাকে সহজ করুন।
@@ -142,7 +146,9 @@ const Index = () => {
         </div>
       </section>
 
-      <Footer />
+      <div className="relative z-10">
+        <Footer />
+      </div>
     </div>
   );
 };
