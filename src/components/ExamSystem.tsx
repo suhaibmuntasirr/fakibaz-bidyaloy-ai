@@ -1,16 +1,20 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
-import { Clock, Upload, FileText, Timer, CheckCircle, File, AlertCircle, Play, Pause, RotateCcw } from 'lucide-react';
+import { Clock, Upload, FileText, Timer, CheckCircle, File, AlertCircle, Play, Pause, RotateCcw, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { chatGPTService } from '@/services/chatgptService';
 
-const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
+interface ExamSystemProps {
+  questionPaper: any;
+  onExit?: () => void;
+}
+
+const ExamSystem = ({ questionPaper, onExit }: ExamSystemProps) => {
   const [showExamModal, setShowExamModal] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
   const [examStarted, setExamStarted] = useState(false);
@@ -44,6 +48,13 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
       title: "পরীক্ষা শুরু হয়েছে",
       description: `${examDuration} মিনিটের পরীক্ষা শুরু হয়েছে`,
     });
+  };
+
+  const handleExitExam = () => {
+    setShowExamModal(false);
+    if (onExit) {
+      onExit();
+    }
   };
 
   const pauseExam = () => {
@@ -237,7 +248,7 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
         পরীক্ষা দিন
       </Button>
 
-      <Dialog open={showExamModal} onOpenChange={setShowExamModal}>
+      <Dialog open={showExamModal} onOpenChange={handleExitExam}>
         <DialogContent className="bg-[#1a1a1a] border-white/20 text-white max-w-7xl max-h-[95vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-white flex items-center justify-between">
@@ -265,6 +276,9 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
                     </div>
                   </>
                 )}
+                <Button size="sm" variant="outline" onClick={handleExitExam}>
+                  <X className="h-3 w-3" />
+                </Button>
               </div>
             </DialogTitle>
             {examStarted && !examCompleted && (
@@ -432,13 +446,7 @@ const ExamSystem = ({ questionPaper }: { questionPaper: any }) => {
                   )}
                   
                   <Button 
-                    onClick={() => {
-                      setShowExamModal(false);
-                      setExamCompleted(false);
-                      setAnswerFile(null);
-                      setEvaluation(null);
-                      setApiKey('');
-                    }}
+                    onClick={handleExitExam}
                     className="w-full bg-gray-600 hover:bg-gray-700"
                   >
                     বন্ধ করুন
