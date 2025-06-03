@@ -29,12 +29,12 @@ interface QuestionPaper {
 const QuestionBank = () => {
   const [questions, setQuestions] = useState<QuestionPaper[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedClass, setSelectedClass] = useState('');
-  const [selectedSubject, setSelectedSubject] = useState('');
-  const [selectedSchool, setSelectedSchool] = useState('');
-  const [selectedDistrict, setSelectedDistrict] = useState('');
-  const [selectedYear, setSelectedYear] = useState('');
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedClass, setSelectedClass] = useState('all');
+  const [selectedSubject, setSelectedSubject] = useState('all');
+  const [selectedSchool, setSelectedSchool] = useState('all');
+  const [selectedDistrict, setSelectedDistrict] = useState('all');
+  const [selectedYear, setSelectedYear] = useState('all');
+  const [selectedType, setSelectedType] = useState('all');
   const [showExamSystem, setShowExamSystem] = useState(false);
   const [selectedQuestionPaper, setSelectedQuestionPaper] = useState<QuestionPaper | null>(null);
   const { toast } = useToast();
@@ -94,12 +94,12 @@ const QuestionBank = () => {
        question.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
        question.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
        question.school.toLowerCase().includes(searchQuery.toLowerCase())) &&
-      (selectedClass === '' || question.class === selectedClass) &&
-      (selectedSubject === '' || question.subject === selectedSubject) &&
-      (selectedSchool === '' || question.school === selectedSchool) &&
-      (selectedDistrict === '' || question.district === selectedDistrict) &&
-      (selectedYear === '' || question.year.toString() === selectedYear) &&
-      (selectedType === '' || question.type === selectedType)
+      (selectedClass === 'all' || question.class === selectedClass) &&
+      (selectedSubject === 'all' || question.subject === selectedSubject) &&
+      (selectedSchool === 'all' || question.school === selectedSchool) &&
+      (selectedDistrict === 'all' || question.district === selectedDistrict) &&
+      (selectedYear === 'all' || question.year.toString() === selectedYear) &&
+      (selectedType === 'all' || question.type === selectedType)
     );
   });
 
@@ -156,7 +156,7 @@ const QuestionBank = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-100 via-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-sky-100">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
@@ -194,7 +194,7 @@ const QuestionBank = () => {
                   <SelectValue placeholder="ক্লাস" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">সব ক্লাস</SelectItem>
+                  <SelectItem value="all">সব ক্লাস</SelectItem>
                   <SelectItem value="Class 6">Class 6</SelectItem>
                   <SelectItem value="Class 7">Class 7</SelectItem>
                   <SelectItem value="Class 8">Class 8</SelectItem>
@@ -210,7 +210,7 @@ const QuestionBank = () => {
                   <SelectValue placeholder="বিষয়" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">সব বিষয়</SelectItem>
+                  <SelectItem value="all">সব বিষয়</SelectItem>
                   <SelectItem value="গণিত">গণিত</SelectItem>
                   <SelectItem value="পদার্থবিজ্ঞান">পদার্থবিজ্ঞান</SelectItem>
                   <SelectItem value="রসায়ন">রসায়ন</SelectItem>
@@ -225,7 +225,7 @@ const QuestionBank = () => {
                   <SelectValue placeholder="প্রতিষ্ঠান" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">সব প্রতিষ্ঠান</SelectItem>
+                  <SelectItem value="all">সব প্রতিষ্ঠান</SelectItem>
                   <SelectItem value="ঢাকা কলেজিয়েট স্কুল">ঢাকা কলেজিয়েট স্কুল</SelectItem>
                   <SelectItem value="ভিকারুননিসা নূন স্কুল">ভিকারুননিসা নূন স্কুল</SelectItem>
                   <SelectItem value="নটরডেম কলেজ">নটরডেম কলেজ</SelectItem>
@@ -239,7 +239,7 @@ const QuestionBank = () => {
                   <SelectValue placeholder="জেলা" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">সব জেলা</SelectItem>
+                  <SelectItem value="all">সব জেলা</SelectItem>
                   <SelectItem value="ঢাকা">ঢাকা</SelectItem>
                   <SelectItem value="চট্টগ্রাম">চট্টগ্রাম</SelectItem>
                   <SelectItem value="সিলেট">সিলেট</SelectItem>
@@ -256,7 +256,7 @@ const QuestionBank = () => {
                   <SelectValue placeholder="বছর" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">সব বছর</SelectItem>
+                  <SelectItem value="all">সব বছর</SelectItem>
                   <SelectItem value="2024">২০২৪</SelectItem>
                   <SelectItem value="2023">২০২৩</SelectItem>
                   <SelectItem value="2022">২০২২</SelectItem>
@@ -270,7 +270,7 @@ const QuestionBank = () => {
                   <SelectValue placeholder="ধরন" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">সব ধরন</SelectItem>
+                  <SelectItem value="all">সব ধরন</SelectItem>
                   <SelectItem value="annual">বার্ষিক</SelectItem>
                   <SelectItem value="half-yearly">অর্ধবার্ষিক</SelectItem>
                   <SelectItem value="test">টেস্ট</SelectItem>
