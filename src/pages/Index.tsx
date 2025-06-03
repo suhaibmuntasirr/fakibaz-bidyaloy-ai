@@ -26,14 +26,14 @@ const Index = () => {
         onClick={() => console.log('Ad clicked')}
       />
 
-      {/* Hero Section with Gradient Background */}
+      {/* Hero Section with Full Width Gradient Background */}
       <section className="relative py-12 px-4 text-center">
-        {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/30 via-purple-900/20 to-indigo-900/30 rounded-3xl mx-4"></div>
+        {/* Full Width Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/30 via-purple-900/20 to-indigo-900/30"></div>
         
         <div className="container mx-auto max-w-4xl relative z-10">
           <h1 className="text-5xl font-bold text-white mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            ফাকিবাজ বিদ্যালয়
+            কি শিখতে চাও?
           </h1>
           <p className="text-xl text-gray-300 mb-6">
             AI শিক্ষক, নোট শেয়ারিং, প্রশ্ন ব্যাংক এবং কমিউনিটি - সবকিছু এক জায়গায়
@@ -76,7 +76,7 @@ const Index = () => {
       {/* Class Selection with better spacing */}
       <section className="py-16 px-4">
         <div className="container mx-auto max-w-5xl">
-          <h2 className="text-2xl font-bold text-center mb-8">যে কোন ক্লাসের নোট পাও এখানেই</h2>
+          <h2 className="text-2xl font-bold text-center mb-12">যে কোন ক্লাসের নোট পাও এখানেই</h2>
           <ClassSelection />
         </div>
       </section>

@@ -7,12 +7,20 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MessageCircle, Heart, Share2, Users, Plus, Search, Clock, HelpCircle, Lightbulb, Target } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { MessageCircle, Heart, Share2, Users, Plus, Search, Clock, HelpCircle, Lightbulb, Target, Send } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import TrendingTopics from '@/components/TrendingTopics';
 import CommunityStats from '@/components/CommunityStats';
 import StudyGroups from '@/components/StudyGroups';
 import { useToast } from '@/hooks/use-toast';
+
+interface Comment {
+  id: string;
+  author: string;
+  content: string;
+  timestamp: Date;
+}
 
 interface Post {
   id: string;
@@ -25,9 +33,10 @@ interface Post {
   content: string;
   timestamp: Date;
   likes: number;
-  comments: number;
+  comments: Comment[];
   tags: string[];
   type: 'question' | 'discussion' | 'study-tip' | 'achievement';
+  likedBy: string[];
 }
 
 const Community = () => {
@@ -35,12 +44,13 @@ const Community = () => {
   const [newPost, setNewPost] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [newComment, setNewComment] = useState<{[key: string]: string}>({});
+  const [showComments, setShowComments] = useState<{[key: string]: boolean}>({});
   const { toast } = useToast();
 
   const postTags = ['প্রশ্ন', 'আলোচনা', 'স্টাডি টিপস', 'পরীক্ষা', 'গণিত', 'বিজ্ঞান', 'ইংরেজি', 'বাংলা'];
 
   useEffect(() => {
-    // Mock data - replace with actual API calls
     setPosts([
       {
         id: '1',
@@ -52,9 +62,17 @@ const Community = () => {
         content: 'কেউ কি গণিতের দ্বিঘাত সমীকরণের সহজ পদ্ধতি জানেন? পরীক্ষায় সময় কম থাকলে কিভাবে দ্রুত সমাধান করব?',
         timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
         likes: 12,
-        comments: 8,
+        comments: [
+          {
+            id: 'c1',
+            author: 'রহিম উদ্দিন',
+            content: 'সূত্র মুখস্থ করে নিয়ে প্রচুর অনুশীলন করো। ১০-১৫ সেকেন্ডে সমাধান করতে পারবে।',
+            timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000)
+          }
+        ],
         tags: ['গণিত', 'প্রশ্ন'],
-        type: 'question'
+        type: 'question',
+        likedBy: []
       },
       {
         id: '2',
@@ -66,9 +84,10 @@ const Community = () => {
         content: 'HSC পদার্থবিজ্ঞানের জন্য দারুণ একটা স্টাডি প্ল্যান বানিয়েছি। ৩ মাসে সিলেবাস শেষ করার গ্যারান্টি! কে কে আগ্রহী?',
         timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
         likes: 25,
-        comments: 15,
+        comments: [],
         tags: ['স্টাডি টিপস', 'পদার্থবিজ্ঞান'],
-        type: 'study-tip'
+        type: 'study-tip',
+        likedBy: []
       },
       {
         id: '3',
@@ -80,9 +99,10 @@ const Community = () => {
         content: 'আজ আমার প্রথম টেস্ট পরীক্ষায় A+ পেয়েছি! এই কমিউনিটির সবার সাহায্যের জন্য ধন্যবাদ 🎉',
         timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000),
         likes: 45,
-        comments: 22,
+        comments: [],
         tags: ['পরীক্ষা'],
-        type: 'achievement'
+        type: 'achievement',
+        likedBy: []
       }
     ]);
   }, []);
@@ -107,9 +127,10 @@ const Community = () => {
       content: newPost,
       timestamp: new Date(),
       likes: 0,
-      comments: 0,
+      comments: [],
       tags: selectedTags,
-      type: 'discussion'
+      type: 'discussion',
+      likedBy: []
     };
 
     setPosts([post, ...posts]);
@@ -125,10 +146,77 @@ const Community = () => {
     setPosts(prevPosts =>
       prevPosts.map(post =>
         post.id === postId
-          ? { ...post, likes: post.likes + 1 }
+          ? { 
+              ...post, 
+              likes: post.likedBy.includes('current-user') 
+                ? post.likes - 1 
+                : post.likes + 1,
+              likedBy: post.likedBy.includes('current-user')
+                ? post.likedBy.filter(id => id !== 'current-user')
+                : [...post.likedBy, 'current-user']
+            }
           : post
       )
     );
+  };
+
+  const handleAddComment = (postId: string) => {
+    const commentText = newComment[postId];
+    if (!commentText?.trim()) {
+      toast({
+        title: "মন্তব্য লিখুন",
+        description: "অনুগ্রহ করে আপনার মন্তব্য লিখুন",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const comment: Comment = {
+      id: Date.now().toString(),
+      author: 'আপনি',
+      content: commentText,
+      timestamp: new Date()
+    };
+
+    setPosts(prevPosts =>
+      prevPosts.map(post =>
+        post.id === postId
+          ? { ...post, comments: [...post.comments, comment] }
+          : post
+      )
+    );
+
+    setNewComment(prev => ({ ...prev, [postId]: '' }));
+    
+    toast({
+      title: "মন্তব্য যোগ করা হয়েছে",
+      description: "আপনার মন্তব্য সফলভাবে যোগ করা হয়েছে",
+    });
+  };
+
+  const handleSharePost = (post: Post) => {
+    const shareText = `${post.content}\n\n- ${post.author.name}, ${post.author.class}`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: 'ফাকিবাজ বিদ্যালয় - কমিউনিটি পোস্ট',
+        text: shareText,
+        url: window.location.href
+      });
+    } else {
+      navigator.clipboard.writeText(shareText);
+      toast({
+        title: "কপি করা হয়েছে",
+        description: "পোস্টটি ক্লিপবোর্ডে কপি করা হয়েছে",
+      });
+    }
+  };
+
+  const toggleComments = (postId: string) => {
+    setShowComments(prev => ({
+      ...prev,
+      [postId]: !prev[postId]
+    }));
   };
 
   const getPostIcon = (type: Post['type']) => {
@@ -144,13 +232,19 @@ const Community = () => {
     }
   };
 
+  const filteredPosts = posts.filter(post =>
+    post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    post.author.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
   return (
-    <div className="min-h-screen bg-[#28282B]">
+    <div className="min-h-screen bg-gradient-to-br from-[#28282B] via-[#1a1a1d] to-[#28282B]">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
             ছাত্রছাত্রী কমিউনিটি
           </h1>
           <p className="text-gray-300 text-lg">
@@ -162,7 +256,7 @@ const Community = () => {
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
             <Tabs defaultValue="posts" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-black/30 backdrop-blur-lg border border-white/10">
+              <TabsList className="grid w-full grid-cols-2 bg-white/10 backdrop-blur-lg border border-white/20">
                 <TabsTrigger value="posts" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600">
                   <MessageCircle className="mr-2 h-4 w-4" />
                   পোস্ট ও আলোচনা
@@ -174,8 +268,23 @@ const Community = () => {
               </TabsList>
 
               <TabsContent value="posts" className="space-y-6">
+                {/* Search */}
+                <Card className="bg-white/10 backdrop-blur-lg border border-white/20">
+                  <CardContent className="p-4">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <Input
+                        placeholder="পোস্ট খুঁজুন..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
                 {/* Create Post */}
-                <Card className="bg-black/20 backdrop-blur-lg border border-white/10">
+                <Card className="bg-white/10 backdrop-blur-lg border border-white/20">
                   <CardHeader>
                     <CardTitle className="text-white flex items-center">
                       <Plus className="mr-2 h-5 w-5" />
@@ -187,7 +296,7 @@ const Community = () => {
                       placeholder="আপনার প্রশ্ন, মতামত বা সাহায্যের অনুরোধ লিখুন..."
                       value={newPost}
                       onChange={(e) => setNewPost(e.target.value)}
-                      className="bg-black/30 border-white/20 text-white placeholder:text-gray-400 min-h-[100px]"
+                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 min-h-[100px]"
                     />
                     
                     <div className="space-y-2">
@@ -205,7 +314,7 @@ const Community = () => {
                                   : [...prev, tag]
                               );
                             }}
-                            className="bg-black/30 border-white/20 text-white hover:bg-white/10"
+                            className="bg-white/10 border-white/20 text-white hover:bg-white/20"
                           >
                             {tag}
                           </Button>
@@ -224,8 +333,8 @@ const Community = () => {
 
                 {/* Posts List */}
                 <div className="space-y-4">
-                  {posts.map((post) => (
-                    <Card key={post.id} className="bg-black/20 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all duration-300">
+                  {filteredPosts.map((post) => (
+                    <Card key={post.id} className="bg-white/10 backdrop-blur-lg border border-white/20 hover:border-white/30 transition-all duration-300">
                       <CardContent className="p-6">
                         <div className="flex items-start space-x-4">
                           <Avatar className="h-12 w-12">
@@ -264,21 +373,84 @@ const Community = () => {
                               <div className="flex items-center space-x-6">
                                 <button
                                   onClick={() => handleLikePost(post.id)}
-                                  className="flex items-center space-x-1 text-gray-400 hover:text-red-400 transition-colors"
+                                  className={`flex items-center space-x-1 transition-colors ${
+                                    post.likedBy.includes('current-user') 
+                                      ? 'text-red-400' 
+                                      : 'text-gray-400 hover:text-red-400'
+                                  }`}
                                 >
-                                  <Heart className="h-4 w-4" />
+                                  <Heart className={`h-4 w-4 ${post.likedBy.includes('current-user') ? 'fill-current' : ''}`} />
                                   <span>{post.likes}</span>
                                 </button>
-                                <button className="flex items-center space-x-1 text-gray-400 hover:text-blue-400 transition-colors">
+                                <button 
+                                  onClick={() => toggleComments(post.id)}
+                                  className="flex items-center space-x-1 text-gray-400 hover:text-blue-400 transition-colors"
+                                >
                                   <MessageCircle className="h-4 w-4" />
-                                  <span>{post.comments}</span>
+                                  <span>{post.comments.length}</span>
                                 </button>
-                                <button className="flex items-center space-x-1 text-gray-400 hover:text-green-400 transition-colors">
+                                <button 
+                                  onClick={() => handleSharePost(post)}
+                                  className="flex items-center space-x-1 text-gray-400 hover:text-green-400 transition-colors"
+                                >
                                   <Share2 className="h-4 w-4" />
                                   <span>শেয়ার</span>
                                 </button>
                               </div>
                             </div>
+
+                            {/* Comments Section */}
+                            {showComments[post.id] && (
+                              <div className="mt-4 space-y-3 border-t border-white/10 pt-4">
+                                {post.comments.map((comment) => (
+                                  <div key={comment.id} className="flex space-x-3">
+                                    <Avatar className="h-8 w-8">
+                                      <AvatarFallback className="bg-gray-600 text-white text-xs">
+                                        {comment.author.charAt(0)}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1 bg-white/5 rounded-lg p-3">
+                                      <div className="flex items-center justify-between mb-1">
+                                        <span className="text-white text-sm font-medium">{comment.author}</span>
+                                        <span className="text-gray-500 text-xs">
+                                          {Math.floor((Date.now() - comment.timestamp.getTime()) / (1000 * 60))}m ago
+                                        </span>
+                                      </div>
+                                      <p className="text-gray-300 text-sm">{comment.content}</p>
+                                    </div>
+                                  </div>
+                                ))}
+                                
+                                {/* Add Comment */}
+                                <div className="flex space-x-3">
+                                  <Avatar className="h-8 w-8">
+                                    <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-600 text-white text-xs">
+                                      আ
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div className="flex-1 flex space-x-2">
+                                    <Input
+                                      placeholder="মন্তব্য লিখুন..."
+                                      value={newComment[post.id] || ''}
+                                      onChange={(e) => setNewComment(prev => ({ ...prev, [post.id]: e.target.value }))}
+                                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                                      onKeyPress={(e) => {
+                                        if (e.key === 'Enter') {
+                                          handleAddComment(post.id);
+                                        }
+                                      }}
+                                    />
+                                    <Button
+                                      size="sm"
+                                      onClick={() => handleAddComment(post.id)}
+                                      className="bg-blue-600 hover:bg-blue-700"
+                                    >
+                                      <Send className="h-3 w-3" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </CardContent>
@@ -288,22 +460,6 @@ const Community = () => {
               </TabsContent>
 
               <TabsContent value="groups" className="space-y-6">
-                {/* Search Groups */}
-                <Card className="bg-black/20 backdrop-blur-lg border border-white/10">
-                  <CardContent className="p-4">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        placeholder="স্টাডি গ্রুপ খুঁজুন..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10 bg-black/30 border-white/20 text-white placeholder:text-gray-400"
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Study Groups Component */}
                 <StudyGroups />
               </TabsContent>
             </Tabs>

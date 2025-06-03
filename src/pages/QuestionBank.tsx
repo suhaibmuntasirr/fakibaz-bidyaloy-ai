@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -338,7 +339,7 @@ const QuestionBank = () => {
           </TabsContent>
 
           <TabsContent value="popular">
-            
+            {/* Popular questions with likes > 50 */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {questionPapers.filter(paper => paper.likes > 50).map((paper) => (
                 
@@ -437,7 +438,7 @@ const QuestionBank = () => {
           </TabsContent>
 
           <TabsContent value="recent">
-            
+            {/* Recent questions sorted by upload date */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {questionPapers.sort((a, b) => new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime()).map((paper) => (
                 
@@ -549,7 +550,7 @@ const QuestionBank = () => {
         />
       )}
 
-      {/* Upload Modal - Fixed for landscape mode */}
+      {/* Upload Modal */}
       {showUpload && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-[#1a1a1a] rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-white/20">
