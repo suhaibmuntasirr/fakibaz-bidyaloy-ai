@@ -8,6 +8,7 @@ import Notes from '@/pages/Notes';
 import QuestionBank from '@/pages/QuestionBank';
 import Community from '@/pages/Community';
 import Subscription from '@/pages/Subscription';
+import Settings from '@/components/Settings';
 import Auth from '@/pages/Auth';
 import NotFound from '@/pages/NotFound';
 import ProtectedRoute from '@/components/ProtectedRoute';
@@ -50,6 +51,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Subscription />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/settings" 
+              element={
+                <ProtectedRoute>
+                  <Settings />
                 </ProtectedRoute>
               } 
             />

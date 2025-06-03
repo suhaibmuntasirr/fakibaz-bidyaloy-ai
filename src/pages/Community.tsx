@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { MessageCircle, Heart, Share2, Users, Plus, Search, Clock, HelpCircle, Lightbulb, Target, Send, Image, X } from 'lucide-react';
+import { MessageCircle, Heart, Share2, Users, Plus, Search, Clock, HelpCircle, Lightbulb, Target, Send, Image, X, Copy, MessageSquare, Facebook, Twitter } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import TrendingTopics from '@/components/TrendingTopics';
 import CommunityStats from '@/components/CommunityStats';
@@ -49,6 +48,7 @@ const Community = () => {
   const [showComments, setShowComments] = useState<{[key: string]: boolean}>({});
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
+  const [showShareDialog, setShowShareDialog] = useState<{[key: string]: boolean}>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -222,41 +222,6 @@ const Community = () => {
     });
   };
 
-  const handleSharePost = async (post: Post) => {
-    const shareText = `${post.content}\n\n- ${post.author.name}, ${post.author.class}\n\nFakibaz বিদ্যালয় কমিউনিটি`;
-    const shareUrl = `${window.location.origin}/community?post=${post.id}`;
-    
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'ফাকিবাজ বিদ্যালয় - কমিউনিটি পোস্ট',
-          text: shareText,
-          url: shareUrl
-        });
-        toast({
-          title: "শেয়ার করা হয়েছে",
-          description: "পোস্টটি সফলভাবে শেয়ার করা হয়েছে",
-        });
-      } catch (err) {
-        console.error('Error sharing:', err);
-      }
-    } else {
-      try {
-        await navigator.clipboard.writeText(`${shareText}\n\n${shareUrl}`);
-        toast({
-          title: "কপি করা হয়েছে",
-          description: "পোস্টের লিংক ক্লিপবোর্ডে কপি করা হয়েছে",
-        });
-      } catch (err) {
-        console.error('Error copying to clipboard:', err);
-        toast({
-          title: "শেয়ার করুন",
-          description: shareText,
-        });
-      }
-    }
-  };
-
   const toggleComments = (postId: string) => {
     setShowComments(prev => ({
       ...prev,
@@ -274,6 +239,72 @@ const Community = () => {
         return <Target className="h-5 w-5 text-green-400" />;
       default:
         return <MessageCircle className="h-5 w-5 text-purple-400" />;
+    }
+  };
+
+  const handleCopyLink = async (post: Post) => {
+    const shareUrl = `${window.location.origin}/community?post=${post.id}`;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast({
+        title: "লিংক কপি হয়েছে",
+        description: "পোস্টের লিংক ক্লিপবোর্ডে কপি করা হয়েছে",
+      });
+    } catch (err) {
+      console.error('Error copying to clipboard:', err);
+    }
+  };
+
+  const handleShareToSocial = (post: Post, platform: string) => {
+    const shareText = `${post.content}\n\n- ${post.author.name}, ${post.author.class}\n\nFakibaz বিদ্যালয় কমিউনিটি`;
+    const shareUrl = `${window.location.origin}/community?post=${post.id}`;
+    
+    let socialUrl = '';
+    
+    switch (platform) {
+      case 'facebook':
+        socialUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
+        break;
+      case 'twitter':
+        socialUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+        break;
+      case 'whatsapp':
+        socialUrl = `https://wa.me/?text=${encodeURIComponent(shareText + '\n\n' + shareUrl)}`;
+        break;
+    }
+    
+    if (socialUrl) {
+      window.open(socialUrl, '_blank', 'width=600,height=400');
+      toast({
+        title: "শেয়ার করা হচ্ছে",
+        description: `${platform} এ পোস্ট শেয়ার করা হচ্ছে...`,
+      });
+    }
+  };
+
+  const handleNativeShare = async (post: Post) => {
+    const shareText = `${post.content}\n\n- ${post.author.name}, ${post.author.class}\n\nFakibaz বিদ্যালয় কমিউনিটি`;
+    const shareUrl = `${window.location.origin}/community?post=${post.id}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'ফাকিবাজ বিদ্যালয় - কমিউনিটি পোস্ট',
+          text: shareText,
+          url: shareUrl
+        });
+        toast({
+          title: "শেয়ার করা হয়েছে",
+          description: "পোস্টটি সফলভাবে শেয়ার করা হয়েছে",
+        });
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') {
+          console.error('Error sharing:', err);
+        }
+      }
+    } else {
+      // Fallback to copy link
+      handleCopyLink(post);
     }
   };
 
@@ -498,13 +529,68 @@ const Community = () => {
                                   <MessageCircle className="h-4 w-4" />
                                   <span>{post.comments.length}</span>
                                 </button>
-                                <button 
-                                  onClick={() => handleSharePost(post)}
-                                  className="flex items-center space-x-1 text-gray-400 hover:text-green-400 transition-colors"
-                                >
-                                  <Share2 className="h-4 w-4" />
-                                  <span>শেয়ার</span>
-                                </button>
+                                
+                                {/* Enhanced Share Button */}
+                                <Dialog open={showShareDialog[post.id]} onOpenChange={(open) => 
+                                  setShowShareDialog(prev => ({ ...prev, [post.id]: open }))
+                                }>
+                                  <DialogTrigger asChild>
+                                    <button className="flex items-center space-x-1 text-gray-400 hover:text-green-400 transition-colors">
+                                      <Share2 className="h-4 w-4" />
+                                      <span>শেয়ার</span>
+                                    </button>
+                                  </DialogTrigger>
+                                  <DialogContent className="bg-white/95 backdrop-blur-lg border-white/20 max-w-md">
+                                    <DialogHeader>
+                                      <DialogTitle className="text-gray-800">পোস্ট শেয়ার করুন</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="space-y-3">
+                                      <Button
+                                        onClick={() => handleNativeShare(post)}
+                                        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                                      >
+                                        <Share2 className="mr-2 h-4 w-4" />
+                                        সরাসরি শেয়ার করুন
+                                      </Button>
+                                      
+                                      <Button
+                                        onClick={() => handleCopyLink(post)}
+                                        variant="outline"
+                                        className="w-full bg-white/70 border-gray-300 text-gray-700 hover:bg-gray-50"
+                                      >
+                                        <Copy className="mr-2 h-4 w-4" />
+                                        লিংক কপি করুন
+                                      </Button>
+                                      
+                                      <div className="grid grid-cols-3 gap-2">
+                                        <Button
+                                          onClick={() => handleShareToSocial(post, 'facebook')}
+                                          variant="outline"
+                                          size="sm"
+                                          className="bg-blue-600 text-white hover:bg-blue-700 border-blue-600"
+                                        >
+                                          <Facebook className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                          onClick={() => handleShareToSocial(post, 'twitter')}
+                                          variant="outline"
+                                          size="sm"
+                                          className="bg-sky-500 text-white hover:bg-sky-600 border-sky-500"
+                                        >
+                                          <Twitter className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                          onClick={() => handleShareToSocial(post, 'whatsapp')}
+                                          variant="outline"
+                                          size="sm"
+                                          className="bg-green-500 text-white hover:bg-green-600 border-green-500"
+                                        >
+                                          <MessageSquare className="h-4 w-4" />
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  </DialogContent>
+                                </Dialog>
                               </div>
                             </div>
 

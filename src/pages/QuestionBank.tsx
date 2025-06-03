@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Search, BookOpen, Download, Eye, Calendar, Clock, School, MapPin } from 'lucide-react';
+import { Search, BookOpen, Download, Eye, Calendar, Clock, School, MapPin, Upload, Plus } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import Navbar from '@/components/Navbar';
 import ExamSystem from '@/components/ExamSystem';
+import PDFUpload from '@/components/PDFUpload';
 import { useToast } from '@/hooks/use-toast';
 
 interface QuestionPaper {
@@ -37,6 +39,7 @@ const QuestionBank = () => {
   const [selectedType, setSelectedType] = useState('all');
   const [showExamSystem, setShowExamSystem] = useState(false);
   const [selectedQuestionPaper, setSelectedQuestionPaper] = useState<QuestionPaper | null>(null);
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
   const { toast } = useToast();
 
   // Sample data
@@ -123,6 +126,14 @@ const QuestionBank = () => {
     setShowExamSystem(true);
   };
 
+  const handleUploadSuccess = (uploadedFile: any) => {
+    toast({
+      title: "প্রশ্নপত্র আপলোড সম্পন্ন",
+      description: "আপনার প্রশ্নপত্র সফলভাবে আপলোড হয়েছে এবং পর্যালোচনার জন্য পাঠানো হয়েছে।",
+    });
+    setShowUploadDialog(false);
+  };
+
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'annual': return 'bg-red-500/20 text-red-300';
@@ -156,7 +167,7 @@ const QuestionBank = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-sky-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-100 to-blue-200">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
@@ -164,13 +175,31 @@ const QuestionBank = () => {
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
             প্রশ্ন ব্যাংক
           </h1>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-700 text-lg">
             বিভিন্ন স্কুল ও কলেজের পরীক্ষার প্রশ্নপত্র এবং মডেল টেস্ট
           </p>
         </div>
 
+        {/* Upload Button */}
+        <div className="flex justify-end mb-6">
+          <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
+            <DialogTrigger asChild>
+              <Button className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white">
+                <Upload className="mr-2 h-4 w-4" />
+                প্রশ্নপত্র আপলোড করুন
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl bg-white">
+              <DialogHeader>
+                <DialogTitle className="text-gray-800">প্রশ্নপত্র আপলোড করুন</DialogTitle>
+              </DialogHeader>
+              <PDFUpload onUploadSuccess={handleUploadSuccess} />
+            </DialogContent>
+          </Dialog>
+        </div>
+
         {/* Filters */}
-        <Card className="mb-8 bg-white/80 backdrop-blur-lg border-white/50 shadow-lg">
+        <Card className="mb-8 bg-white/70 backdrop-blur-lg border-white/30 shadow-lg">
           <CardHeader>
             <CardTitle className="text-gray-800 flex items-center">
               <Search className="mr-2 h-5 w-5" />
@@ -184,13 +213,13 @@ const QuestionBank = () => {
                 placeholder="প্রশ্নপত্র খুঁজুন..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-white/50 border-gray-200"
+                className="pl-10 bg-white/60 border-gray-200"
               />
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <Select value={selectedClass} onValueChange={setSelectedClass}>
-                <SelectTrigger className="bg-white/50 border-gray-200">
+                <SelectTrigger className="bg-white/60 border-gray-200">
                   <SelectValue placeholder="ক্লাস" />
                 </SelectTrigger>
                 <SelectContent>
@@ -206,7 +235,7 @@ const QuestionBank = () => {
               </Select>
 
               <Select value={selectedSubject} onValueChange={setSelectedSubject}>
-                <SelectTrigger className="bg-white/50 border-gray-200">
+                <SelectTrigger className="bg-white/60 border-gray-200">
                   <SelectValue placeholder="বিষয়" />
                 </SelectTrigger>
                 <SelectContent>
@@ -221,7 +250,7 @@ const QuestionBank = () => {
               </Select>
 
               <Select value={selectedSchool} onValueChange={setSelectedSchool}>
-                <SelectTrigger className="bg-white/50 border-gray-200">
+                <SelectTrigger className="bg-white/60 border-gray-200">
                   <SelectValue placeholder="প্রতিষ্ঠান" />
                 </SelectTrigger>
                 <SelectContent>
@@ -235,7 +264,7 @@ const QuestionBank = () => {
               </Select>
 
               <Select value={selectedDistrict} onValueChange={setSelectedDistrict}>
-                <SelectTrigger className="bg-white/50 border-gray-200">
+                <SelectTrigger className="bg-white/60 border-gray-200">
                   <SelectValue placeholder="জেলা" />
                 </SelectTrigger>
                 <SelectContent>
@@ -252,7 +281,7 @@ const QuestionBank = () => {
               </Select>
 
               <Select value={selectedYear} onValueChange={setSelectedYear}>
-                <SelectTrigger className="bg-white/50 border-gray-200">
+                <SelectTrigger className="bg-white/60 border-gray-200">
                   <SelectValue placeholder="বছর" />
                 </SelectTrigger>
                 <SelectContent>
@@ -266,7 +295,7 @@ const QuestionBank = () => {
               </Select>
 
               <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger className="bg-white/50 border-gray-200">
+                <SelectTrigger className="bg-white/60 border-gray-200">
                   <SelectValue placeholder="ধরন" />
                 </SelectTrigger>
                 <SelectContent>
@@ -284,7 +313,7 @@ const QuestionBank = () => {
         {/* Results */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredQuestions.map((question) => (
-            <Card key={question.id} className="bg-white/80 backdrop-blur-lg border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+            <Card key={question.id} className="bg-white/70 backdrop-blur-lg border-white/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <CardTitle className="text-lg text-gray-800 line-clamp-2">
