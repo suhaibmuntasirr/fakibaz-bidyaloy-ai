@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -126,7 +125,7 @@ const QuestionBank = () => {
     setShowExamSystem(true);
   };
 
-  const handleUploadSuccess = (uploadedFile: any) => {
+  const handleUploadSuccess = () => {
     toast({
       title: "প্রশ্নপত্র আপলোড সম্পন্ন",
       description: "আপনার প্রশ্নপত্র সফলভাবে আপলোড হয়েছে এবং পর্যালোচনার জন্য পাঠানো হয়েছে।",
