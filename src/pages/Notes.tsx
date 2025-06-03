@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Download, Search, BookOpen, Calendar, User, Filter, Star, Upload, Grid, List, Eye, Heart, MessageCircle } from 'lucide-react';
+import { Download, Search, BookOpen, Calendar, User, Filter, Star, Upload, Grid, List, Eye } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import ClassSelection from '@/components/ClassSelection';
 import PDFViewer from '@/components/PDFViewer';
-import AIToggle from '@/components/AIToggle';
+import AIAssistant from '@/components/AIAssistant';
 import PDFUpload from '@/components/PDFUpload';
 import { useToast } from '@/hooks/use-toast';
 import { notesService } from '@/services/notesService';
@@ -17,21 +16,16 @@ import { Note } from '@/types/common';
 import Footer from '@/components/Footer';
 
 const Notes = () => {
-  const [searchParams] = useSearchParams();
   const [notes, setNotes] = useState<Note[]>([]);
   const [filteredNotes, setFilteredNotes] = useState<Note[]>([]);
   const [selectedClass, setSelectedClass] = useState<string>('');
   const [selectedSubject, setSelectedSubject] = useState<string>('');
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
+  const [searchQuery, setSearchQuery] = useState('');
   const [viewingNote, setViewingNote] = useState<Note | null>(null);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState<string>('newest');
   const [showUpload, setShowUpload] = useState(false);
-  const [showComments, setShowComments] = useState<{[key: string]: boolean}>({});
-  const [comments, setComments] = useState<{[key: string]: string[]}>({});
-  const [newComment, setNewComment] = useState<{[key: string]: string}>({});
-  const [ratings, setRatings] = useState<{[key: string]: number}>({});
   const { toast } = useToast();
 
   const subjects = [
@@ -199,61 +193,6 @@ const Notes = () => {
           : n
       )
     );
-
-    toast({
-      title: isLiked ? "লাইক দেওয়া হয়েছে" : "লাইক সরানো হয়েছে",
-      description: `${note.title}`,
-    });
-  };
-
-  const handleAddComment = (noteId: string) => {
-    const comment = newComment[noteId];
-    if (!comment?.trim()) return;
-
-    setComments(prev => ({
-      ...prev,
-      [noteId]: [...(prev[noteId] || []), comment]
-    }));
-
-    setNewComment(prev => ({
-      ...prev,
-      [noteId]: ''
-    }));
-
-    // Update note comment count
-    setNotes(prevNotes => 
-      prevNotes.map(n => 
-        n.id === noteId 
-          ? { ...n, comments: n.comments + 1 }
-          : n
-      )
-    );
-
-    toast({
-      title: "মন্তব্য যোগ করা হয়েছে",
-      description: "আপনার মন্তব্য সফলভাবে যোগ হয়েছে",
-    });
-  };
-
-  const handleRating = (noteId: string, rating: number) => {
-    setRatings(prev => ({
-      ...prev,
-      [noteId]: rating
-    }));
-
-    // Update note rating
-    setNotes(prevNotes => 
-      prevNotes.map(n => 
-        n.id === noteId 
-          ? { ...n, rating: ((n.rating * 10) + rating) / 11 } // Simple average calculation
-          : n
-      )
-    );
-
-    toast({
-      title: "রেটিং দেওয়া হয়েছে",
-      description: `${rating} স্টার রেটিং দেওয়া হয়েছে`,
-    });
   };
 
   const handleUploadSuccess = () => {
@@ -293,7 +232,7 @@ const Notes = () => {
             onCancel={() => setShowUpload(false)}
           />
         </div>
-        <AIToggle />
+        <AIAssistant />
       </div>
     );
   }
@@ -449,9 +388,6 @@ const Notes = () => {
           <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"}>
             {filteredNotes.map((note, index) => {
               const colorClass = gradientColors[index % gradientColors.length];
-              const isLiked = note.likedBy?.includes('current-user-id') || false;
-              const userRating = ratings[note.id] || 0;
-              
               return (
                 <Card 
                   key={note.id} 
@@ -495,79 +431,8 @@ const Notes = () => {
                       </div>
                       <div className="flex items-center">
                         <Star className="h-3 w-3 mr-1 text-yellow-400" />
-                        {note.rating.toFixed(1)}
+                        {note.rating}
                       </div>
-                    </div>
-
-                    {/* Interactive Features */}
-                    <div className="space-y-2">
-                      {/* Like, Comment, Rating Controls */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleLike(note)}
-                            className={`p-1 ${isLiked ? 'text-red-400' : 'text-gray-400'} hover:text-red-400`}
-                          >
-                            <Heart className={`h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
-                            <span className="ml-1 text-xs">{note.likes}</span>
-                          </Button>
-                          
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setShowComments(prev => ({...prev, [note.id]: !prev[note.id]}))}
-                            className="p-1 text-gray-400 hover:text-blue-400"
-                          >
-                            <MessageCircle className="h-4 w-4" />
-                            <span className="ml-1 text-xs">{note.comments}</span>
-                          </Button>
-                        </div>
-
-                        {/* Rating Stars */}
-                        <div className="flex items-center space-x-1">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <button
-                              key={star}
-                              onClick={() => handleRating(note.id, star)}
-                              className={`text-xs ${
-                                star <= userRating ? 'text-yellow-400' : 'text-gray-600'
-                              } hover:text-yellow-400`}
-                            >
-                              ★
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Comments Section */}
-                      {showComments[note.id] && (
-                        <div className="bg-black/30 rounded-lg p-3 space-y-2">
-                          <div className="max-h-20 overflow-y-auto space-y-1">
-                            {comments[note.id]?.map((comment, idx) => (
-                              <div key={idx} className="text-xs text-gray-300 bg-black/20 rounded p-2">
-                                {comment}
-                              </div>
-                            ))}
-                          </div>
-                          <div className="flex space-x-2">
-                            <Input
-                              placeholder="মন্তব্য লিখুন..."
-                              value={newComment[note.id] || ''}
-                              onChange={(e) => setNewComment(prev => ({...prev, [note.id]: e.target.value}))}
-                              className="bg-black/20 border-white/10 text-white text-xs"
-                            />
-                            <Button
-                              size="sm"
-                              onClick={() => handleAddComment(note.id)}
-                              className="bg-blue-600 hover:bg-blue-700 text-xs px-2"
-                            >
-                              পোস্ট
-                            </Button>
-                          </div>
-                        </div>
-                      )}
                     </div>
 
                     <div className="flex items-center text-xs text-gray-500">
@@ -610,7 +475,7 @@ const Notes = () => {
       </div>
 
       {/* AI Assistant */}
-      <AIToggle />
+      <AIAssistant />
       
       {/* Footer */}
       <Footer />

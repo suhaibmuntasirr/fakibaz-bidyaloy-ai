@@ -8,29 +8,12 @@ import Navbar from '@/components/Navbar';
 import ClassSelection from '@/components/ClassSelection';
 import Footer from '@/components/Footer';
 import AdBanner from '@/components/AdBanner';
-import AIToggle from '@/components/AIToggle';
 import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const { currentUser } = useAuth();
-  const { toast } = useToast();
-
-  const handleSearch = () => {
-    if (!searchQuery.trim()) {
-      toast({
-        title: "অনুসন্ধান",
-        description: "অনুগ্রহ করে কিছু লিখুন",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Navigate to notes page with search query
-    navigate(`/notes?search=${encodeURIComponent(searchQuery)}`);
-  };
 
   return (
     <div className="min-h-screen bg-[#28282B] text-white">
@@ -62,14 +45,10 @@ const Index = () => {
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               placeholder="কি খুঁজছেন? (যেমন: পদার্থবিজ্ঞান নোট, গণিত প্রশ্ন)"
               className="pl-12 py-4 text-lg bg-white/10 border-white/20 text-white placeholder:text-white/60 rounded-xl backdrop-blur-lg"
             />
-            <Button 
-              onClick={handleSearch}
-              className="absolute right-2 top-2 bg-blue-600 hover:bg-blue-700"
-            >
+            <Button className="absolute right-2 top-2 bg-blue-600 hover:bg-blue-700">
               <Search className="h-4 w-4" />
             </Button>
           </div>
@@ -170,9 +149,6 @@ const Index = () => {
       <div className="relative z-10">
         <Footer />
       </div>
-
-      {/* AI Toggle */}
-      <AIToggle />
     </div>
   );
 };

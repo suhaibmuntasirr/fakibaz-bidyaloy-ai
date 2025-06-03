@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import Navbar from '@/components/Navbar';
 import ExamSystem from '@/components/ExamSystem';
 import PDFUpload from '@/components/PDFUpload';
-import PDFViewer from '@/components/PDFViewer';
 import { useToast } from '@/hooks/use-toast';
 
 interface QuestionPaper {
@@ -26,20 +26,6 @@ interface QuestionPaper {
   downloadUrl: string;
   previewUrl?: string;
   tags: string[];
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-  uploader: string;
-  uploaderId: string;
-  views: number;
-  likes: number;
-  answers: number;
-  hasAnswerKey: boolean;
-  uploadDate: Date;
-  verified: boolean;
-  questionFileUrl: string;
-  answerFileUrl?: string;
-  fileName: string;
-  answerFileName?: string;
-  likedBy: string[];
 }
 
 const QuestionBank = () => {
@@ -54,7 +40,6 @@ const QuestionBank = () => {
   const [showExamSystem, setShowExamSystem] = useState(false);
   const [selectedQuestionPaper, setSelectedQuestionPaper] = useState<QuestionPaper | null>(null);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
-  const [viewingQuestion, setViewingQuestion] = useState<QuestionPaper | null>(null);
   const { toast } = useToast();
 
   // Sample data
@@ -62,83 +47,45 @@ const QuestionBank = () => {
     const sampleQuestions: QuestionPaper[] = [
       {
         id: '1',
-        title: 'Class 10 Chemistry Model Test',
-        subject: 'রসায়ন',
+        title: 'গণিত - বার্ষিক পরীক্ষা ২০২৩',
+        subject: 'গণিত',
         class: 'Class 10',
         school: 'ঢাকা কলেজিয়েট স্কুল',
         district: 'ঢাকা',
-        year: 2024,
-        type: 'test',
+        year: 2023,
+        type: 'annual',
         duration: '৩ ঘণ্টা',
-        marks: 75,
+        marks: 100,
         downloadUrl: '/sample-question.pdf',
-        tags: ['মডেল টেস্ট', 'জৈব যৌগ'],
-        difficulty: 'Easy',
-        uploader: 'শিক্ষক আব্দুল',
-        uploaderId: 'teacher1',
-        views: 567,
-        likes: 45,
-        answers: 23,
-        hasAnswerKey: true,
-        uploadDate: new Date('2024-01-15'),
-        verified: true,
-        questionFileUrl: '/sample-question.pdf',
-        answerFileUrl: '/sample-answer.pdf',
-        fileName: 'chemistry-model-test.pdf',
-        answerFileName: 'chemistry-answer-key.pdf',
-        likedBy: []
+        tags: ['বীজগণিত', 'জ্যামিতি', 'পরিসংখ্যান']
       },
       {
         id: '2',
-        title: 'HSC Physics MCQ - 2024',
+        title: 'পদার্থবিজ্ঞান - অর্ধবার্ষিক পরীক্ষা ২০২৩',
         subject: 'পদার্থবিজ্ঞান',
-        class: 'HSC',
+        class: 'Class 12',
         school: 'ভিকারুননিসা নূন স্কুল',
-        district: 'ঢাকা',
-        year: 2024,
-        type: 'annual',
-        duration: '২ ঘণ্টা',
-        marks: 50,
-        downloadUrl: '/sample-physics.pdf',
-        tags: ['বার্ষিক পরীক্ষা', 'MCQ'],
-        difficulty: 'Medium',
-        uploader: 'শিক্ষক রহমান',
-        uploaderId: 'teacher2',
-        views: 1250,
-        likes: 85,
-        answers: 42,
-        hasAnswerKey: true,
-        uploadDate: new Date('2024-02-10'),
-        verified: true,
-        questionFileUrl: '/sample-physics.pdf',
-        fileName: 'physics-mcq-2024.pdf',
-        likedBy: []
-      },
-      {
-        id: '3',
-        title: 'SSC Mathematics CQ - 2023',
-        subject: 'গণিত',
-        class: 'SSC',
-        school: 'নটরডেম কলেজ',
         district: 'ঢাকা',
         year: 2023,
         type: 'half-yearly',
         duration: '৩ ঘণ্টা',
         marks: 100,
-        downloadUrl: '/sample-math.pdf',
-        tags: ['নির্বাচনী পরীক্ষা', 'CQ'],
-        difficulty: 'Hard',
-        uploader: 'শিক্ষক করিম',
-        uploaderId: 'teacher3',
-        views: 890,
-        likes: 63,
-        answers: 31,
-        hasAnswerKey: true,
-        uploadDate: new Date('2023-12-05'),
-        verified: true,
-        questionFileUrl: '/sample-math.pdf',
-        fileName: 'math-cq-2023.pdf',
-        likedBy: []
+        downloadUrl: '/sample-physics.pdf',
+        tags: ['বলবিদ্যা', 'তাপগতিবিদ্যা', 'আলোকবিদ্যা']
+      },
+      {
+        id: '3',
+        title: 'ইংরেজি - টেস্ট পরীক্ষা ২০২৩',
+        subject: 'ইংরেজি',
+        class: 'Class 9',
+        school: 'নটরডেম কলেজ',
+        district: 'ঢাকা',
+        year: 2023,
+        type: 'test',
+        duration: '২ ঘণ্টা',
+        marks: 75,
+        downloadUrl: '/sample-english.pdf',
+        tags: ['Grammar', 'Composition', 'Reading Comprehension']
       }
     ];
     setQuestions(sampleQuestions);
@@ -160,11 +107,7 @@ const QuestionBank = () => {
   });
 
   const handleDownload = (question: QuestionPaper) => {
-    // Update download count
-    setQuestions(prev => prev.map(q => 
-      q.id === question.id ? { ...q, views: q.views + 1 } : q
-    ));
-    
+    // Simulate download
     toast({
       title: "ডাউনলোড শুরু হয়েছে",
       description: `${question.title} ডাউনলোড হচ্ছে...`,
@@ -172,7 +115,10 @@ const QuestionBank = () => {
   };
 
   const handlePreview = (question: QuestionPaper) => {
-    setViewingQuestion(question);
+    toast({
+      title: "প্রিভিউ খোলা হচ্ছে",
+      description: `${question.title} প্রিভিউ মোডে খোলা হচ্ছে...`,
+    });
   };
 
   const handleStartExam = (question: QuestionPaper) => {
@@ -190,32 +136,6 @@ const QuestionBank = () => {
 
   const handleUploadCancel = () => {
     setShowUploadDialog(false);
-  };
-
-  const handleLike = (question: QuestionPaper) => {
-    const userId = 'current-user-id';
-    const isLiked = question.likedBy.includes(userId);
-    
-    setQuestions(prev => prev.map(q => 
-      q.id === question.id 
-        ? { 
-            ...q, 
-            likes: isLiked ? q.likes - 1 : q.likes + 1,
-            likedBy: isLiked 
-              ? q.likedBy.filter(id => id !== userId)
-              : [...q.likedBy, userId]
-          }
-        : q
-    ));
-  };
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'Easy': return 'bg-green-500/20 text-green-300 border-green-500/30';
-      case 'Medium': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
-      case 'Hard': return 'bg-red-500/20 text-red-300 border-red-500/30';
-      default: return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
-    }
   };
 
   const getTypeColor = (type: string) => {
@@ -250,30 +170,17 @@ const QuestionBank = () => {
     );
   }
 
-  if (viewingQuestion) {
-    return (
-      <PDFViewer 
-        item={viewingQuestion} 
-        type="question"
-        onClose={() => setViewingQuestion(null)}
-        onLike={() => handleLike(viewingQuestion)}
-        onDownload={() => handleDownload(viewingQuestion)}
-        isLiked={viewingQuestion.likedBy?.includes('current-user-id') || false}
-      />
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-100 to-blue-200">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
             প্রশ্ন ব্যাংক
           </h1>
-          <p className="text-blue-100 text-lg">
-            বিভিন্ন বোর্ড ও পরীক্ষার প্রশ্নপত্র
+          <p className="text-gray-700 text-lg">
+            বিভিন্ন স্কুল ও কলেজের পরীক্ষার প্রশ্নপত্র এবং মডেল টেস্ট
           </p>
         </div>
 
@@ -281,9 +188,9 @@ const QuestionBank = () => {
         <div className="flex justify-end mb-6">
           <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
             <DialogTrigger asChild>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white border border-blue-500/30 backdrop-blur-lg">
+              <Button className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white">
                 <Upload className="mr-2 h-4 w-4" />
-                প্রশ্ন আপলোড করুন
+                প্রশ্নপত্র আপলোড করুন
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl bg-white">
@@ -299,10 +206,10 @@ const QuestionBank = () => {
           </Dialog>
         </div>
 
-        {/* Search and Filters */}
-        <Card className="mb-8 bg-black/20 backdrop-blur-lg border border-white/10">
+        {/* Filters */}
+        <Card className="mb-8 bg-white/70 backdrop-blur-lg border-white/30 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-white flex items-center">
+            <CardTitle className="text-gray-800 flex items-center">
               <Search className="mr-2 h-5 w-5" />
               খুঁজে নিন
             </CardTitle>
@@ -314,44 +221,44 @@ const QuestionBank = () => {
                 placeholder="প্রশ্নপত্র খুঁজুন..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                className="pl-10 bg-white/60 border-gray-200"
               />
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <Select value={selectedClass} onValueChange={setSelectedClass}>
-                <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                  <SelectValue placeholder="সব ক্লাস" />
+                <SelectTrigger className="bg-white/60 border-gray-200">
+                  <SelectValue placeholder="ক্লাস" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-600">
-                  <SelectItem value="all" className="text-white">সব ক্লাস</SelectItem>
-                  <SelectItem value="Class 6" className="text-white">Class 6</SelectItem>
-                  <SelectItem value="Class 7" className="text-white">Class 7</SelectItem>
-                  <SelectItem value="Class 8" className="text-white">Class 8</SelectItem>
-                  <SelectItem value="Class 9" className="text-white">Class 9</SelectItem>
-                  <SelectItem value="Class 10" className="text-white">Class 10</SelectItem>
-                  <SelectItem value="SSC" className="text-white">SSC</SelectItem>
-                  <SelectItem value="HSC" className="text-white">HSC</SelectItem>
+                <SelectContent>
+                  <SelectItem value="all">সব ক্লাস</SelectItem>
+                  <SelectItem value="Class 6">Class 6</SelectItem>
+                  <SelectItem value="Class 7">Class 7</SelectItem>
+                  <SelectItem value="Class 8">Class 8</SelectItem>
+                  <SelectItem value="Class 9">Class 9</SelectItem>
+                  <SelectItem value="Class 10">Class 10</SelectItem>
+                  <SelectItem value="Class 11">Class 11</SelectItem>
+                  <SelectItem value="Class 12">Class 12</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select value={selectedSubject} onValueChange={setSelectedSubject}>
-                <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                  <SelectValue placeholder="সব বিষয়" />
+                <SelectTrigger className="bg-white/60 border-gray-200">
+                  <SelectValue placeholder="বিষয়" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-600">
-                  <SelectItem value="all" className="text-white">সব বিষয়</SelectItem>
-                  <SelectItem value="গণিত" className="text-white">গণিত</SelectItem>
-                  <SelectItem value="পদার্থবিজ্ঞান" className="text-white">পদার্থবিজ্ঞান</SelectItem>
-                  <SelectItem value="রসায়ন" className="text-white">রসায়ন</SelectItem>
-                  <SelectItem value="জীববিজ্ঞান" className="text-white">জীববিজ্ঞান</SelectItem>
-                  <SelectItem value="ইংরেজি" className="text-white">ইংরেজি</SelectItem>
-                  <SelectItem value="বাংলা" className="text-white">বাংলা</SelectItem>
+                <SelectContent>
+                  <SelectItem value="all">সব বিষয়</SelectItem>
+                  <SelectItem value="গণিত">গণিত</SelectItem>
+                  <SelectItem value="পদার্থবিজ্ঞান">পদার্থবিজ্ঞান</SelectItem>
+                  <SelectItem value="রসায়ন">রসায়ন</SelectItem>
+                  <SelectItem value="জীববিজ্ঞান">জীববিজ্ঞান</SelectItem>
+                  <SelectItem value="ইংরেজি">ইংরেজি</SelectItem>
+                  <SelectItem value="বাংলা">বাংলা</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select value={selectedSchool} onValueChange={setSelectedSchool}>
-                <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                <SelectTrigger className="bg-white/60 border-gray-200">
                   <SelectValue placeholder="প্রতিষ্ঠান" />
                 </SelectTrigger>
                 <SelectContent>
@@ -365,7 +272,7 @@ const QuestionBank = () => {
               </Select>
 
               <Select value={selectedDistrict} onValueChange={setSelectedDistrict}>
-                <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                <SelectTrigger className="bg-white/60 border-gray-200">
                   <SelectValue placeholder="জেলা" />
                 </SelectTrigger>
                 <SelectContent>
@@ -382,7 +289,7 @@ const QuestionBank = () => {
               </Select>
 
               <Select value={selectedYear} onValueChange={setSelectedYear}>
-                <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                <SelectTrigger className="bg-white/60 border-gray-200">
                   <SelectValue placeholder="বছর" />
                 </SelectTrigger>
                 <SelectContent>
@@ -390,11 +297,13 @@ const QuestionBank = () => {
                   <SelectItem value="2024">২০২৪</SelectItem>
                   <SelectItem value="2023">২০২৩</SelectItem>
                   <SelectItem value="2022">২০২২</SelectItem>
+                  <SelectItem value="2021">২০২১</SelectItem>
+                  <SelectItem value="2020">২০২০</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                <SelectTrigger className="bg-white/60 border-gray-200">
                   <SelectValue placeholder="ধরন" />
                 </SelectTrigger>
                 <SelectContent>
@@ -412,56 +321,53 @@ const QuestionBank = () => {
         {/* Results */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredQuestions.map((question) => (
-            <Card key={question.id} className="bg-white/10 backdrop-blur-lg border border-white/20 hover:border-white/30 transition-all duration-300 hover:scale-105">
+            <Card key={question.id} className="bg-white/70 backdrop-blur-lg border-white/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
               <CardHeader className="pb-3">
-                <div className="flex items-start justify-between mb-3">
-                  <CardTitle className="text-white text-lg line-clamp-2">
+                <div className="flex items-start justify-between">
+                  <CardTitle className="text-lg text-gray-800 line-clamp-2">
                     {question.title}
                   </CardTitle>
                   <Badge className={`${getTypeColor(question.type)} border-0 text-xs`}>
                     {getTypeName(question.type)}
                   </Badge>
                 </div>
-                
-                <div className="flex items-center gap-2 mb-2">
-                  <Badge className={`${getDifficultyColor(question.difficulty)} text-xs border`}>
-                    {question.difficulty}
-                  </Badge>
-                  {question.verified && (
-                    <Badge className="bg-blue-500/20 text-blue-300 text-xs">
-                      জনপ্রিয়
-                    </Badge>
-                  )}
-                </div>
               </CardHeader>
               
               <CardContent className="space-y-4">
                 <div className="space-y-2 text-sm">
-                  <div className="flex items-center text-blue-200">
+                  <div className="flex items-center text-gray-600">
                     <BookOpen className="mr-2 h-4 w-4" />
                     <span>{question.subject} • {question.class}</span>
                   </div>
-                  <div className="flex items-center text-blue-200">
+                  <div className="flex items-center text-gray-600">
                     <School className="mr-2 h-4 w-4" />
                     <span className="line-clamp-1">{question.school}</span>
                   </div>
-                  <div className="flex items-center text-blue-200">
+                  <div className="flex items-center text-gray-600">
+                    <MapPin className="mr-2 h-4 w-4" />
+                    <span>{question.district}</span>
+                  </div>
+                  <div className="flex items-center text-gray-600">
                     <Calendar className="mr-2 h-4 w-4" />
                     <span>{question.year}</span>
                   </div>
-                  <div className="flex items-center text-blue-200">
+                  <div className="flex items-center text-gray-600">
                     <Clock className="mr-2 h-4 w-4" />
                     <span>{question.duration} • {question.marks} নম্বর</span>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-xs text-blue-300">
-                  <div className="flex items-center space-x-4">
-                    <span>👁️ {question.views}</span>
-                    <span>📥 {question.likes}</span>
-                    <span>💬 {question.answers}</span>
-                  </div>
-                  <span>শিক্ষক রহমান</span>
+                <div className="flex flex-wrap gap-1">
+                  {question.tags.slice(0, 3).map((tag, index) => (
+                    <Badge key={index} variant="outline" className="text-xs bg-blue-50 text-blue-600 border-blue-200">
+                      {tag}
+                    </Badge>
+                  ))}
+                  {question.tags.length > 3 && (
+                    <Badge variant="outline" className="text-xs bg-gray-50 text-gray-500 border-gray-200">
+                      +{question.tags.length - 3}
+                    </Badge>
+                  )}
                 </div>
 
                 <div className="flex gap-2 pt-2">
@@ -469,16 +375,16 @@ const QuestionBank = () => {
                     variant="outline"
                     size="sm"
                     onClick={() => handlePreview(question)}
-                    className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                    className="flex-1 bg-white/70 border-blue-200 text-blue-600 hover:bg-blue-50"
                   >
                     <Eye className="mr-1 h-3 w-3" />
-                    দেখুন
+                    প্রিভিউ
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => handleDownload(question)}
-                    className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                    className="flex-1 bg-white/70 border-green-200 text-green-600 hover:bg-green-50"
                   >
                     <Download className="mr-1 h-3 w-3" />
                     ডাউনলোড
@@ -486,9 +392,9 @@ const QuestionBank = () => {
                   <Button
                     size="sm"
                     onClick={() => handleStartExam(question)}
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white"
                   >
-                    পরীক্ষা
+                    পরীক্ষা দিন
                   </Button>
                 </div>
               </CardContent>
@@ -498,9 +404,9 @@ const QuestionBank = () => {
 
         {filteredQuestions.length === 0 && (
           <div className="text-center py-12">
-            <BookOpen className="h-16 w-16 text-blue-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">কোনো প্রশ্নপত্র পাওয়া যায়নি</h3>
-            <p className="text-blue-200">অন্য ফিল্টার ব্যবহার করে চেষ্টা করুন</p>
+            <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">কোনো প্রশ্নপত্র পাওয়া যায়নি</h3>
+            <p className="text-gray-500">অন্য ফিল্টার ব্যবহার করে চেষ্টা করুন</p>
           </div>
         )}
       </div>
