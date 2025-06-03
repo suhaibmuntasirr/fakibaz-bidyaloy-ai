@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,6 +25,13 @@ const Settings = () => {
   const { toast } = useToast();
   const [loading, setSaving] = useState(false);
   
+  // Profile form state
+  const [profileData, setProfileData] = useState({
+    fullName: userProfile?.fullName || '',
+    phoneNumber: userProfile?.phoneNumber || '',
+    email: currentUser?.email || ''
+  });
+  
   const [settings, setSettings] = useState({
     notifications: {
       emailNotifications: true,
@@ -44,6 +51,26 @@ const Settings = () => {
       defaultSubject: ''
     }
   });
+
+  // Load settings from localStorage on mount
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('userSettings');
+    if (savedSettings) {
+      setSettings(JSON.parse(savedSettings));
+    }
+    
+    const savedProfile = localStorage.getItem('userProfile');
+    if (savedProfile) {
+      setProfileData(JSON.parse(savedProfile));
+    }
+  }, []);
+
+  const handleProfileChange = (field: string, value: string) => {
+    setProfileData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
 
   const handleNotificationChange = (key: string, value: boolean) => {
     setSettings(prev => ({
@@ -78,7 +105,11 @@ const Settings = () => {
   const handleSaveSettings = async () => {
     setSaving(true);
     try {
-      // Simulate saving settings
+      // Save to localStorage (in real app, this would be saved to backend)
+      localStorage.setItem('userSettings', JSON.stringify(settings));
+      localStorage.setItem('userProfile', JSON.stringify(profileData));
+      
+      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       toast({
@@ -99,7 +130,11 @@ const Settings = () => {
   const handleDeleteAccount = async () => {
     if (window.confirm('আপনি কি নিশ্চিত যে আপনার অ্যাকাউন্ট ডিলিট করতে চান? এই কাজটি ফিরিয়ে আনা যাবে না।')) {
       try {
-        // Handle account deletion
+        // Clear all stored data
+        localStorage.removeItem('userSettings');
+        localStorage.removeItem('userProfile');
+        localStorage.removeItem('notifications');
+        
         toast({
           title: "অ্যাকাউন্ট ডিলিট হয়েছে",
           description: "আপনার অ্যাকাউন্ট সফলভাবে ডিলিট হয়েছে"
@@ -115,8 +150,31 @@ const Settings = () => {
     }
   };
 
+  const handleExportData = () => {
+    const dataToExport = {
+      profile: profileData,
+      settings: settings,
+      exportDate: new Date().toISOString()
+    };
+    
+    const dataStr = JSON.stringify(dataToExport, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = 'my-data.json';
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+    
+    toast({
+      title: "ডেটা এক্সপোর্ট হয়েছে",
+      description: "আপনার ডেটা সফলভাবে ডাউনলোড হয়েছে"
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-[#28282B]">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
@@ -144,15 +202,17 @@ const Settings = () => {
                   <Label htmlFor="fullName" className="text-white">পূর্ণ নাম</Label>
                   <Input
                     id="fullName"
-                    defaultValue={userProfile?.fullName || ''}
+                    value={profileData.fullName}
+                    onChange={(e) => handleProfileChange('fullName', e.target.value)}
                     className="bg-white/10 border-white/20 text-white"
+                    placeholder="আপনার পূর্ণ নাম লিখুন"
                   />
                 </div>
                 <div>
                   <Label htmlFor="email" className="text-white">ইমেইল</Label>
                   <Input
                     id="email"
-                    defaultValue={currentUser?.email || ''}
+                    value={profileData.email}
                     disabled
                     className="bg-white/5 border-white/20 text-gray-400"
                   />
@@ -162,8 +222,10 @@ const Settings = () => {
                 <Label htmlFor="phone" className="text-white">ফোন নম্বর</Label>
                 <Input
                   id="phone"
-                  defaultValue={userProfile?.phoneNumber || ''}
+                  value={profileData.phoneNumber}
+                  onChange={(e) => handleProfileChange('phoneNumber', e.target.value)}
                   className="bg-white/10 border-white/20 text-white"
+                  placeholder="আপনার ফোন নম্বর লিখুন"
                 />
               </div>
             </CardContent>
@@ -320,6 +382,32 @@ const Settings = () => {
                     className="bg-white/10 border-white/20 text-white"
                   />
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Data Management */}
+          <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center">
+                <Download className="mr-2 h-5 w-5" />
+                ডেটা ব্যবস্থাপনা
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-white">আপনার ডেটা এক্সপোর্ট করুন</Label>
+                  <p className="text-gray-400 text-sm">আপনার সেটিংস এবং ডেটা ডাউনলোড করুন</p>
+                </div>
+                <Button
+                  onClick={handleExportData}
+                  variant="outline"
+                  className="bg-blue-500/20 border-blue-500 text-blue-300 hover:bg-blue-500/30"
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  এক্সপোর্ট
+                </Button>
               </div>
             </CardContent>
           </Card>

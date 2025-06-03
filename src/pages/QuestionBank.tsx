@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,7 +17,8 @@ import {
   GraduationCap,
   TrendingUp,
   Calendar,
-  ThumbsUp
+  ThumbsUp,
+  School
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import PDFViewer, { Question } from '@/components/PDFViewer';
@@ -31,6 +31,7 @@ const QuestionBank = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
+  const [selectedSchool, setSelectedSchool] = useState('');
   const [selectedPaper, setSelectedPaper] = useState<Question | null>(null);
   const [showUpload, setShowUpload] = useState(false);
   const [likedQuestions, setLikedQuestions] = useState<string[]>([]);
@@ -108,19 +109,46 @@ const QuestionBank = () => {
       fileName: 'Class10_Chemistry_Model_2024.pdf',
       answerFileName: 'Class10_Chemistry_Model_2024_Answers.pdf',
       likedBy: []
+    },
+    {
+      id: '4',
+      title: 'SSC English Final Exam',
+      subject: 'ইংরেজি',
+      class: 'SSC',
+      school: 'রাজশাহী কলেজিয়েট স্কুল',
+      year: 2024,
+      examType: 'ফাইনাল পরীক্ষা',
+      difficulty: 'Medium',
+      marks: 100,
+      uploader: 'শিক্ষক হাসান',
+      uploaderId: 'teacher4',
+      views: 720,
+      likes: 52,
+      answers: 18,
+      hasAnswerKey: true,
+      uploadDate: new Date('2024-01-25'),
+      verified: true,
+      questionFileUrl: '/sample-english.pdf',
+      answerFileUrl: '/sample-english-answers.pdf',
+      fileName: 'SSC_English_Final_2024.pdf',
+      answerFileName: 'SSC_English_Final_2024_Answers.pdf',
+      likedBy: []
     }
   ]);
 
   const classes = ['All', 'HSC', 'SSC', 'Class 10', 'Class 9', 'Class 8'];
   const subjects = ['All', 'গণিত', 'পদার্থবিজ্ঞান', 'রসায়ন', 'বাংলা', 'ইংরেজি'];
+  const schools = ['All', 'ঢাকা কলেজ', 'চট্টগ্রাম কলেজিয়েট স্কুল', 'সিলেট সরকারি উচ্চ বিদ্যালয়', 'রাজশাহী কলেজিয়েট স্কুল'];
 
   const filteredPapers = questionPapers.filter(paper => {
     const matchesSearch = paper.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         paper.subject.toLowerCase().includes(searchQuery.toLowerCase());
+                         paper.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         paper.school.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesClass = selectedClass === '' || selectedClass === 'All' || paper.class === selectedClass;
     const matchesSubject = selectedSubject === '' || selectedSubject === 'All' || paper.subject === selectedSubject;
+    const matchesSchool = selectedSchool === '' || selectedSchool === 'All' || paper.school === selectedSchool;
     
-    return matchesSearch && matchesClass && matchesSubject;
+    return matchesSearch && matchesClass && matchesSubject && matchesSchool;
   });
 
   const handleDownload = (paper: Question) => {
@@ -161,16 +189,16 @@ const QuestionBank = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#28282B] via-[#1a1a1d] to-[#28282B]">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900/30 via-blue-800/20 to-indigo-900/40">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-300 to-white bg-clip-text text-transparent mb-2">
               প্রশ্ন ব্যাংক
             </h1>
-            <p className="text-gray-300">বিভিন্ন বোর্ড ও পরীক্ষার প্রশ্নপত্র</p>
+            <p className="text-blue-100">বিভিন্ন বোর্ড ও পরীক্ষার প্রশ্নপত্র</p>
           </div>
           
           {currentUser && (
@@ -185,16 +213,16 @@ const QuestionBank = () => {
         </div>
 
         <Tabs defaultValue="browse" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-sm border border-white/20">
-            <TabsTrigger value="browse" className="text-white data-[state=active]:bg-white/20">
+          <TabsList className="grid w-full grid-cols-3 bg-white/20 backdrop-blur-md border border-white/30">
+            <TabsTrigger value="browse" className="text-white data-[state=active]:bg-white/30">
               <Search className="mr-2 h-4 w-4" />
               খুঁজে দেখুন
             </TabsTrigger>
-            <TabsTrigger value="popular" className="text-white data-[state=active]:bg-white/20">
+            <TabsTrigger value="popular" className="text-white data-[state=active]:bg-white/30">
               <TrendingUp className="mr-2 h-4 w-4" />
               জনপ্রিয়
             </TabsTrigger>
-            <TabsTrigger value="recent" className="text-white data-[state=active]:bg-white/20">
+            <TabsTrigger value="recent" className="text-white data-[state=active]:bg-white/30">
               <Calendar className="mr-2 h-4 w-4" />
               সাম্প্রতিক
             </TabsTrigger>
@@ -202,15 +230,15 @@ const QuestionBank = () => {
 
           <TabsContent value="browse" className="space-y-6">
             {/* Search and Filter Section */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div className="md:col-span-2">
                 <div className="relative">
-                  <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-gray-300" />
                   <Input
-                    placeholder="প্রশ্নপত্র খুঁজুন..."
+                    placeholder="প্রশ্নপত্র বা স্কুল খুঁজুন..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400"
+                    className="pl-10 bg-white/20 backdrop-blur-md border-white/30 text-white placeholder:text-gray-300"
                   />
                 </div>
               </div>
@@ -218,7 +246,7 @@ const QuestionBank = () => {
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-md px-3 py-2"
               >
                 {classes.map(cls => (
                   <option key={cls} value={cls === 'All' ? '' : cls} className="bg-slate-800">
@@ -230,11 +258,23 @@ const QuestionBank = () => {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-md px-3 py-2"
               >
                 {subjects.map(subject => (
                   <option key={subject} value={subject === 'All' ? '' : subject} className="bg-slate-800">
                     {subject === 'All' ? 'সব বিষয়' : subject}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={selectedSchool}
+                onChange={(e) => setSelectedSchool(e.target.value)}
+                className="bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-md px-3 py-2"
+              >
+                {schools.map(school => (
+                  <option key={school} value={school === 'All' ? '' : school} className="bg-slate-800">
+                    {school === 'All' ? 'সব স্কুল' : school}
                   </option>
                 ))}
               </select>
@@ -243,31 +283,25 @@ const QuestionBank = () => {
             {/* Question Papers Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredPapers.map((paper) => (
-                <Card key={paper.id} className="bg-white/10 backdrop-blur-lg border border-white/20 hover:border-white/40 transition-all group">
+                <Card key={paper.id} className="bg-white/15 backdrop-blur-lg border border-white/30 hover:border-white/50 transition-all group hover:bg-white/20">
                   
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <CardTitle className="text-white text-lg mb-2 group-hover:text-blue-400 transition-colors">
+                        <CardTitle className="text-white text-lg mb-2 group-hover:text-blue-200 transition-colors">
                           {paper.title}
                         </CardTitle>
                         <div className="flex flex-wrap gap-2 mb-3">
-                          <Badge variant="outline" className={getTypeColor(paper.examType)}>
+                          <Badge variant="outline" className="bg-blue-500/30 text-blue-200 border-blue-400/50">
                             {paper.examType}
                           </Badge>
-                          <Badge variant="outline" className={getDifficultyColor(paper.difficulty)}>
+                          <Badge variant="outline" className="bg-purple-500/30 text-purple-200 border-purple-400/50">
                             {paper.difficulty}
                           </Badge>
                           {paper.likes > 50 && (
-                            <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30">
+                            <Badge className="bg-orange-500/30 text-orange-200 border-orange-400/50">
                               <Star className="mr-1 h-3 w-3" />
                               জনপ্রিয়
-                            </Badge>
-                          )}
-                          {paper.views > 1000 && (
-                            <Badge className="bg-pink-500/20 text-pink-300 border-pink-500/30">
-                              <TrendingUp className="mr-1 h-3 w-3" />
-                              ট্রেন্ডিং
                             </Badge>
                           )}
                         </div>
@@ -276,7 +310,7 @@ const QuestionBank = () => {
                   </CardHeader>
                   
                   <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4 text-sm text-gray-400">
+                    <div className="grid grid-cols-2 gap-4 text-sm text-blue-200">
                       <div className="flex items-center">
                         <GraduationCap className="mr-2 h-4 w-4" />
                         {paper.class}
@@ -286,16 +320,16 @@ const QuestionBank = () => {
                         {paper.subject}
                       </div>
                       <div className="flex items-center">
+                        <School className="mr-2 h-4 w-4" />
+                        {paper.school}
+                      </div>
+                      <div className="flex items-center">
                         <Clock className="mr-2 h-4 w-4" />
                         {paper.year}
                       </div>
-                      <div className="flex items-center">
-                        <FileText className="mr-2 h-4 w-4" />
-                        {paper.marks} নম্বর
-                      </div>
                     </div>
                     
-                    <div className="flex items-center justify-between text-xs text-gray-500">
+                    <div className="flex items-center justify-between text-xs text-blue-300">
                       <div className="flex items-center">
                         <User className="mr-1 h-3 w-3" />
                         {paper.uploader}
@@ -317,7 +351,7 @@ const QuestionBank = () => {
                         size="sm" 
                         variant="outline"
                         onClick={() => handleView(paper)}
-                        className="flex-1 bg-blue-500/20 border-blue-500 text-blue-300 hover:bg-blue-500/30"
+                        className="flex-1 bg-blue-500/30 border-blue-400 text-blue-200 hover:bg-blue-500/40"
                       >
                         <Eye className="mr-1 h-3 w-3" />
                         দেখুন
@@ -325,7 +359,7 @@ const QuestionBank = () => {
                       <Button 
                         size="sm"
                         onClick={() => handleDownload(paper)}
-                        className="flex-1 bg-green-600 hover:bg-green-700"
+                        className="flex-1 bg-green-500/80 hover:bg-green-500/90 text-white border-0"
                       >
                         <Download className="mr-1 h-3 w-3" />
                         ডাউনলোড
@@ -339,34 +373,27 @@ const QuestionBank = () => {
           </TabsContent>
 
           <TabsContent value="popular">
-            {/* Popular questions with likes > 50 */}
+            {/* Popular questions */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {questionPapers.filter(paper => paper.likes > 50).map((paper) => (
-                
-                <Card key={paper.id} className="bg-white/10 backdrop-blur-lg border border-white/20 hover:border-white/40 transition-all group">
+                <Card key={paper.id} className="bg-white/15 backdrop-blur-lg border border-white/30 hover:border-white/50 transition-all group hover:bg-white/20">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <CardTitle className="text-white text-lg mb-2 group-hover:text-blue-400 transition-colors">
+                        <CardTitle className="text-white text-lg mb-2 group-hover:text-blue-200 transition-colors">
                           {paper.title}
                         </CardTitle>
                         <div className="flex flex-wrap gap-2 mb-3">
-                          <Badge variant="outline" className={getTypeColor(paper.examType)}>
+                          <Badge variant="outline" className="bg-blue-500/30 text-blue-200 border-blue-400/50">
                             {paper.examType}
                           </Badge>
-                          <Badge variant="outline" className={getDifficultyColor(paper.difficulty)}>
+                          <Badge variant="outline" className="bg-purple-500/30 text-purple-200 border-purple-400/50">
                             {paper.difficulty}
                           </Badge>
                           {paper.likes > 50 && (
-                            <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30">
+                            <Badge className="bg-orange-500/30 text-orange-200 border-orange-400/50">
                               <Star className="mr-1 h-3 w-3" />
                               জনপ্রিয়
-                            </Badge>
-                          )}
-                          {paper.views > 1000 && (
-                            <Badge className="bg-pink-500/20 text-pink-300 border-pink-500/30">
-                              <TrendingUp className="mr-1 h-3 w-3" />
-                              ট্রেন্ডিং
                             </Badge>
                           )}
                         </div>
@@ -375,7 +402,7 @@ const QuestionBank = () => {
                   </CardHeader>
                   
                   <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4 text-sm text-gray-400">
+                    <div className="grid grid-cols-2 gap-4 text-sm text-blue-200">
                       <div className="flex items-center">
                         <GraduationCap className="mr-2 h-4 w-4" />
                         {paper.class}
@@ -385,16 +412,16 @@ const QuestionBank = () => {
                         {paper.subject}
                       </div>
                       <div className="flex items-center">
+                        <School className="mr-2 h-4 w-4" />
+                        {paper.school}
+                      </div>
+                      <div className="flex items-center">
                         <Clock className="mr-2 h-4 w-4" />
                         {paper.year}
                       </div>
-                      <div className="flex items-center">
-                        <FileText className="mr-2 h-4 w-4" />
-                        {paper.marks} নম্বর
-                      </div>
                     </div>
                     
-                    <div className="flex items-center justify-between text-xs text-gray-500">
+                    <div className="flex items-center justify-between text-xs text-blue-300">
                       <div className="flex items-center">
                         <User className="mr-1 h-3 w-3" />
                         {paper.uploader}
@@ -416,7 +443,7 @@ const QuestionBank = () => {
                         size="sm" 
                         variant="outline"
                         onClick={() => handleView(paper)}
-                        className="flex-1 bg-blue-500/20 border-blue-500 text-blue-300 hover:bg-blue-500/30"
+                        className="flex-1 bg-blue-500/30 border-blue-400 text-blue-200 hover:bg-blue-500/40"
                       >
                         <Eye className="mr-1 h-3 w-3" />
                         দেখুন
@@ -424,7 +451,7 @@ const QuestionBank = () => {
                       <Button 
                         size="sm"
                         onClick={() => handleDownload(paper)}
-                        className="flex-1 bg-green-600 hover:bg-green-700"
+                        className="flex-1 bg-green-500/80 hover:bg-green-500/90 text-white border-0"
                       >
                         <Download className="mr-1 h-3 w-3" />
                         ডাউনলোড
@@ -438,34 +465,27 @@ const QuestionBank = () => {
           </TabsContent>
 
           <TabsContent value="recent">
-            {/* Recent questions sorted by upload date */}
+            {/* Recent questions */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {questionPapers.sort((a, b) => new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime()).map((paper) => (
-                
-                <Card key={paper.id} className="bg-white/10 backdrop-blur-lg border border-white/20 hover:border-white/40 transition-all group">
+                <Card key={paper.id} className="bg-white/15 backdrop-blur-lg border border-white/30 hover:border-white/50 transition-all group hover:bg-white/20">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <CardTitle className="text-white text-lg mb-2 group-hover:text-blue-400 transition-colors">
+                        <CardTitle className="text-white text-lg mb-2 group-hover:text-blue-200 transition-colors">
                           {paper.title}
                         </CardTitle>
                         <div className="flex flex-wrap gap-2 mb-3">
-                          <Badge variant="outline" className={getTypeColor(paper.examType)}>
+                          <Badge variant="outline" className="bg-blue-500/30 text-blue-200 border-blue-400/50">
                             {paper.examType}
                           </Badge>
-                          <Badge variant="outline" className={getDifficultyColor(paper.difficulty)}>
+                          <Badge variant="outline" className="bg-purple-500/30 text-purple-200 border-purple-400/50">
                             {paper.difficulty}
                           </Badge>
                           {paper.likes > 50 && (
-                            <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30">
+                            <Badge className="bg-orange-500/30 text-orange-200 border-orange-400/50">
                               <Star className="mr-1 h-3 w-3" />
                               জনপ্রিয়
-                            </Badge>
-                          )}
-                          {paper.views > 1000 && (
-                            <Badge className="bg-pink-500/20 text-pink-300 border-pink-500/30">
-                              <TrendingUp className="mr-1 h-3 w-3" />
-                              ট্রেন্ডিং
                             </Badge>
                           )}
                         </div>
@@ -474,7 +494,7 @@ const QuestionBank = () => {
                   </CardHeader>
                   
                   <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4 text-sm text-gray-400">
+                    <div className="grid grid-cols-2 gap-4 text-sm text-blue-200">
                       <div className="flex items-center">
                         <GraduationCap className="mr-2 h-4 w-4" />
                         {paper.class}
@@ -484,16 +504,16 @@ const QuestionBank = () => {
                         {paper.subject}
                       </div>
                       <div className="flex items-center">
+                        <School className="mr-2 h-4 w-4" />
+                        {paper.school}
+                      </div>
+                      <div className="flex items-center">
                         <Clock className="mr-2 h-4 w-4" />
                         {paper.year}
                       </div>
-                      <div className="flex items-center">
-                        <FileText className="mr-2 h-4 w-4" />
-                        {paper.marks} নম্বর
-                      </div>
                     </div>
                     
-                    <div className="flex items-center justify-between text-xs text-gray-500">
+                    <div className="flex items-center justify-between text-xs text-blue-300">
                       <div className="flex items-center">
                         <User className="mr-1 h-3 w-3" />
                         {paper.uploader}
@@ -515,7 +535,7 @@ const QuestionBank = () => {
                         size="sm" 
                         variant="outline"
                         onClick={() => handleView(paper)}
-                        className="flex-1 bg-blue-500/20 border-blue-500 text-blue-300 hover:bg-blue-500/30"
+                        className="flex-1 bg-blue-500/30 border-blue-400 text-blue-200 hover:bg-blue-500/40"
                       >
                         <Eye className="mr-1 h-3 w-3" />
                         দেখুন
@@ -523,7 +543,7 @@ const QuestionBank = () => {
                       <Button 
                         size="sm"
                         onClick={() => handleDownload(paper)}
-                        className="flex-1 bg-green-600 hover:bg-green-700"
+                        className="flex-1 bg-green-500/80 hover:bg-green-500/90 text-white border-0"
                       >
                         <Download className="mr-1 h-3 w-3" />
                         ডাউনলোড
