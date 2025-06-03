@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -133,6 +134,10 @@ const QuestionBank = () => {
     setShowUploadDialog(false);
   };
 
+  const handleUploadCancel = () => {
+    setShowUploadDialog(false);
+  };
+
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'annual': return 'bg-red-500/20 text-red-300';
@@ -192,7 +197,11 @@ const QuestionBank = () => {
               <DialogHeader>
                 <DialogTitle className="text-gray-800">প্রশ্নপত্র আপলোড করুন</DialogTitle>
               </DialogHeader>
-              <PDFUpload onUploadSuccess={handleUploadSuccess} />
+              <PDFUpload 
+                type="question"
+                onUploadSuccess={handleUploadSuccess}
+                onCancel={handleUploadCancel}
+              />
             </DialogContent>
           </Dialog>
         </div>
