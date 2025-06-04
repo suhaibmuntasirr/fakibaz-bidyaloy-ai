@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,6 +18,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/Navbar';
+import AIToggle from '@/components/AIToggle';
 
 const Settings = () => {
   const { currentUser, userProfile, logout } = useAuth();
@@ -56,14 +56,41 @@ const Settings = () => {
   useEffect(() => {
     const savedSettings = localStorage.getItem('userSettings');
     if (savedSettings) {
-      setSettings(JSON.parse(savedSettings));
+      try {
+        setSettings(JSON.parse(savedSettings));
+      } catch (error) {
+        console.error('Error loading settings:', error);
+      }
     }
     
     const savedProfile = localStorage.getItem('userProfile');
     if (savedProfile) {
-      setProfileData(JSON.parse(savedProfile));
+      try {
+        const profile = JSON.parse(savedProfile);
+        setProfileData(prev => ({ ...prev, ...profile }));
+      } catch (error) {
+        console.error('Error loading profile:', error);
+      }
     }
   }, []);
+
+  // Auto-save settings when they change
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      localStorage.setItem('userSettings', JSON.stringify(settings));
+    }, 1000); // Auto-save after 1 second of no changes
+
+    return () => clearTimeout(timeoutId);
+  }, [settings]);
+
+  // Auto-save profile when it changes
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      localStorage.setItem('userProfile', JSON.stringify(profileData));
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [profileData]);
 
   const handleProfileChange = (field: string, value: string) => {
     setProfileData(prev => ({
@@ -110,11 +137,11 @@ const Settings = () => {
       localStorage.setItem('userProfile', JSON.stringify(profileData));
       
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
       toast({
         title: "সেটিংস সংরক্ষিত হয়েছে",
-        description: "আপনার সেটিংস সফলভাবে আপডেট হয়েছে"
+        description: "আপনার সেটিংস সফলভাবে আপডেট হয়েছে",
       });
     } catch (error) {
       toast({
@@ -128,25 +155,42 @@ const Settings = () => {
   };
 
   const handleDeleteAccount = async () => {
-    if (window.confirm('আপনি কি নিশ্চিত যে আপনার অ্যাকাউন্ট ডিলিট করতে চান? এই কাজটি ফিরিয়ে আনা যাবে না।')) {
+    const confirmText = prompt('অ্যাকাউন্ট ডিলিট করতে "DELETE" টাইপ করুন:');
+    if (confirmText === 'DELETE') {
       try {
+        setSaving(true);
+        
         // Clear all stored data
         localStorage.removeItem('userSettings');
         localStorage.removeItem('userProfile');
         localStorage.removeItem('notifications');
+        localStorage.clear();
+        
+        await new Promise(resolve => setTimeout(resolve, 2000));
         
         toast({
           title: "অ্যাকাউন্ট ডিলিট হয়েছে",
           description: "আপনার অ্যাকাউন্ট সফলভাবে ডিলিট হয়েছে"
         });
-        await logout();
-      } catch (error) {
+        
+        setTimeout(() => {
+          logout();
+        }, 1000);
+      }  catch (error) {
         toast({
           title: "ত্রুটি",
           description: "অ্যাকাউন্ট ডিলিট করতে সমস্যা হয়েছে",
           variant: "destructive"
         });
+      } finally {
+        setSaving(false);
       }
+    } else if (confirmText !== null) {
+      toast({
+        title: "অ্যাকাউন্ট ডিলিট করা হয়নি",
+        description: "নিশ্চিতকরণ শব্দ সঠিক নয়",
+        variant: "destructive"
+      });
     }
   };
 
@@ -417,7 +461,7 @@ const Settings = () => {
             <Button
               onClick={handleSaveSettings}
               disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              className="bg-blue-600 hover:bg-blue-700 text-white flex items-center"
             >
               <Save className="mr-2 h-4 w-4" />
               {loading ? 'সংরক্ষণ হচ্ছে...' : 'সেটিংস সংরক্ষণ করুন'}
@@ -426,14 +470,17 @@ const Settings = () => {
             <Button
               variant="destructive"
               onClick={handleDeleteAccount}
-              className="bg-red-600 hover:bg-red-700"
+              disabled={loading}
+              className="bg-red-600 hover:bg-red-700 flex items-center"
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              অ্যাকাউন্ট ডিলিট করুন
+              {loading ? 'প্রক্রিয়া চলছে...' : 'অ্যাকাউন্ট ডিলিট করুন'}
             </Button>
           </div>
         </div>
       </div>
+      
+      <AIToggle />
     </div>
   );
 };
