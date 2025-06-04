@@ -189,15 +189,15 @@ const Notes = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-100 to-blue-200">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl font-bold text-white mb-4">
             নোট লাইব্রেরি
           </h1>
-          <p className="text-gray-700 text-lg">
+          <p className="text-gray-300 text-lg">
             সব বিষয়ের নোট এবং সারাংশ এক জায়গায়
           </p>
         </div>
@@ -225,9 +225,9 @@ const Notes = () => {
         </div>
 
         {/* Filters */}
-        <Card className="mb-8 bg-white/70 backdrop-blur-lg border-white/30 shadow-lg">
+        <Card className="mb-8 bg-black/20 backdrop-blur-lg border border-white/10">
           <CardHeader>
-            <CardTitle className="text-gray-800 flex items-center">
+            <CardTitle className="text-white flex items-center">
               <Search className="mr-2 h-5 w-5" />
               খুঁজে নিন
             </CardTitle>
@@ -239,13 +239,13 @@ const Notes = () => {
                 placeholder="নোট খুঁজুন..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-white/60 border-gray-200"
+                className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
               />
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Select value={selectedClass} onValueChange={setSelectedClass}>
-                <SelectTrigger className="bg-white/60 border-gray-200">
+                <SelectTrigger className="bg-white/10 border-white/20 text-white">
                   <SelectValue placeholder="ক্লাস" />
                 </SelectTrigger>
                 <SelectContent>
@@ -261,7 +261,7 @@ const Notes = () => {
               </Select>
 
               <Select value={selectedSubject} onValueChange={setSelectedSubject}>
-                <SelectTrigger className="bg-white/60 border-gray-200">
+                <SelectTrigger className="bg-white/10 border-white/20 text-white">
                   <SelectValue placeholder="বিষয়" />
                 </SelectTrigger>
                 <SelectContent>
@@ -276,7 +276,7 @@ const Notes = () => {
               </Select>
 
               <Select value={selectedChapter} onValueChange={setSelectedChapter}>
-                <SelectTrigger className="bg-white/60 border-gray-200">
+                <SelectTrigger className="bg-white/10 border-white/20 text-white">
                   <SelectValue placeholder="চ্যাপটার" />
                 </SelectTrigger>
                 <SelectContent>
@@ -293,26 +293,26 @@ const Notes = () => {
         {/* Results */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredNotes.map((note) => (
-            <Card key={note.id} className="bg-white/70 backdrop-blur-lg border-white/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+            <Card key={note.id} className="bg-black/20 backdrop-blur-lg border border-white/10 hover:bg-black/30 transition-all duration-300">
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg text-gray-800 line-clamp-2">
+                <CardTitle className="text-lg text-white line-clamp-2">
                   {note.title}
                 </CardTitle>
               </CardHeader>
               
               <CardContent className="space-y-4">
-                <p className="text-gray-600 text-sm line-clamp-2">{note.description}</p>
+                <p className="text-gray-300 text-sm line-clamp-2">{note.description}</p>
                 
                 <div className="space-y-2 text-sm">
-                  <div className="flex items-center text-gray-600">
+                  <div className="flex items-center text-gray-400">
                     <BookOpen className="mr-2 h-4 w-4" />
                     <span>{note.subject} • {note.class}</span>
                   </div>
-                  <div className="flex items-center text-gray-600">
+                  <div className="flex items-center text-gray-400">
                     <User className="mr-2 h-4 w-4" />
                     <span>{note.author}</span>
                   </div>
-                  <div className="flex items-center text-gray-600">
+                  <div className="flex items-center text-gray-400">
                     <Calendar className="mr-2 h-4 w-4" />
                     <span>{note.uploadDate.toLocaleDateString('bn-BD')}</span>
                   </div>
@@ -320,26 +320,26 @@ const Notes = () => {
 
                 <div className="flex flex-wrap gap-1">
                   {note.tags.slice(0, 3).map((tag, index) => (
-                    <Badge key={index} variant="outline" className="text-xs bg-blue-50 text-blue-600 border-blue-200">
+                    <Badge key={index} variant="outline" className="text-xs bg-blue-500/20 text-blue-300 border-blue-500">
                       {tag}
                     </Badge>
                   ))}
                   {note.tags.length > 3 && (
-                    <Badge variant="outline" className="text-xs bg-gray-50 text-gray-500 border-gray-200">
+                    <Badge variant="outline" className="text-xs bg-gray-500/20 text-gray-400 border-gray-500">
                       +{note.tags.length - 3}
                     </Badge>
                   )}
                 </div>
 
                 {/* Engagement Actions */}
-                <div className="flex items-center justify-between text-sm text-gray-500 border-t pt-3">
+                <div className="flex items-center justify-between text-sm text-gray-400 border-t border-white/10 pt-3">
                   <div className="flex items-center space-x-4">
                     <button
                       onClick={() => handleLike(note.id)}
                       className={`flex items-center space-x-1 transition-colors ${
                         note.likedBy.includes('current-user') 
-                          ? 'text-red-500' 
-                          : 'hover:text-red-500'
+                          ? 'text-red-400' 
+                          : 'hover:text-red-400'
                       }`}
                     >
                       <Heart className={`h-4 w-4 ${
@@ -349,7 +349,7 @@ const Notes = () => {
                     </button>
                     <button
                       onClick={() => handleComment(note.id)}
-                      className="flex items-center space-x-1 hover:text-blue-500 transition-colors"
+                      className="flex items-center space-x-1 hover:text-blue-400 transition-colors"
                     >
                       <MessageSquare className="h-4 w-4" />
                       <span>{note.comments}</span>
@@ -363,14 +363,14 @@ const Notes = () => {
 
                 {/* Rating Section */}
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">রেটিং দিন:</span>
+                  <span className="text-sm text-gray-400">রেটিং দিন:</span>
                   <div className="flex space-x-1">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
                         key={star}
                         onClick={() => handleRating(note.id, star)}
                         className={`text-lg transition-colors ${
-                          star <= note.rating ? 'text-yellow-400' : 'text-gray-300'
+                          star <= note.rating ? 'text-yellow-400' : 'text-gray-600'
                         } hover:text-yellow-400`}
                       >
                         ★
@@ -384,7 +384,7 @@ const Notes = () => {
                     variant="outline"
                     size="sm"
                     onClick={() => handlePreview(note)}
-                    className="flex-1 bg-white/70 border-blue-200 text-blue-600 hover:bg-blue-50"
+                    className="flex-1 bg-blue-500/20 border-blue-500 text-blue-300 hover:bg-blue-500/30"
                   >
                     <Eye className="mr-1 h-3 w-3" />
                     প্রিভিউ
@@ -393,7 +393,7 @@ const Notes = () => {
                     variant="outline"
                     size="sm"
                     onClick={() => handleDownload(note)}
-                    className="flex-1 bg-white/70 border-green-200 text-green-600 hover:bg-green-50"
+                    className="flex-1 bg-green-500/20 border-green-500 text-green-300 hover:bg-green-500/30"
                   >
                     <Download className="mr-1 h-3 w-3" />
                     ডাউনলোড
@@ -406,8 +406,8 @@ const Notes = () => {
 
         {filteredNotes.length === 0 && (
           <div className="text-center py-12">
-            <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">কোনো নোট পাওয়া যায়নি</h3>
+            <BookOpen className="h-16 w-16 text-gray-500 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-400 mb-2">কোনো নোট পাওয়া যায়নি</h3>
             <p className="text-gray-500">অন্য ফিল্টার ব্যবহার করে চেষ্টা করুন</p>
           </div>
         )}

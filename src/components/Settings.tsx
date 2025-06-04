@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,7 +24,7 @@ import AIToggle from '@/components/AIToggle';
 const Settings = () => {
   const { currentUser, userProfile, logout } = useAuth();
   const { toast } = useToast();
-  const [loading, setSaving] = useState(false);
+  const [loading, setLoading] = useState(false);
   
   // Profile form state
   const [profileData, setProfileData] = useState({
@@ -130,7 +131,7 @@ const Settings = () => {
   };
 
   const handleSaveSettings = async () => {
-    setSaving(true);
+    setLoading(true);
     try {
       // Save to localStorage (in real app, this would be saved to backend)
       localStorage.setItem('userSettings', JSON.stringify(settings));
@@ -150,7 +151,7 @@ const Settings = () => {
         variant: "destructive"
       });
     } finally {
-      setSaving(false);
+      setLoading(false);
     }
   };
 
@@ -158,7 +159,7 @@ const Settings = () => {
     const confirmText = prompt('অ্যাকাউন্ট ডিলিট করতে "DELETE" টাইপ করুন:');
     if (confirmText === 'DELETE') {
       try {
-        setSaving(true);
+        setLoading(true);
         
         // Clear all stored data
         localStorage.removeItem('userSettings');
@@ -183,7 +184,7 @@ const Settings = () => {
           variant: "destructive"
         });
       } finally {
-        setSaving(false);
+        setLoading(false);
       }
     } else if (confirmText !== null) {
       toast({

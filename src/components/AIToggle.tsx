@@ -21,19 +21,9 @@ const AIToggle = () => {
         </DialogTrigger>
         <DialogContent className="max-w-4xl h-[80vh] bg-white p-0">
           <DialogHeader className="p-6 pb-0">
-            <DialogTitle className="text-gray-800 flex items-center justify-between">
-              <span className="flex items-center">
-                <Bot className="mr-2 h-5 w-5" />
-                AI সহায়ক
-              </span>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsOpen(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <X className="h-4 w-4" />
-              </Button>
+            <DialogTitle className="text-gray-800 flex items-center">
+              <Bot className="mr-2 h-5 w-5" />
+              AI সহায়ক
             </DialogTitle>
             <DialogDescription className="text-gray-600">
               AI সহায়ক আপনার প্রশ্নের উত্তর দিতে এবং সাহায্য করতে প্রস্তুত
