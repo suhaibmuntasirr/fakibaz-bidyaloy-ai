@@ -11,25 +11,10 @@ import Navbar from '@/components/Navbar';
 import ExamSystem from '@/components/ExamSystem';
 import PDFUpload from '@/components/PDFUpload';
 import { useToast } from '@/hooks/use-toast';
-
-interface QuestionPaper {
-  id: string;
-  title: string;
-  subject: string;
-  class: string;
-  school: string;
-  district: string;
-  year: number;
-  type: 'test' | 'annual' | 'half-yearly' | 'model';
-  duration: string;
-  marks: number;
-  downloadUrl: string;
-  previewUrl?: string;
-  tags: string[];
-}
+import { Question } from '@/types/common';
 
 const QuestionBank = () => {
-  const [questions, setQuestions] = useState<QuestionPaper[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClass, setSelectedClass] = useState('all');
   const [selectedSubject, setSelectedSubject] = useState('all');
@@ -38,13 +23,13 @@ const QuestionBank = () => {
   const [selectedYear, setSelectedYear] = useState('all');
   const [selectedType, setSelectedType] = useState('all');
   const [showExamSystem, setShowExamSystem] = useState(false);
-  const [selectedQuestionPaper, setSelectedQuestionPaper] = useState<QuestionPaper | null>(null);
+  const [selectedQuestionPaper, setSelectedQuestionPaper] = useState<Question | null>(null);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const { toast } = useToast();
 
   // Sample data
   useEffect(() => {
-    const sampleQuestions: QuestionPaper[] = [
+    const sampleQuestions: Question[] = [
       {
         id: '1',
         title: 'গণিত - বার্ষিক পরীক্ষা ২০২৩',
@@ -53,10 +38,22 @@ const QuestionBank = () => {
         school: 'ঢাকা কলেজিয়েট স্কুল',
         district: 'ঢাকা',
         year: 2023,
-        type: 'annual',
+        examType: 'annual',
         duration: '৩ ঘণ্টা',
         marks: 100,
         downloadUrl: '/sample-question.pdf',
+        fileUrl: '/sample-question.pdf',
+        fileName: 'math-annual-2023.pdf',
+        fileSize: 2048000,
+        author: 'ঢাকা কলেজিয়েট স্কুল',
+        authorId: 'school1',
+        uploadDate: new Date('2023-12-01'),
+        likes: 45,
+        likedBy: [],
+        downloads: 120,
+        comments: 8,
+        rating: 4.5,
+        verified: true,
         tags: ['বীজগণিত', 'জ্যামিতি', 'পরিসংখ্যান']
       },
       {
@@ -67,10 +64,22 @@ const QuestionBank = () => {
         school: 'ভিকারুননিসা নূন স্কুল',
         district: 'ঢাকা',
         year: 2023,
-        type: 'half-yearly',
+        examType: 'half-yearly',
         duration: '৩ ঘণ্টা',
         marks: 100,
         downloadUrl: '/sample-physics.pdf',
+        fileUrl: '/sample-physics.pdf',
+        fileName: 'physics-half-yearly-2023.pdf',
+        fileSize: 1536000,
+        author: 'ভিকারুননিসা নূন স্কুল',
+        authorId: 'school2',
+        uploadDate: new Date('2023-07-15'),
+        likes: 32,
+        likedBy: [],
+        downloads: 89,
+        comments: 5,
+        rating: 4.2,
+        verified: true,
         tags: ['বলবিদ্যা', 'তাপগতিবিদ্যা', 'আলোকবিদ্যা']
       },
       {
@@ -81,10 +90,22 @@ const QuestionBank = () => {
         school: 'নটরডেম কলেজ',
         district: 'ঢাকা',
         year: 2023,
-        type: 'test',
+        examType: 'test',
         duration: '২ ঘণ্টা',
         marks: 75,
         downloadUrl: '/sample-english.pdf',
+        fileUrl: '/sample-english.pdf',
+        fileName: 'english-test-2023.pdf',
+        fileSize: 1024000,
+        author: 'নটরডেম কলেজ',
+        authorId: 'school3',
+        uploadDate: new Date('2023-09-10'),
+        likes: 28,
+        likedBy: [],
+        downloads: 67,
+        comments: 3,
+        rating: 4.0,
+        verified: true,
         tags: ['Grammar', 'Composition', 'Reading Comprehension']
       }
     ];
@@ -102,11 +123,11 @@ const QuestionBank = () => {
       (selectedSchool === 'all' || question.school === selectedSchool) &&
       (selectedDistrict === 'all' || question.district === selectedDistrict) &&
       (selectedYear === 'all' || question.year.toString() === selectedYear) &&
-      (selectedType === 'all' || question.type === selectedType)
+      (selectedType === 'all' || question.examType === selectedType)
     );
   });
 
-  const handleDownload = (question: QuestionPaper) => {
+  const handleDownload = (question: Question) => {
     // Simulate download
     toast({
       title: "ডাউনলোড শুরু হয়েছে",
@@ -114,14 +135,14 @@ const QuestionBank = () => {
     });
   };
 
-  const handlePreview = (question: QuestionPaper) => {
+  const handlePreview = (question: Question) => {
     toast({
       title: "প্রিভিউ খোলা হচ্ছে",
       description: `${question.title} প্রিভিউ মোডে খোলা হচ্ছে...`,
     });
   };
 
-  const handleStartExam = (question: QuestionPaper) => {
+  const handleStartExam = (question: Question) => {
     setSelectedQuestionPaper(question);
     setShowExamSystem(true);
   };
@@ -138,8 +159,8 @@ const QuestionBank = () => {
     setShowUploadDialog(false);
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
+  const getTypeColor = (examType: string) => {
+    switch (examType) {
       case 'annual': return 'bg-red-500/20 text-red-300';
       case 'half-yearly': return 'bg-blue-500/20 text-blue-300';
       case 'test': return 'bg-green-500/20 text-green-300';
@@ -148,13 +169,13 @@ const QuestionBank = () => {
     }
   };
 
-  const getTypeName = (type: string) => {
-    switch (type) {
+  const getTypeName = (examType: string) => {
+    switch (examType) {
       case 'annual': return 'বার্ষিক';
       case 'half-yearly': return 'অর্ধবার্ষিক';
       case 'test': return 'টেস্ট';
       case 'model': return 'মডেল';
-      default: return type;
+      default: return examType;
     }
   };
 
@@ -327,8 +348,8 @@ const QuestionBank = () => {
                   <CardTitle className="text-lg text-gray-800 line-clamp-2">
                     {question.title}
                   </CardTitle>
-                  <Badge className={`${getTypeColor(question.type)} border-0 text-xs`}>
-                    {getTypeName(question.type)}
+                  <Badge className={`${getTypeColor(question.examType)} border-0 text-xs`}>
+                    {getTypeName(question.examType)}
                   </Badge>
                 </div>
               </CardHeader>

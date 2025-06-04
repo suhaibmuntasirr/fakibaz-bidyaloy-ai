@@ -46,3 +46,31 @@ export interface Note {
   verified: boolean;
   tags: string[];
 }
+
+export interface Question {
+  id: string;
+  title: string;
+  subject: string;
+  class: string;
+  school: string;
+  district: string;
+  year: number;
+  examType: 'test' | 'annual' | 'half-yearly' | 'model';
+  duration: string;
+  marks: number;
+  downloadUrl: string;
+  previewUrl?: string;
+  tags: string[];
+  author: string;
+  authorId: string;
+  uploadDate: Date;
+  likes: number;
+  likedBy: string[];
+  downloads: number;
+  comments: number;
+  rating: number;
+  verified: boolean;
+  fileUrl: string;
+  fileName: string;
+  fileSize: number;
+}
