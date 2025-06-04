@@ -173,11 +173,15 @@ const Notes = () => {
     return (
       <>
         <PDFViewer 
-          note={selectedNote}
-          onBack={() => {
+          item={selectedNote}
+          type="note"
+          onClose={() => {
             setShowViewer(false);
             setSelectedNote(null);
           }}
+          onLike={() => handleLike(selectedNote.id)}
+          onDownload={() => handleDownload(selectedNote)}
+          isLiked={selectedNote.likedBy.includes('current-user')}
         />
         <AIToggle />
       </>

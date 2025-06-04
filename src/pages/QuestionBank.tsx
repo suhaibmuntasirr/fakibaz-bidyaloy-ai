@@ -199,7 +199,6 @@ const QuestionBank = () => {
             setShowExamSystem(false);
             setSelectedQuestionPaper(null);
           }}
-          settings={examSettings}
         />
         <AIToggle />
       </>
@@ -210,11 +209,30 @@ const QuestionBank = () => {
     return (
       <>
         <PDFViewer 
-          note={selectedQuestionPaper}
-          onBack={() => {
+          item={selectedQuestionPaper}
+          type="question"
+          onClose={() => {
             setShowPreview(false);
             setSelectedQuestionPaper(null);
           }}
+          onLike={() => {
+            // Handle question like
+            setQuestions(prev => prev.map(q => {
+              if (q.id === selectedQuestionPaper.id) {
+                const isLiked = q.likedBy.includes('current-user');
+                return {
+                  ...q,
+                  likes: isLiked ? q.likes - 1 : q.likes + 1,
+                  likedBy: isLiked 
+                    ? q.likedBy.filter(id => id !== 'current-user')
+                    : [...q.likedBy, 'current-user']
+                };
+              }
+              return q;
+            }));
+          }}
+          onDownload={() => handleDownload(selectedQuestionPaper)}
+          isLiked={selectedQuestionPaper.likedBy.includes('current-user')}
         />
         <AIToggle />
       </>

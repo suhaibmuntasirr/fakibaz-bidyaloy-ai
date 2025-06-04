@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -8,9 +9,10 @@ import { Clock, Upload, FileText, Timer, CheckCircle, File, AlertCircle, Play, P
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { chatGPTService } from '@/services/chatgptService';
+import { Question } from '@/types/common';
 
 interface ExamSystemProps {
-  questionPaper: any;
+  questionPaper: Question;
   onExit?: () => void;
 }
 
