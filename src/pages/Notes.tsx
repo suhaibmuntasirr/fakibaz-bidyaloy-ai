@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -493,34 +492,25 @@ const Notes = () => {
           <DialogHeader>
             <DialogTitle className="text-white">নোট আপলোড করুন</DialogTitle>
           </DialogHeader>
-          <PDFUpload onClose={() => setShowUpload(false)} />
+          <PDFUpload 
+            type="note"
+            onUploadSuccess={() => setShowUpload(false)}
+            onCancel={() => setShowUpload(false)}
+          />
         </DialogContent>
       </Dialog>
 
       {/* Preview Dialog */}
-      <Dialog open={showPreview} onOpenChange={setShowPreview}>
-        <DialogContent className="max-w-4xl max-h-[90vh] bg-[#28282B] border-white/20 text-white">
-          <DialogHeader>
-            <DialogTitle className="text-white flex items-center justify-between">
-              <span>{selectedNote?.title}</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowPreview(false)}
-                className="text-white hover:bg-white/10"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </DialogTitle>
-          </DialogHeader>
-          {selectedNote && (
-            <PDFViewer 
-              note={selectedNote} 
-              onBack={() => setShowPreview(false)} 
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+      {showPreview && selectedNote && (
+        <PDFViewer 
+          item={selectedNote}
+          type="note"
+          onClose={() => setShowPreview(false)}
+          onLike={() => handleLike(selectedNote.id)}
+          onDownload={() => handleDownload(selectedNote)}
+          isLiked={likedNotes.includes(selectedNote.id)}
+        />
+      )}
     </div>
   );
 };
