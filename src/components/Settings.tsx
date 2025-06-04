@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Progress } from '@/components/ui/progress';
 import { 
   Settings as SettingsIcon, 
   User, 
@@ -14,7 +16,11 @@ import {
   Palette, 
   Download,
   Trash2,
-  Save 
+  Save,
+  Camera,
+  Edit,
+  Check,
+  X
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -24,31 +30,51 @@ const Settings = () => {
   const { currentUser, userProfile, logout } = useAuth();
   const { toast } = useToast();
   const [loading, setSaving] = useState(false);
+  const [editingField, setEditingField] = useState<string | null>(null);
   
   // Profile form state
   const [profileData, setProfileData] = useState({
-    fullName: userProfile?.fullName || '',
-    phoneNumber: userProfile?.phoneNumber || '',
-    email: currentUser?.email || ''
+    fullName: userProfile?.fullName || 'আব্দুল করিম',
+    phoneNumber: userProfile?.phoneNumber || '+880 1712-345678',
+    email: currentUser?.email || 'abdulkarim@example.com',
+    dateOfBirth: '১৫/০৮/২০০০',
+    address: 'ঢাকা, বাংলাদেশ',
+    institution: 'ঢাকা কলেজ',
+    class: 'Class 12',
+    profilePicture: ''
   });
+  
+  const [originalProfileData, setOriginalProfileData] = useState(profileData);
   
   const [settings, setSettings] = useState({
     notifications: {
       emailNotifications: true,
       pushNotifications: true,
       communityUpdates: true,
-      newNotes: false
+      newNotes: false,
+      weeklyDigest: true,
+      examReminders: true
     },
     privacy: {
       profileVisible: true,
       showEmail: false,
-      allowMessages: true
+      allowMessages: true,
+      showOnlineStatus: false,
+      shareActivity: true
     },
     preferences: {
       darkMode: true,
       autoDownload: false,
-      defaultClass: '',
-      defaultSubject: ''
+      defaultClass: 'Class 12',
+      defaultSubject: 'গণিত',
+      language: 'বাংলা',
+      fontSize: 'medium'
+    },
+    dataManagement: {
+      backupEnabled: true,
+      syncEnabled: true,
+      autoDelete: false,
+      deleteAfterDays: 30
     }
   });
 
@@ -61,7 +87,9 @@ const Settings = () => {
     
     const savedProfile = localStorage.getItem('userProfile');
     if (savedProfile) {
-      setProfileData(JSON.parse(savedProfile));
+      const profile = JSON.parse(savedProfile);
+      setProfileData(profile);
+      setOriginalProfileData(profile);
     }
   }, []);
 
@@ -72,6 +100,30 @@ const Settings = () => {
     }));
   };
 
+  const handleEditField = (field: string) => {
+    setEditingField(field);
+  };
+
+  const handleSaveField = (field: string) => {
+    setOriginalProfileData(prev => ({
+      ...prev,
+      [field]: profileData[field as keyof typeof profileData]
+    }));
+    setEditingField(null);
+    toast({
+      title: "আপডেট সম্পন্ন",
+      description: "তথ্য সফলভাবে আপডেট হয়েছে"
+    });
+  };
+
+  const handleCancelEdit = (field: string) => {
+    setProfileData(prev => ({
+      ...prev,
+      [field]: originalProfileData[field as keyof typeof originalProfileData]
+    }));
+    setEditingField(null);
+  };
+
   const handleNotificationChange = (key: string, value: boolean) => {
     setSettings(prev => ({
       ...prev,
@@ -80,6 +132,21 @@ const Settings = () => {
         [key]: value
       }
     }));
+    
+    // Auto-save notification settings
+    const newSettings = {
+      ...settings,
+      notifications: {
+        ...settings.notifications,
+        [key]: value
+      }
+    };
+    localStorage.setItem('userSettings', JSON.stringify(newSettings));
+    
+    toast({
+      title: value ? "চালু করা হয়েছে" : "বন্ধ করা হয়েছে",
+      description: `নোটিফিকেশন সেটিং ${value ? 'সক্রিয়' : 'নিষ্ক্রিয়'} করা হয়েছে`
+    });
   };
 
   const handlePrivacyChange = (key: string, value: boolean) => {
@@ -90,6 +157,21 @@ const Settings = () => {
         [key]: value
       }
     }));
+    
+    // Auto-save privacy settings
+    const newSettings = {
+      ...settings,
+      privacy: {
+        ...settings.privacy,
+        [key]: value
+      }
+    };
+    localStorage.setItem('userSettings', JSON.stringify(newSettings));
+    
+    toast({
+      title: "গোপনীয়তা আপডেট",
+      description: `গোপনীয়তা সেটিং ${value ? 'সক্রিয়' : 'নিষ্ক্রিয়'} করা হয়েছে`
+    });
   };
 
   const handlePreferenceChange = (key: string, value: boolean | string) => {
@@ -100,21 +182,61 @@ const Settings = () => {
         [key]: value
       }
     }));
+    
+    // Auto-save preference settings
+    const newSettings = {
+      ...settings,
+      preferences: {
+        ...settings.preferences,
+        [key]: value
+      }
+    };
+    localStorage.setItem('userSettings', JSON.stringify(newSettings));
+    
+    toast({
+      title: "পছন্দ আপডেট",
+      description: "আপনার পছন্দ সফলভাবে আপডেট হয়েছে"
+    });
   };
 
-  const handleSaveSettings = async () => {
+  const handleDataManagementChange = (key: string, value: boolean | number) => {
+    setSettings(prev => ({
+      ...prev,
+      dataManagement: {
+        ...prev.dataManagement,
+        [key]: value
+      }
+    }));
+    
+    // Auto-save data management settings
+    const newSettings = {
+      ...settings,
+      dataManagement: {
+        ...settings.dataManagement,
+        [key]: value
+      }
+    };
+    localStorage.setItem('userSettings', JSON.stringify(newSettings));
+    
+    toast({
+      title: "ডেটা সেটিং আপডেট",
+      description: "ডেটা ব্যবস্থাপনা সেটিং আপডেট হয়েছে"
+    });
+  };
+
+  const handleSaveAllSettings = async () => {
     setSaving(true);
     try {
-      // Save to localStorage (in real app, this would be saved to backend)
+      // Save to localStorage
       localStorage.setItem('userSettings', JSON.stringify(settings));
       localStorage.setItem('userProfile', JSON.stringify(profileData));
       
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
       toast({
         title: "সেটিংস সংরক্ষিত হয়েছে",
-        description: "আপনার সেটিংস সফলভাবে আপডেট হয়েছে"
+        description: "আপনার সমস্ত সেটিংস সফলভাবে আপডেট হয়েছে"
       });
     } catch (error) {
       toast({
@@ -134,6 +256,9 @@ const Settings = () => {
         localStorage.removeItem('userSettings');
         localStorage.removeItem('userProfile');
         localStorage.removeItem('notifications');
+        localStorage.removeItem('likedNotes');
+        localStorage.removeItem('noteComments');
+        localStorage.removeItem('noteRatings');
         
         toast({
           title: "অ্যাকাউন্ট ডিলিট হয়েছে",
@@ -154,13 +279,17 @@ const Settings = () => {
     const dataToExport = {
       profile: profileData,
       settings: settings,
-      exportDate: new Date().toISOString()
+      exportDate: new Date().toISOString(),
+      metadata: {
+        version: '1.0',
+        platform: 'Note Bank'
+      }
     };
     
     const dataStr = JSON.stringify(dataToExport, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
     
-    const exportFileDefaultName = 'my-data.json';
+    const exportFileDefaultName = `note-bank-data-${new Date().toISOString().split('T')[0]}.json`;
     
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
@@ -171,6 +300,55 @@ const Settings = () => {
       title: "ডেটা এক্সপোর্ট হয়েছে",
       description: "আপনার ডেটা সফলভাবে ডাউনলোড হয়েছে"
     });
+  };
+
+  const renderEditableField = (field: string, label: string, value: string, type: string = 'text') => {
+    const isEditing = editingField === field;
+    
+    return (
+      <div className="flex items-center justify-between">
+        <div className="flex-1">
+          <Label className="text-white">{label}</Label>
+          {isEditing ? (
+            <div className="flex items-center space-x-2 mt-1">
+              <Input
+                type={type}
+                value={value}
+                onChange={(e) => handleProfileChange(field, e.target.value)}
+                className="bg-white/10 border-white/20 text-white flex-1"
+              />
+              <Button
+                size="sm"
+                onClick={() => handleSaveField(field)}
+                className="bg-green-600 hover:bg-green-700 px-2"
+              >
+                <Check className="h-3 w-3" />
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleCancelEdit(field)}
+                className="bg-red-600/20 border-red-600 text-red-300 hover:bg-red-600/30 px-2"
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between mt-1">
+              <span className="text-gray-300">{value}</span>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => handleEditField(field)}
+                className="text-blue-400 hover:bg-blue-500/20 px-2"
+              >
+                <Edit className="h-3 w-3" />
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -196,37 +374,35 @@ const Settings = () => {
                 প্রোফাইল তথ্য
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <CardContent className="space-y-6">
+              {/* Profile Picture Section */}
+              <div className="flex items-center space-x-4">
+                <Avatar className="h-20 w-20">
+                  <AvatarImage src={profileData.profilePicture} />
+                  <AvatarFallback className="bg-blue-600 text-white text-xl">
+                    {profileData.fullName.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
                 <div>
-                  <Label htmlFor="fullName" className="text-white">পূর্ণ নাম</Label>
-                  <Input
-                    id="fullName"
-                    value={profileData.fullName}
-                    onChange={(e) => handleProfileChange('fullName', e.target.value)}
-                    className="bg-white/10 border-white/20 text-white"
-                    placeholder="আপনার পূর্ণ নাম লিখুন"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email" className="text-white">ইমেইল</Label>
-                  <Input
-                    id="email"
-                    value={profileData.email}
-                    disabled
-                    className="bg-white/5 border-white/20 text-gray-400"
-                  />
+                  <Button
+                    variant="outline"
+                    className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                  >
+                    <Camera className="mr-2 h-4 w-4" />
+                    ছবি পরিবর্তন করুন
+                  </Button>
+                  <p className="text-gray-400 text-sm mt-1">JPG, PNG ফাইল আপলোড করুন</p>
                 </div>
               </div>
-              <div>
-                <Label htmlFor="phone" className="text-white">ফোন নম্বর</Label>
-                <Input
-                  id="phone"
-                  value={profileData.phoneNumber}
-                  onChange={(e) => handleProfileChange('phoneNumber', e.target.value)}
-                  className="bg-white/10 border-white/20 text-white"
-                  placeholder="আপনার ফোন নম্বর লিখুন"
-                />
+
+              {/* Editable Profile Fields */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {renderEditableField('fullName', 'পূর্ণ নাম', profileData.fullName)}
+                {renderEditableField('email', 'ইমেইল', profileData.email, 'email')}
+                {renderEditableField('phoneNumber', 'ফোন নম্বর', profileData.phoneNumber, 'tel')}
+                {renderEditableField('dateOfBirth', 'জন্ম তারিখ', profileData.dateOfBirth)}
+                {renderEditableField('address', 'ঠিকানা', profileData.address)}
+                {renderEditableField('institution', 'শিক্ষা প্রতিষ্ঠান', profileData.institution)}
               </div>
             </CardContent>
           </Card>
@@ -283,6 +459,28 @@ const Settings = () => {
                   onCheckedChange={(value) => handleNotificationChange('newNotes', value)}
                 />
               </div>
+              <Separator className="bg-white/20" />
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-white">সাপ্তাহিক ডাইজেস্ট</Label>
+                  <p className="text-gray-400 text-sm">সপ্তাহে একবার সব আপডেট একসাথে পান</p>
+                </div>
+                <Switch
+                  checked={settings.notifications.weeklyDigest}
+                  onCheckedChange={(value) => handleNotificationChange('weeklyDigest', value)}
+                />
+              </div>
+              <Separator className="bg-white/20" />
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-white">পরীক্ষার রিমাইন্ডার</Label>
+                  <p className="text-gray-400 text-sm">পরীক্ষার আগে রিমাইন্ডার পান</p>
+                </div>
+                <Switch
+                  checked={settings.notifications.examReminders}
+                  onCheckedChange={(value) => handleNotificationChange('examReminders', value)}
+                />
+              </div>
             </CardContent>
           </Card>
 
@@ -327,6 +525,28 @@ const Settings = () => {
                   onCheckedChange={(value) => handlePrivacyChange('allowMessages', value)}
                 />
               </div>
+              <Separator className="bg-white/20" />
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-white">অনলাইন স্ট্যাটাস দেখান</Label>
+                  <p className="text-gray-400 text-sm">আপনি অনলাইনে আছেন কিনা অন্যরা দেখতে পাবে</p>
+                </div>
+                <Switch
+                  checked={settings.privacy.showOnlineStatus}
+                  onCheckedChange={(value) => handlePrivacyChange('showOnlineStatus', value)}
+                />
+              </div>
+              <Separator className="bg-white/20" />
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-white">কার্যকলাপ শেয়ার করুন</Label>
+                  <p className="text-gray-400 text-sm">আপনার পড়াশোনার অগ্রগতি অন্যদের সাথে শেয়ার করুন</p>
+                </div>
+                <Switch
+                  checked={settings.privacy.shareActivity}
+                  onCheckedChange={(value) => handlePrivacyChange('shareActivity', value)}
+                />
+              </div>
             </CardContent>
           </Card>
 
@@ -364,23 +584,60 @@ const Settings = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="defaultClass" className="text-white">ডিফল্ট ক্লাস</Label>
-                  <Input
-                    id="defaultClass"
-                    placeholder="যেমন: Class 10"
+                  <select
                     value={settings.preferences.defaultClass}
                     onChange={(e) => handlePreferenceChange('defaultClass', e.target.value)}
-                    className="bg-white/10 border-white/20 text-white"
-                  />
+                    className="w-full mt-1 bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                  >
+                    <option value="Class 6" className="bg-gray-800">Class 6</option>
+                    <option value="Class 7" className="bg-gray-800">Class 7</option>
+                    <option value="Class 8" className="bg-gray-800">Class 8</option>
+                    <option value="Class 9" className="bg-gray-800">Class 9</option>
+                    <option value="Class 10" className="bg-gray-800">Class 10</option>
+                    <option value="Class 11" className="bg-gray-800">Class 11</option>
+                    <option value="Class 12" className="bg-gray-800">Class 12</option>
+                  </select>
                 </div>
                 <div>
                   <Label htmlFor="defaultSubject" className="text-white">ডিফল্ট বিষয়</Label>
-                  <Input
-                    id="defaultSubject"
-                    placeholder="যেমন: গণিত"
+                  <select
                     value={settings.preferences.defaultSubject}
                     onChange={(e) => handlePreferenceChange('defaultSubject', e.target.value)}
-                    className="bg-white/10 border-white/20 text-white"
-                  />
+                    className="w-full mt-1 bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                  >
+                    <option value="গণিত" className="bg-gray-800">গণিত</option>
+                    <option value="পদার্থবিজ্ঞান" className="bg-gray-800">পদার্থবিজ্ঞান</option>
+                    <option value="রসায়ন" className="bg-gray-800">রসায়ন</option>
+                    <option value="জীববিজ্ঞান" className="bg-gray-800">জীববিজ্ঞান</option>
+                    <option value="ইংরেজি" className="bg-gray-800">ইংরেজি</option>
+                    <option value="বাংলা" className="bg-gray-800">বাংলা</option>
+                  </select>
+                </div>
+              </div>
+              <Separator className="bg-white/20" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-white">ভাষা</Label>
+                  <select
+                    value={settings.preferences.language}
+                    onChange={(e) => handlePreferenceChange('language', e.target.value)}
+                    className="w-full mt-1 bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                  >
+                    <option value="বাংলা" className="bg-gray-800">বাংলা</option>
+                    <option value="English" className="bg-gray-800">English</option>
+                  </select>
+                </div>
+                <div>
+                  <Label className="text-white">ফন্ট সাইজ</Label>
+                  <select
+                    value={settings.preferences.fontSize}
+                    onChange={(e) => handlePreferenceChange('fontSize', e.target.value)}
+                    className="w-full mt-1 bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                  >
+                    <option value="small" className="bg-gray-800">ছোট</option>
+                    <option value="medium" className="bg-gray-800">মাঝারি</option>
+                    <option value="large" className="bg-gray-800">বড়</option>
+                  </select>
                 </div>
               </div>
             </CardContent>
@@ -397,6 +654,54 @@ const Settings = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
+                  <Label className="text-white">স্বয়ংক্রিয় ব্যাকআপ</Label>
+                  <p className="text-gray-400 text-sm">আপনার ডেটা স্বয়ংক্রিয়ভাবে ব্যাকআপ করুন</p>
+                </div>
+                <Switch
+                  checked={settings.dataManagement.backupEnabled}
+                  onCheckedChange={(value) => handleDataManagementChange('backupEnabled', value)}
+                />
+              </div>
+              <Separator className="bg-white/20" />
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-white">ক্লাউড সিঙ্ক</Label>
+                  <p className="text-gray-400 text-sm">বিভিন্ন ডিভাইসে ডেটা সিঙ্ক করুন</p>
+                </div>
+                <Switch
+                  checked={settings.dataManagement.syncEnabled}
+                  onCheckedChange={(value) => handleDataManagementChange('syncEnabled', value)}
+                />
+              </div>
+              <Separator className="bg-white/20" />
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-white">স্বয়ংক্রিয় ডিলিট</Label>
+                  <p className="text-gray-400 text-sm">পুরাতন ফাইল স্বয়ংক্রিয়ভাবে মুছে ফেলুন</p>
+                </div>
+                <Switch
+                  checked={settings.dataManagement.autoDelete}
+                  onCheckedChange={(value) => handleDataManagementChange('autoDelete', value)}
+                />
+              </div>
+              {settings.dataManagement.autoDelete && (
+                <div className="ml-6">
+                  <Label className="text-white">কত দিন পর ডিলিট করবে</Label>
+                  <select
+                    value={settings.dataManagement.deleteAfterDays}
+                    onChange={(e) => handleDataManagementChange('deleteAfterDays', parseInt(e.target.value))}
+                    className="w-full mt-1 bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                  >
+                    <option value={7} className="bg-gray-800">৭ দিন</option>
+                    <option value={30} className="bg-gray-800">৩০ দিন</option>
+                    <option value={90} className="bg-gray-800">৯০ দিন</option>
+                    <option value={365} className="bg-gray-800">১ বছর</option>
+                  </select>
+                </div>
+              )}
+              <Separator className="bg-white/20" />
+              <div className="flex items-center justify-between">
+                <div>
                   <Label className="text-white">আপনার ডেটা এক্সপোর্ট করুন</Label>
                   <p className="text-gray-400 text-sm">আপনার সেটিংস এবং ডেটা ডাউনলোড করুন</p>
                 </div>
@@ -409,18 +714,29 @@ const Settings = () => {
                   এক্সপোর্ট
                 </Button>
               </div>
+              <Separator className="bg-white/20" />
+              <div className="space-y-2">
+                <Label className="text-white">স্টোরেজ ব্যবহার</Label>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-400">নোট ও ডকুমেন্ট</span>
+                    <span className="text-white">250 MB / 1 GB</span>
+                  </div>
+                  <Progress value={25} className="h-2" />
+                </div>
+              </div>
             </CardContent>
           </Card>
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-between">
             <Button
-              onClick={handleSaveSettings}
+              onClick={handleSaveAllSettings}
               disabled={loading}
               className="bg-blue-600 hover:bg-blue-700 text-white"
             >
               <Save className="mr-2 h-4 w-4" />
-              {loading ? 'সংরক্ষণ হচ্ছে...' : 'সেটিংস সংরক্ষণ করুন'}
+              {loading ? 'সংরক্ষণ হচ্ছে...' : 'সব সেটিংস সংরক্ষণ করুন'}
             </Button>
             
             <Button

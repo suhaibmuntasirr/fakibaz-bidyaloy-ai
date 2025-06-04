@@ -15,7 +15,8 @@ import {
   Award,
   Users,
   X,
-  Play
+  Play,
+  School
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import PDFUpload from '@/components/PDFUpload';
@@ -31,6 +32,8 @@ const QuestionBank = () => {
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedExamType, setSelectedExamType] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedSchool, setSelectedSchool] = useState('');
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
   const [showUpload, setShowUpload] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
@@ -39,7 +42,7 @@ const QuestionBank = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Sample questions data
+    // Enhanced sample questions data with more institutes
     const sampleQuestions: Question[] = [
       {
         id: '1',
@@ -124,6 +127,62 @@ const QuestionBank = () => {
         fileSize: 3200000,
         chapter: 'জৈব রসায়ন',
         description: 'একাদশ শ্রেণী রসায়ন জৈব রসায়ন অধ্যায়ের অর্ধবার্ষিক পরীক্ষার প্রশ্নপত্র'
+      },
+      {
+        id: '4',
+        title: 'জীববিজ্ঞান মডেল টেস্ট',
+        subject: 'জীববিজ্ঞান',
+        class: 'Class 11',
+        school: 'রাজশাহী কলেজ',
+        district: 'রাজশাহী',
+        year: 2023,
+        examType: 'model',
+        duration: '২ ঘন্টা ৪৫ মিনিট',
+        marks: 85,
+        downloadUrl: '/sample-biology.pdf',
+        tags: ['জীববিজ্ঞান', 'মডেল'],
+        author: 'ড. করিম স্যার',
+        authorId: 'teacher3',
+        uploadDate: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000),
+        likes: 38,
+        likedBy: [],
+        downloads: 95,
+        comments: 15,
+        rating: 4.3,
+        verified: true,
+        fileUrl: '/sample-biology.pdf',
+        fileName: 'biology-model-test.pdf',
+        fileSize: 2800000,
+        chapter: 'কোষ বিভাজন',
+        description: 'একাদশ শ্রেণী জীববিজ্ঞান কোষ বিভাজন অধ্যায়ের মডেল টেস্ট'
+      },
+      {
+        id: '5',
+        title: 'ইংরেজি বার্ষিক পরীক্ষা',
+        subject: 'ইংরেজি',
+        class: 'Class 9',
+        school: 'চট্টগ্রাম কলেজিয়েট স্কুল',
+        district: 'চট্টগ্রাম',
+        year: 2023,
+        examType: 'annual',
+        duration: '৩ ঘন্টা',
+        marks: 100,
+        downloadUrl: '/sample-english.pdf',
+        tags: ['ইংরেজি', 'বার্ষিক'],
+        author: 'মিসেস রহমান',
+        authorId: 'teacher4',
+        uploadDate: new Date(Date.now() - 35 * 24 * 60 * 60 * 1000),
+        likes: 42,
+        likedBy: [],
+        downloads: 110,
+        comments: 18,
+        rating: 4.1,
+        verified: true,
+        fileUrl: '/sample-english.pdf',
+        fileName: 'english-annual.pdf',
+        fileSize: 2200000,
+        chapter: 'Grammar & Composition',
+        description: 'নবম শ্রেণী ইংরেজি বার্ষিক পরীক্ষার প্রশ্নপত্র'
       }
     ];
     setQuestions(sampleQuestions);
@@ -155,8 +214,16 @@ const QuestionBank = () => {
       filtered = filtered.filter(question => question.examType === selectedExamType);
     }
 
+    if (selectedDistrict) {
+      filtered = filtered.filter(question => question.district === selectedDistrict);
+    }
+
+    if (selectedSchool) {
+      filtered = filtered.filter(question => question.school === selectedSchool);
+    }
+
     setFilteredQuestions(filtered);
-  }, [questions, searchQuery, selectedClass, selectedSubject, selectedExamType]);
+  }, [questions, searchQuery, selectedClass, selectedSubject, selectedExamType, selectedDistrict, selectedSchool]);
 
   const handleDownload = (question: Question) => {
     toast({
@@ -204,6 +271,10 @@ const QuestionBank = () => {
     { value: 'half-yearly', label: 'অর্ধবার্ষিক' },
     { value: 'model', label: 'মডেল টেস্ট' }
   ];
+  const districts = ['ঢাকা', 'চট্টগ্রাম', 'রাজশাহী', 'খুলনা', 'বরিশাল', 'সিলেট', 'রংপুর', 'ময়মনসিংহ'];
+  
+  // Get unique schools from questions
+  const schools = [...new Set(questions.map(q => q.school))];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
@@ -223,8 +294,8 @@ const QuestionBank = () => {
         {/* Search and Filters */}
         <Card className="mb-8 bg-white/10 backdrop-blur-lg border-white/20">
           <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              <div className="relative md:col-span-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              <div className="relative md:col-span-2 lg:col-span-2">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="প্রশ্নপত্র খুঁজুন..."
@@ -254,6 +325,28 @@ const QuestionBank = () => {
                 ))}
               </select>
               <select
+                value={selectedDistrict}
+                onChange={(e) => setSelectedDistrict(e.target.value)}
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+              >
+                <option value="">সব জেলা</option>
+                {districts.map(district => (
+                  <option key={district} value={district} className="bg-gray-800">{district}</option>
+                ))}
+              </select>
+              <select
+                value={selectedSchool}
+                onChange={(e) => setSelectedSchool(e.target.value)}
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+              >
+                <option value="">সব প্রতিষ্ঠান</option>
+                {schools.map(school => (
+                  <option key={school} value={school} className="bg-gray-800">{school}</option>
+                ))}
+              </select>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <select
                 value={selectedExamType}
                 onChange={(e) => setSelectedExamType(e.target.value)}
                 className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
@@ -263,6 +356,10 @@ const QuestionBank = () => {
                   <option key={type.value} value={type.value} className="bg-gray-800">{type.label}</option>
                 ))}
               </select>
+              <div className="text-white text-sm flex items-center">
+                <School className="mr-1 h-3 w-3" />
+                মোট {filteredQuestions.length} টি প্রশ্নপত্র পাওয়া গেছে
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -298,7 +395,10 @@ const QuestionBank = () => {
                     </div>
                   </div>
                 </div>
-                <p className="text-gray-300 text-sm">{question.school}</p>
+                <p className="text-gray-300 text-sm flex items-center">
+                  <School className="mr-1 h-3 w-3" />
+                  {question.school}
+                </p>
                 <p className="text-gray-400 text-xs">{question.district} • {question.year}</p>
               </CardHeader>
               
