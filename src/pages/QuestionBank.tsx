@@ -27,12 +27,6 @@ const QuestionBank = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [selectedQuestionPaper, setSelectedQuestionPaper] = useState<Question | null>(null);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
-  const [examSettings, setExamSettings] = useState({
-    duration: 180, // 3 hours in minutes
-    showTimer: true,
-    randomizeQuestions: false,
-    allowReview: true
-  });
   const { toast } = useToast();
 
   // Sample data
@@ -51,6 +45,7 @@ const QuestionBank = () => {
         marks: 100,
         downloadUrl: '/sample-question.pdf',
         fileUrl: '/sample-question.pdf',
+        questionFileUrl: '/sample-question.pdf',
         fileName: 'math-annual-2023.pdf',
         fileSize: 2048000,
         author: 'ঢাকা কলেজিয়েট স্কুল',
@@ -77,6 +72,7 @@ const QuestionBank = () => {
         marks: 100,
         downloadUrl: '/sample-physics.pdf',
         fileUrl: '/sample-physics.pdf',
+        questionFileUrl: '/sample-physics.pdf',
         fileName: 'physics-half-yearly-2023.pdf',
         fileSize: 1536000,
         author: 'ভিকারুননিসা নূন স্কুল',
@@ -103,6 +99,7 @@ const QuestionBank = () => {
         marks: 75,
         downloadUrl: '/sample-english.pdf',
         fileUrl: '/sample-english.pdf',
+        questionFileUrl: '/sample-english.pdf',
         fileName: 'english-test-2023.pdf',
         fileSize: 1024000,
         author: 'নটরডেম কলেজ',
@@ -262,71 +259,20 @@ const QuestionBank = () => {
                 প্রশ্নপত্র আপলোড করুন
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl bg-gray-900 border-gray-700">
+            <DialogContent className="max-w-2xl bg-gray-900 border-gray-700 max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="text-white">প্রশ্নপত্র আপলোড করুন</DialogTitle>
               </DialogHeader>
-              <PDFUpload 
-                type="question"
-                onUploadSuccess={handleUploadSuccess}
-                onCancel={handleUploadCancel}
-              />
+              <div className="max-h-[70vh] overflow-y-auto">
+                <PDFUpload 
+                  type="question"
+                  onUploadSuccess={handleUploadSuccess}
+                  onCancel={handleUploadCancel}
+                />
+              </div>
             </DialogContent>
           </Dialog>
         </div>
-
-        {/* Exam Settings */}
-        <Card className="mb-8 bg-gray-800/50 backdrop-blur-lg border-gray-700 shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center">
-              <Timer className="mr-2 h-5 w-5" />
-              পরীক্ষার সেটিংস
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div>
-                <label className="block text-sm text-gray-300 mb-2">সময়কাল (মিনিট)</label>
-                <Input
-                  type="number"
-                  value={examSettings.duration}
-                  onChange={(e) => setExamSettings(prev => ({ ...prev, duration: parseInt(e.target.value) || 180 }))}
-                  className="bg-gray-700 border-gray-600 text-white"
-                />
-              </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="showTimer"
-                  checked={examSettings.showTimer}
-                  onChange={(e) => setExamSettings(prev => ({ ...prev, showTimer: e.target.checked }))}
-                  className="w-4 h-4"
-                />
-                <label htmlFor="showTimer" className="text-sm text-gray-300">টাইমার দেখান</label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="randomize"
-                  checked={examSettings.randomizeQuestions}
-                  onChange={(e) => setExamSettings(prev => ({ ...prev, randomizeQuestions: e.target.checked }))}
-                  className="w-4 h-4"
-                />
-                <label htmlFor="randomize" className="text-sm text-gray-300">প্রশ্ন এলোমেলো করুন</label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="allowReview"
-                  checked={examSettings.allowReview}
-                  onChange={(e) => setExamSettings(prev => ({ ...prev, allowReview: e.target.checked }))}
-                  className="w-4 h-4"
-                />
-                <label htmlFor="allowReview" className="text-sm text-gray-300">পুনর্বিবেচনার অনুমতি</label>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Filters */}
         <Card className="mb-8 bg-gray-800/50 backdrop-blur-lg border-gray-700 shadow-lg">

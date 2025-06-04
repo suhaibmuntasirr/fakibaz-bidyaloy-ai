@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Bot, X } from 'lucide-react';
 import AIAssistant from '@/components/AIAssistant';
 
@@ -35,6 +35,9 @@ const AIToggle = () => {
                 <X className="h-4 w-4" />
               </Button>
             </DialogTitle>
+            <DialogDescription className="text-gray-600">
+              AI সহায়ক আপনার প্রশ্নের উত্তর দিতে এবং সাহায্য করতে প্রস্তুত
+            </DialogDescription>
           </DialogHeader>
           <div className="flex-1 overflow-hidden">
             <AIAssistant />

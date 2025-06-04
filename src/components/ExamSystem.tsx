@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -31,9 +30,9 @@ const ExamSystem = ({ questionPaper, onExit }: ExamSystemProps) => {
   const { currentUser } = useAuth();
   const { toast } = useToast();
 
-  // Set timer based on question type (MCQ: 30 min, CQ: 3 hours)
-  const examDuration = questionPaper.title.toLowerCase().includes('mcq') ? 30 : 180;
-  const totalTime = examDuration * 60;
+  // Set timer based on question duration
+  const examDuration = parseInt(questionPaper.duration.replace(/[^\d]/g, '')) * 60 || 180 * 60;
+  const totalTime = examDuration;
 
   const startExam = () => {
     setTimeLeft(totalTime);
@@ -48,7 +47,7 @@ const ExamSystem = ({ questionPaper, onExit }: ExamSystemProps) => {
     
     toast({
       title: "পরীক্ষা শুরু হয়েছে",
-      description: `${examDuration} মিনিটের পরীক্ষা শুরু হয়েছে`,
+      description: `${questionPaper.duration} পরীক্ষা শুরু হয়েছে`,
     });
   };
 
@@ -118,55 +117,6 @@ const ExamSystem = ({ questionPaper, onExit }: ExamSystemProps) => {
 
     setExamStarted(false);
     setExamCompleted(true);
-
-    if (apiKey) {
-      setIsEvaluating(true);
-      try {
-        chatGPTService.setApiKey(apiKey);
-        
-        let answerContent = userAnswer;
-        if (answerFile) {
-          answerContent += `\n\n[PDF ফাইল আপলোড করা হয়েছে: ${answerFile.name}]`;
-        }
-
-        const evaluationPrompt = `
-          প্রশ্নপত্র: ${questionPaper.title}
-          বিষয়: ${questionPaper.subject}
-          ক্লাস: ${questionPaper.class}
-          পূর্ণমান: ${questionPaper.marks}
-          সময়কাল: ${examDuration} মিনিট
-          
-          শিক্ষার্থীর উত্তর: ${answerContent}
-          
-          দয়া করে এই উত্তরটি মূল্যায়ন করুন এবং:
-          1. মোট নম্বর প্রদান করুন (${questionPaper.marks} এর মধ্যে)
-          2. প্রতিটি প্রশ্নের জন্য আলাদা নম্বর দিন
-          3. ভালো দিকগুলো উল্লেখ করুন
-          4. ভুল বা অসম্পূর্ণ উত্তরের জন্য সংশোধনী দিন
-          5. উন্নতির জন্য পরামর্শ দিন
-          6. সঠিক উত্তরের দিকনির্দেশনা দিন
-          7. সময় ব্যবস্থাপনার মূল্যায়ন করুন
-          8. প্রতিটি সেকশনের জন্য আলাদা ফিডব্যাক দিন
-          
-          বাংলায় বিস্তারিত ফিডব্যাক দিন এবং একটি পেশাদার মার্কিং স্কিম অনুসরণ করুন।
-        `;
-
-        const result = await chatGPTService.sendMessage(evaluationPrompt, {
-          class: questionPaper.class,
-          subject: questionPaper.subject
-        });
-        
-        setEvaluation(result);
-      } catch (error) {
-        toast({
-          title: "মূল্যায়ন করতে সমস্যা",
-          description: "AI মূল্যায়ন সেবা সাময়িক অনুপলব্ধ",
-          variant: "destructive"
-        });
-      } finally {
-        setIsEvaluating(false);
-      }
-    }
 
     toast({
       title: "উত্তর জমা দেওয়া হয়েছে",
@@ -251,10 +201,10 @@ const ExamSystem = ({ questionPaper, onExit }: ExamSystemProps) => {
       </Button>
 
       <Dialog open={showExamModal} onOpenChange={handleExitExam}>
-        <DialogContent className="bg-[#1a1a1a] border-white/20 text-white max-w-7xl max-h-[95vh] overflow-y-auto">
+        <DialogContent className="bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 border-gray-700 text-white max-w-7xl max-h-[95vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-white flex items-center justify-between">
-              <span>{questionPaper.title}</span>
+              <span className="text-xl font-bold">{questionPaper.title}</span>
               <div className="flex items-center space-x-4">
                 {examStarted && !examCompleted && (
                   <>
@@ -264,30 +214,30 @@ const ExamSystem = ({ questionPaper, onExit }: ExamSystemProps) => {
                     </Badge>
                     <div className="flex items-center space-x-2">
                       {!examPaused ? (
-                        <Button size="sm" variant="outline" onClick={pauseExam}>
+                        <Button size="sm" variant="outline" onClick={pauseExam} className="border-gray-600 text-white hover:bg-gray-700">
                           <Pause className="h-3 w-3" />
                         </Button>
                       ) : (
-                        <Button size="sm" variant="outline" onClick={resumeExam}>
+                        <Button size="sm" variant="outline" onClick={resumeExam} className="border-gray-600 text-white hover:bg-gray-700">
                           <Play className="h-3 w-3" />
                         </Button>
                       )}
-                      <Button size="sm" variant="outline" onClick={resetExam}>
+                      <Button size="sm" variant="outline" onClick={resetExam} className="border-gray-600 text-white hover:bg-gray-700">
                         <RotateCcw className="h-3 w-3" />
                       </Button>
                     </div>
                   </>
                 )}
-                <Button size="sm" variant="outline" onClick={handleExitExam}>
+                <Button size="sm" variant="outline" onClick={handleExitExam} className="border-gray-600 text-white hover:bg-gray-700">
                   <X className="h-3 w-3" />
                 </Button>
               </div>
             </DialogTitle>
             {examStarted && !examCompleted && (
-              <div className="mt-2">
+              <div className="mt-4">
                 <Progress 
                   value={(timeLeft / totalTime) * 100} 
-                  className="h-2"
+                  className="h-3 bg-gray-700"
                 />
                 {examPaused && (
                   <p className="text-yellow-400 text-sm mt-2 flex items-center">
@@ -299,56 +249,72 @@ const ExamSystem = ({ questionPaper, onExit }: ExamSystemProps) => {
             )}
           </DialogHeader>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
             {/* PDF Viewer Section */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">প্রশ্নপত্র</h3>
-              <div className="bg-white rounded-lg p-4 h-[500px] flex items-center justify-center">
-                {questionPaper.questionFileUrl ? (
+              <h3 className="text-xl font-semibold text-blue-400">প্রশ্নপত্র</h3>
+              <div className="bg-white rounded-lg p-6 h-[500px] flex items-center justify-center shadow-lg">
+                {questionPaper.questionFileUrl || questionPaper.fileUrl ? (
                   <iframe
-                    src={questionPaper.questionFileUrl}
+                    src={questionPaper.questionFileUrl || questionPaper.fileUrl}
                     className="w-full h-full border-0 rounded"
                     title="Question Paper"
                   />
                 ) : (
                   <div className="text-center text-gray-500">
-                    <FileText className="h-12 w-12 mx-auto mb-2" />
-                    <p>প্রশ্নপত্র লোড হচ্ছে...</p>
+                    <FileText className="h-16 w-16 mx-auto mb-4" />
+                    <p className="text-lg">প্রশ্নপত্র লোড হচ্ছে...</p>
                   </div>
                 )}
               </div>
               
-              <div className="text-sm text-gray-400 space-y-1">
-                <p>সময়: {examDuration} মিনিট</p>
-                <p>পূর্ণমান: {questionPaper.marks} নম্বর</p>
-                <p>বিষয়: {questionPaper.subject}</p>
-                <p>ক্লাস: {questionPaper.class}</p>
+              <div className="bg-gray-800/50 rounded-lg p-4 space-y-2">
+                <h4 className="font-semibold text-green-400">পরীক্ষার তথ্য:</h4>
+                <div className="grid grid-cols-2 gap-4 text-sm text-gray-300">
+                  <div>সময়: {questionPaper.duration}</div>
+                  <div>পূর্ণমান: {questionPaper.marks} নম্বর</div>
+                  <div>বিষয়: {questionPaper.subject}</div>
+                  <div>ক্লাস: {questionPaper.class}</div>
+                  <div>প্রতিষ্ঠান: {questionPaper.school}</div>
+                  <div>বছর: {questionPaper.year}</div>
+                </div>
               </div>
             </div>
 
             {/* Answer Section */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">আপনার উত্তর</h3>
+              <h3 className="text-xl font-semibold text-purple-400">আপনার উত্তর</h3>
               
               {!examCompleted ? (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {!examStarted ? (
-                    <div className="text-center space-y-4">
-                      <div className="bg-blue-600/20 border border-blue-600/30 rounded-lg p-4">
-                        <h4 className="font-semibold mb-2">পরীক্ষার নিয়মাবলী:</h4>
-                        <ul className="text-sm text-gray-300 space-y-1 text-left">
-                          <li>• সময়: {examDuration} মিনিট</li>
-                          <li>• পূর্ণমান: {questionPaper.marks} নম্বর</li>
-                          <li>• উত্তর লিখুন অথবা PDF আপলোড করুন</li>
-                          <li>• সময় শেষ হলে স্বয়ংক্রিয়ভাবে জমা হবে</li>
-                          <li>• পরীক্ষা বিরতি দিতে পারবেন</li>
+                    <div className="text-center space-y-6">
+                      <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-600/30 rounded-lg p-6">
+                        <h4 className="text-xl font-semibold mb-4 text-blue-400">পরীক্ষার নিয়মাবলী</h4>
+                        <ul className="text-sm text-gray-300 space-y-2 text-left">
+                          <li className="flex items-center">
+                            <Clock className="mr-2 h-4 w-4 text-yellow-400" />
+                            সময়: {questionPaper.duration}
+                          </li>
+                          <li className="flex items-center">
+                            <FileText className="mr-2 h-4 w-4 text-green-400" />
+                            পূর্ণমান: {questionPaper.marks} নম্বর
+                          </li>
+                          <li className="flex items-center">
+                            <Upload className="mr-2 h-4 w-4 text-blue-400" />
+                            উত্তর লিখুন অথবা PDF আপলোড করুন
+                          </li>
+                          <li className="flex items-center">
+                            <AlertCircle className="mr-2 h-4 w-4 text-red-400" />
+                            সময় শেষ হলে স্বয়ংক্রিয়ভাবে জমা হবে
+                          </li>
                         </ul>
                       </div>
                       <Button 
                         onClick={() => setExamStarted(true)}
-                        className="bg-green-600 hover:bg-green-700"
+                        className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-3 text-lg"
                       >
-                        <Clock className="mr-2 h-4 w-4" />
+                        <Play className="mr-2 h-5 w-5" />
                         পরীক্ষা শুরু করুন
                       </Button>
                     </div>
@@ -356,19 +322,19 @@ const ExamSystem = ({ questionPaper, onExit }: ExamSystemProps) => {
                     <>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium mb-2">লিখিত উত্তর:</label>
+                          <label className="block text-sm font-medium mb-2 text-gray-300">লিখিত উত্তর:</label>
                           <Textarea
                             placeholder="এখানে আপনার উত্তর লিখুন..."
                             value={userAnswer}
                             onChange={(e) => setUserAnswer(e.target.value)}
-                            className="bg-black/30 border-white/20 text-white placeholder:text-gray-400 min-h-[200px]"
+                            className="bg-gray-800/50 border-gray-600 text-white placeholder:text-gray-400 min-h-[250px] focus:border-blue-500"
                             disabled={examPaused}
                           />
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium mb-2">অথবা PDF আপলোড করুন:</label>
-                          <div className="border-2 border-dashed border-white/20 rounded-lg p-4 text-center">
+                          <label className="block text-sm font-medium mb-2 text-gray-300">অথবা PDF আপলোড করুন:</label>
+                          <div className="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center hover:border-blue-500 transition-colors">
                             <input
                               type="file"
                               accept=".pdf"
@@ -378,8 +344,8 @@ const ExamSystem = ({ questionPaper, onExit }: ExamSystemProps) => {
                               disabled={examPaused}
                             />
                             <label htmlFor="answer-upload" className={`cursor-pointer ${examPaused ? 'opacity-50' : ''}`}>
-                              <File className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                              <p className="text-sm text-gray-400">
+                              <File className="h-10 w-10 mx-auto mb-3 text-blue-400" />
+                              <p className="text-sm text-gray-300">
                                 {answerFile ? answerFile.name : 'PDF ফাইল আপলোড করতে ক্লিক করুন'}
                               </p>
                             </label>
@@ -389,7 +355,7 @@ const ExamSystem = ({ questionPaper, onExit }: ExamSystemProps) => {
                       
                       <Button 
                         onClick={submitAnswer}
-                        className="w-full bg-blue-600 hover:bg-blue-700"
+                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3"
                         disabled={examPaused}
                       >
                         <Upload className="mr-2 h-4 w-4" />
@@ -400,58 +366,24 @@ const ExamSystem = ({ questionPaper, onExit }: ExamSystemProps) => {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div className="bg-green-600/20 border border-green-600/30 rounded-lg p-4">
-                    <CheckCircle className="h-8 w-8 text-green-400 mx-auto mb-2" />
-                    <h4 className="text-center text-green-400 font-semibold">উত্তর জমা হয়েছে!</h4>
-                    <p className="text-center text-sm text-gray-300 mt-2">
-                      সময়: {formatTime(totalTime - timeLeft)} ব্যয়িত
+                  <div className="bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-600/30 rounded-lg p-6 text-center">
+                    <CheckCircle className="h-12 w-12 text-green-400 mx-auto mb-4" />
+                    <h4 className="text-xl text-green-400 font-semibold mb-2">উত্তর জমা হয়েছে!</h4>
+                    <p className="text-gray-300 mb-2">
+                      ব্যয়িত সময়: {formatTime(totalTime - timeLeft)}
                     </p>
                     {answerFile && (
-                      <p className="text-center text-sm text-gray-300 mt-1">
+                      <p className="text-sm text-gray-400">
                         আপলোড করা ফাইল: {answerFile.name}
                       </p>
                     )}
                   </div>
                   
-                  {!apiKey && (
-                    <div className="bg-blue-600/20 border border-blue-600/30 rounded-lg p-4">
-                      <h4 className="font-semibold mb-2">AI মূল্যায়নের জন্য OpenAI API Key দিন:</h4>
-                      <input
-                        type="password"
-                        placeholder="আপনার OpenAI API Key"
-                        value={apiKey}
-                        onChange={(e) => setApiKey(e.target.value)}
-                        className="w-full p-2 bg-black/30 border border-white/20 rounded text-white mb-2"
-                      />
-                      <Button 
-                        onClick={submitAnswer}
-                        className="w-full bg-purple-600 hover:bg-purple-700"
-                        disabled={!apiKey}
-                      >
-                        AI মূল্যায়ন করুন
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {isEvaluating && (
-                    <div className="text-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
-                      <p className="mt-2">AI আপনার উত্তর মূল্যায়ন করছে...</p>
-                    </div>
-                  )}
-                  
-                  {evaluation && (
-                    <div className="bg-purple-600/20 border border-purple-600/30 rounded-lg p-4 max-h-[300px] overflow-y-auto">
-                      <h4 className="font-semibold mb-2">AI মূল্যায়ন:</h4>
-                      <div className="whitespace-pre-wrap text-sm">{evaluation}</div>
-                    </div>
-                  )}
-                  
                   <Button 
                     onClick={handleExitExam}
-                    className="w-full bg-gray-600 hover:bg-gray-700"
+                    className="w-full bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white"
                   >
-                    বন্ধ করুন
+                    পরীক্ষা শেষ করুন
                   </Button>
                 </div>
               )}
