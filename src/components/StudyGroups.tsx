@@ -8,12 +8,26 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Users, Clock, BookOpen, Plus, UserPlus, MessageCircle, Calendar, Video, ExternalLink } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+interface StudyGroup {
+  id: number;
+  name: string;
+  subject: string;
+  class: string;
+  members: number;
+  maxMembers: number;
+  nextSession: string;
+  description: string;
+  isLive: boolean;
+  meetingLink?: string;
+}
+
 const StudyGroups = () => {
   const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [newGroupName, setNewGroupName] = useState('');
   const [newGroupSubject, setNewGroupSubject] = useState('');
-  const [studyGroups, setStudyGroups] = useState([
+  const [newMeetingLink, setNewMeetingLink] = useState('');
+  const [studyGroups, setStudyGroups] = useState<StudyGroup[]>([
     {
       id: 1,
       name: 'HSC Physics Study Circle',
@@ -23,7 +37,8 @@ const StudyGroups = () => {
       maxMembers: 50,
       nextSession: '২ ঘন্টা পরে',
       description: 'নিউটনের সূত্র ও গতিবিদ্যা নিয়ে আলোচনা',
-      isLive: false
+      isLive: false,
+      meetingLink: 'https://meet.google.com/sample-link'
     },
     {
       id: 2,
@@ -34,7 +49,8 @@ const StudyGroups = () => {
       maxMembers: 40,
       nextSession: 'আগামীকাল ৮ PM',
       description: 'ক্যালকুলাস ও সমাকলন সমস্যা সমাধান',
-      isLive: true
+      isLive: true,
+      meetingLink: 'https://meet.google.com/live-session'
     },
     {
       id: 3,
@@ -45,7 +61,8 @@ const StudyGroups = () => {
       maxMembers: 35,
       nextSession: 'রবিবার ৬ PM',
       description: 'জৈব রসায়ন ও বিক্রিয়া নিয়ে আলোচনা',
-      isLive: false
+      isLive: false,
+      meetingLink: 'https://discord.gg/sample-link'
     }
   ]);
   const { toast } = useToast();
@@ -83,7 +100,7 @@ const StudyGroups = () => {
     }
   };
 
-  const handleJoinMeeting = (group: any) => {
+  const handleJoinMeeting = (group: StudyGroup) => {
     if (!joinedGroups.includes(group.id)) {
       toast({
         title: "প্রবেশাধিকার নেই",
@@ -92,11 +109,20 @@ const StudyGroups = () => {
       });
       return;
     }
-    window.open('https://meet.google.com', '_blank');
-    toast({
-      title: "Google Meet খোলা হচ্ছে",
-      description: `"${group.name}" এর জন্য Google Meet খোলা হচ্ছে`,
-    });
+    
+    if (group.meetingLink) {
+      window.open(group.meetingLink, '_blank');
+      toast({
+        title: "মিটিং এ যোগ দিচ্ছেন",
+        description: `"${group.name}" এর মিটিং খোলা হচ্ছে`,
+      });
+    } else {
+      toast({
+        title: "মিটিং লিংক নেই",
+        description: "এই গ্রুপের জন্য কোন মিটিং লিংক সেট করা হয়নি",
+        variant: "destructive"
+      });
+    }
   };
 
   const openGoogleMeet = () => {
@@ -109,7 +135,7 @@ const StudyGroups = () => {
 
   const handleCreateGroup = () => {
     if (newGroupName.trim() && newGroupSubject.trim()) {
-      const newGroup = {
+      const newGroup: StudyGroup = {
         id: studyGroups.length + 1,
         name: newGroupName,
         subject: newGroupSubject,
@@ -118,16 +144,24 @@ const StudyGroups = () => {
         maxMembers: 30,
         nextSession: 'আজ রাত ৯ PM',
         description: 'নতুন স্টাডি গ্রুপ',
-        isLive: false
+        isLive: false,
+        meetingLink: newMeetingLink || undefined
       };
       setStudyGroups([...studyGroups, newGroup]);
       setJoinedGroups([...joinedGroups, newGroup.id]);
       setNewGroupName('');
       setNewGroupSubject('');
+      setNewMeetingLink('');
       setShowCreateDialog(false);
       toast({
         title: "নতুন গ্রুপ তৈরি হয়েছে",
         description: `"${newGroupName}" গ্রুপ সফলভাবে তৈরি করা হয়েছে`,
+      });
+    } else {
+      toast({
+        title: "তথ্য অসম্পূর্ণ",
+        description: "অনুগ্রহ করে গ্রুপের নাম এবং বিষয় লিখুন",
+        variant: "destructive"
       });
     }
   };
@@ -176,6 +210,15 @@ const StudyGroups = () => {
                     <Video className="mr-2 h-4 w-4" />
                     Meet তৈরি করুন
                   </Button>
+                  <Input
+                    placeholder="মিটিং/গ্রুপ লিংক (Google Meet, WhatsApp, Discord ইত্যাদি)"
+                    value={newMeetingLink}
+                    onChange={(e) => setNewMeetingLink(e.target.value)}
+                    className="bg-black/30 border-white/20 text-white placeholder:text-gray-400"
+                  />
+                  <p className="text-xs text-gray-400">
+                    উদাহরণ: https://meet.google.com/abc-defg-hij বা https://chat.whatsapp.com/xyz
+                  </p>
                 </div>
                 <Button 
                   onClick={handleCreateGroup}
@@ -205,6 +248,12 @@ const StudyGroups = () => {
                   )}
                 </div>
                 <p className="text-gray-400 text-sm mb-2">{group.description}</p>
+                {group.meetingLink && (
+                  <p className="text-blue-400 text-xs flex items-center">
+                    <ExternalLink className="h-3 w-3 mr-1" />
+                    মিটিং লিংক উপলব্ধ
+                  </p>
+                )}
               </div>
               <div className="flex flex-col gap-2">
                 <Button

@@ -12,6 +12,7 @@ import Settings from '@/components/Settings';
 import Auth from '@/pages/Auth';
 import NotFound from '@/pages/NotFound';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import AIToggle from '@/components/AIToggle';
 import './App.css';
 
 function App() {
@@ -64,6 +65,7 @@ function App() {
             />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <AIToggle />
         </div>
         <Toaster />
       </Router>

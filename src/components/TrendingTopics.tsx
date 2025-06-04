@@ -1,11 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, MessageCircle, Heart, Share2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const TrendingTopics = () => {
-  const trendingTopics = [
+  const [trendingTopics, setTrendingTopics] = useState([
     {
       id: 1,
       title: 'পদার্থবিজ্ঞান - নিউটনের সূত্র',
@@ -13,7 +14,8 @@ const TrendingTopics = () => {
       class: 'Class 11',
       discussions: 234,
       likes: 156,
-      trending: true
+      trending: true,
+      likedBy: []
     },
     {
       id: 2,
@@ -22,7 +24,8 @@ const TrendingTopics = () => {
       class: 'Class 12',
       discussions: 187,
       likes: 132,
-      trending: true
+      trending: true,
+      likedBy: []
     },
     {
       id: 3,
@@ -31,9 +34,98 @@ const TrendingTopics = () => {
       class: 'Class 10',
       discussions: 145,
       likes: 98,
-      trending: false
+      trending: false,
+      likedBy: []
     }
-  ];
+  ]);
+
+  const { toast } = useToast();
+
+  const handleLike = (topicId: number) => {
+    setTrendingTopics(prev => 
+      prev.map(topic => {
+        if (topic.id === topicId) {
+          const isLiked = topic.likedBy.includes('current-user');
+          return {
+            ...topic,
+            likes: isLiked ? topic.likes - 1 : topic.likes + 1,
+            likedBy: isLiked 
+              ? topic.likedBy.filter(id => id !== 'current-user')
+              : [...topic.likedBy, 'current-user']
+          };
+        }
+        return topic;
+      })
+    );
+
+    const topic = trendingTopics.find(t => t.id === topicId);
+    const isLiked = topic?.likedBy.includes('current-user');
+    
+    toast({
+      title: isLiked ? "লাইক সরানো হয়েছে" : "লাইক দেওয়া হয়েছে",
+      description: `"${topic?.title}" ${isLiked ? 'থেকে লাইক সরানো হয়েছে' : 'কে লাইক দেওয়া হয়েছে'}`,
+    });
+  };
+
+  const handleComment = (topicId: number) => {
+    const topic = trendingTopics.find(t => t.id === topicId);
+    setTrendingTopics(prev => 
+      prev.map(t => 
+        t.id === topicId 
+          ? { ...t, discussions: t.discussions + 1 }
+          : t
+      )
+    );
+    
+    toast({
+      title: "মন্তব্য যোগ করা হয়েছে",
+      description: `"${topic?.title}" এ আপনার মন্তব্য যোগ করা হয়েছে`,
+    });
+  };
+
+  const handleShare = async (topicId: number) => {
+    const topic = trendingTopics.find(t => t.id === topicId);
+    if (!topic) return;
+
+    const shareText = `${topic.title} - ${topic.subject} (${topic.class})\n\nFakibaz বিদ্যালয়ে আলোচনা চলছে!`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'ফাকিবাজ বিদ্যালয় - ট্রেন্ডিং টপিক',
+          text: shareText,
+          url: window.location.href
+        });
+        toast({
+          title: "শেয়ার করা হয়েছে",
+          description: "টপিকটি সফলভাবে শেয়ার করা হয়েছে",
+        });
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') {
+          handleCopyToClipboard(shareText);
+        }
+      }
+    } else {
+      handleCopyToClipboard(shareText);
+    }
+  };
+
+  const handleCopyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "লিংক কপি হয়েছে",
+        description: "টপিকের লিংক ক্লিপবোর্ডে কপি করা হয়েছে",
+      });
+    } catch (err) {
+      console.error('Error copying to clipboard:', err);
+      toast({
+        title: "কপি করতে সমস্যা",
+        description: "লিংক কপি করতে সমস্যা হয়েছে",
+        variant: "destructive"
+      });
+    }
+  };
 
   return (
     <Card className="bg-black/20 backdrop-blur-lg border border-white/10">
@@ -69,16 +161,29 @@ const TrendingTopics = () => {
 
             <div className="flex items-center justify-between text-xs text-gray-400">
               <div className="flex items-center space-x-4">
-                <span className="flex items-center">
+                <button
+                  onClick={() => handleComment(topic.id)}
+                  className="flex items-center hover:text-blue-400 transition-colors"
+                >
                   <MessageCircle className="h-3 w-3 mr-1" />
                   {topic.discussions}
-                </span>
-                <span className="flex items-center">
-                  <Heart className="h-3 w-3 mr-1" />
+                </button>
+                <button
+                  onClick={() => handleLike(topic.id)}
+                  className={`flex items-center transition-colors ${
+                    topic.likedBy.includes('current-user') 
+                      ? 'text-red-400' 
+                      : 'hover:text-red-400'
+                  }`}
+                >
+                  <Heart className={`h-3 w-3 mr-1 ${topic.likedBy.includes('current-user') ? 'fill-current' : ''}`} />
                   {topic.likes}
-                </span>
+                </button>
               </div>
-              <button className="hover:text-blue-400 transition-colors">
+              <button 
+                onClick={() => handleShare(topic.id)}
+                className="hover:text-blue-400 transition-colors"
+              >
                 <Share2 className="h-3 w-3" />
               </button>
             </div>

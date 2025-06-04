@@ -19,19 +19,60 @@ export const useNotifications = () => {
   useEffect(() => {
     const savedNotifications = localStorage.getItem('notifications');
     if (savedNotifications) {
-      const parsed = JSON.parse(savedNotifications);
-      // Convert timestamp strings back to Date objects
-      const withDates = parsed.map((n: any) => ({
-        ...n,
-        timestamp: new Date(n.timestamp)
-      }));
-      setNotifications(withDates);
+      try {
+        const parsed = JSON.parse(savedNotifications);
+        // Convert timestamp strings back to Date objects
+        const withDates = parsed.map((n: any) => ({
+          ...n,
+          timestamp: new Date(n.timestamp)
+        }));
+        setNotifications(withDates);
+      } catch (error) {
+        console.error('Error parsing notifications:', error);
+        // Initialize with sample notifications if parsing fails
+        initializeSampleNotifications();
+      }
+    } else {
+      // Initialize with sample notifications
+      initializeSampleNotifications();
     }
   }, []);
 
+  const initializeSampleNotifications = () => {
+    const sampleNotifications: Notification[] = [
+      {
+        id: '1',
+        title: 'নতুন নোট আপলোড',
+        message: 'পদার্থবিজ্ঞান - নিউটনের সূত্র নিয়ে নতুন নোট আপলোড হয়েছে',
+        type: 'note',
+        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+        read: false
+      },
+      {
+        id: '2',
+        title: 'কমিউনিটি আপডেট',
+        message: 'আপনার পোস্টে নতুন মন্তব্য এসেছে',
+        type: 'community',
+        timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5 hours ago
+        read: false
+      },
+      {
+        id: '3',
+        title: 'অভিনন্দন!',
+        message: 'আপনি ১০০ দিন ধারাবাহিক লগইন করেছেন',
+        type: 'achievement',
+        timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
+        read: true
+      }
+    ];
+    setNotifications(sampleNotifications);
+  };
+
   // Save notifications to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('notifications', JSON.stringify(notifications));
+    if (notifications.length > 0) {
+      localStorage.setItem('notifications', JSON.stringify(notifications));
+    }
   }, [notifications]);
 
   const addNotification = useCallback((notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
@@ -42,7 +83,7 @@ export const useNotifications = () => {
       read: false
     };
     
-    setNotifications(prev => [newNotification, ...prev]);
+    setNotifications(prev => [newNotification, ...prev.slice(0, 49)]); // Keep max 50 notifications
   }, []);
 
   const markAsRead = useCallback((id: string) => {
