@@ -1,25 +1,11 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { TrendingUp, MessageCircle, Heart, Share2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-
-interface TrendingTopic {
-  id: number;
-  title: string;
-  subject: string;
-  class: string;
-  discussions: number;
-  likes: number;
-  trending: boolean;
-  likedBy: string[];
-}
 
 const TrendingTopics = () => {
-  const { toast } = useToast();
-  const [topics, setTopics] = useState<TrendingTopic[]>([
+  const trendingTopics = [
     {
       id: 1,
       title: 'পদার্থবিজ্ঞান - নিউটনের সূত্র',
@@ -27,8 +13,7 @@ const TrendingTopics = () => {
       class: 'Class 11',
       discussions: 234,
       likes: 156,
-      trending: true,
-      likedBy: []
+      trending: true
     },
     {
       id: 2,
@@ -37,8 +22,7 @@ const TrendingTopics = () => {
       class: 'Class 12',
       discussions: 187,
       likes: 132,
-      trending: true,
-      likedBy: []
+      trending: true
     },
     {
       id: 3,
@@ -47,83 +31,9 @@ const TrendingTopics = () => {
       class: 'Class 10',
       discussions: 145,
       likes: 98,
-      trending: false,
-      likedBy: []
+      trending: false
     }
-  ]);
-
-  const handleLike = (topicId: number) => {
-    setTopics(prev => prev.map(topic => {
-      if (topic.id === topicId) {
-        const isLiked = topic.likedBy.includes('current-user');
-        return {
-          ...topic,
-          likes: isLiked ? topic.likes - 1 : topic.likes + 1,
-          likedBy: isLiked 
-            ? topic.likedBy.filter(id => id !== 'current-user')
-            : [...topic.likedBy, 'current-user']
-        };
-      }
-      return topic;
-    }));
-
-    toast({
-      title: "পছন্দ আপডেট",
-      description: "আপনার প্রতিক্রিয়া সংরক্ষিত হয়েছে"
-    });
-  };
-
-  const handleComment = (topicId: number) => {
-    const comment = prompt('আপনার মন্তব্য লিখুন:');
-    if (comment && comment.trim()) {
-      setTopics(prev => prev.map(topic => 
-        topic.id === topicId 
-          ? { ...topic, discussions: topic.discussions + 1 }
-          : topic
-      ));
-
-      toast({
-        title: "মন্তব্য যোগ করা হয়েছে",
-        description: "আপনার মন্তব্য সফলভাবে পোস্ট হয়েছে"
-      });
-    }
-  };
-
-  const handleShare = (topic: TrendingTopic) => {
-    const shareText = `${topic.title} - ${topic.subject} (${topic.class})`;
-    
-    if (navigator.share) {
-      navigator.share({
-        title: topic.title,
-        text: shareText,
-        url: window.location.href
-      }).then(() => {
-        toast({
-          title: "শেয়ার সম্পন্ন",
-          description: "টপিকটি সফলভাবে শেয়ার করা হয়েছে"
-        });
-      }).catch(() => {
-        fallbackShare(shareText);
-      });
-    } else {
-      fallbackShare(shareText);
-    }
-  };
-
-  const fallbackShare = (text: string) => {
-    navigator.clipboard.writeText(text).then(() => {
-      toast({
-        title: "ক্লিপবোর্ডে কপি হয়েছে",
-        description: "টপিকের লিংক কপি করা হয়েছে"
-      });
-    }).catch(() => {
-      toast({
-        title: "শেয়ার করুন",
-        description: "টপিকটি ম্যানুয়ালি শেয়ার করুন",
-        variant: "destructive"
-      });
-    });
-  };
+  ];
 
   return (
     <Card className="bg-black/20 backdrop-blur-lg border border-white/10">
@@ -134,7 +44,7 @@ const TrendingTopics = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {topics.map((topic) => (
+        {trendingTopics.map((topic) => (
           <div
             key={topic.id}
             className="p-4 bg-black/30 rounded-lg border border-white/10 hover:border-white/20 transition-all cursor-pointer"
@@ -157,31 +67,18 @@ const TrendingTopics = () => {
               </Badge>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4 text-xs text-gray-400">
-                <button
-                  onClick={() => handleLike(topic.id)}
-                  className={`flex items-center space-x-1 transition-colors hover:text-red-400 ${
-                    topic.likedBy.includes('current-user') ? 'text-red-400' : ''
-                  }`}
-                >
-                  <Heart className={`h-3 w-3 ${
-                    topic.likedBy.includes('current-user') ? 'fill-current' : ''
-                  }`} />
-                  <span>{topic.likes}</span>
-                </button>
-                <button
-                  onClick={() => handleComment(topic.id)}
-                  className="flex items-center space-x-1 transition-colors hover:text-blue-400"
-                >
-                  <MessageCircle className="h-3 w-3" />
-                  <span>{topic.discussions}</span>
-                </button>
+            <div className="flex items-center justify-between text-xs text-gray-400">
+              <div className="flex items-center space-x-4">
+                <span className="flex items-center">
+                  <MessageCircle className="h-3 w-3 mr-1" />
+                  {topic.discussions}
+                </span>
+                <span className="flex items-center">
+                  <Heart className="h-3 w-3 mr-1" />
+                  {topic.likes}
+                </span>
               </div>
-              <button
-                onClick={() => handleShare(topic)}
-                className="text-gray-400 hover:text-green-400 transition-colors"
-              >
+              <button className="hover:text-blue-400 transition-colors">
                 <Share2 className="h-3 w-3" />
               </button>
             </div>

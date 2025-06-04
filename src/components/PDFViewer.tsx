@@ -7,7 +7,32 @@ import {
   Download, ThumbsUp, MessageCircle, Star, X, 
   FileText, User, Calendar, BookOpen, School
 } from 'lucide-react';
-import { Note, Question } from '@/types/common';
+import { Note } from '@/types/common';
+
+export interface Question {
+  id: string;
+  title: string;
+  subject: string;
+  class: string;
+  school: string;
+  year: number;
+  examType: string;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  marks: number;
+  uploader: string;
+  uploaderId: string;
+  views: number;
+  likes: number;
+  answers: number;
+  hasAnswerKey: boolean;
+  uploadDate: Date;
+  verified: boolean;
+  questionFileUrl: string;
+  answerFileUrl?: string;
+  fileName: string;
+  answerFileName?: string;
+  likedBy: string[];
+}
 
 interface PDFViewerProps {
   item: Note | Question;
@@ -49,7 +74,7 @@ const PDFViewer = ({ item, type, onClose, onLike, onDownload, isLiked }: PDFView
               <FileText className="h-24 w-24 mx-auto mb-4" />
               <h3 className="text-xl font-medium mb-2">PDF প্রিভিউ</h3>
               <p className="text-sm mb-4">
-                {item.fileName}
+                {isNote ? note?.fileName : question?.fileName}
               </p>
               <p className="text-xs text-gray-500">
                 আসল PDF ভিউয়ার এখানে থাকবে
@@ -114,7 +139,7 @@ const PDFViewer = ({ item, type, onClose, onLike, onDownload, isLiked }: PDFView
                       {isNote ? 'লেখক:' : 'আপলোডার:'}
                     </span>
                     <span className="text-white ml-2">
-                      {isNote ? note?.author : question?.author}
+                      {isNote ? note?.author : question?.uploader}
                     </span>
                   </div>
 
@@ -141,7 +166,7 @@ const PDFViewer = ({ item, type, onClose, onLike, onDownload, isLiked }: PDFView
                     </div>
                     <div>
                       <div className="text-2xl font-bold text-white">
-                        {isNote ? note?.downloads : question?.downloads}
+                        {isNote ? note?.downloads : question?.views}
                       </div>
                       <div className="text-xs text-gray-300">
                         {isNote ? 'ডাউনলোড' : 'দেখা'}
@@ -164,7 +189,7 @@ const PDFViewer = ({ item, type, onClose, onLike, onDownload, isLiked }: PDFView
               </Card>
 
               {/* Description */}
-              {((isNote && note?.description) || (question && question.examType)) && (
+              {((isNote && note?.description) || (question && question.difficulty)) && (
                 <Card className="bg-white/10 border-white/20">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-white text-lg">বিবরণ</CardTitle>
@@ -178,15 +203,26 @@ const PDFViewer = ({ item, type, onClose, onLike, onDownload, isLiked }: PDFView
                     {question && (
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <span className="text-gray-300 text-sm">পরীক্ষার ধরন:</span>
-                          <Badge className="bg-blue-600 text-white">
-                            {question.examType}
+                          <span className="text-gray-300 text-sm">কঠিনতা:</span>
+                          <Badge className={`${
+                            question.difficulty === 'Easy' ? 'bg-green-500' :
+                            question.difficulty === 'Medium' ? 'bg-yellow-500' : 'bg-red-500'
+                          } text-white`}>
+                            {question.difficulty}
                           </Badge>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-gray-300 text-sm">নম্বর:</span>
                           <span className="text-white">{question.marks}</span>
                         </div>
+                        {question.hasAnswerKey && (
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-300 text-sm">উত্তর:</span>
+                            <Badge className="bg-blue-600 text-white">
+                              উত্তর সহ
+                            </Badge>
+                          </div>
+                        )}
                       </div>
                     )}
                   </CardContent>
@@ -194,14 +230,14 @@ const PDFViewer = ({ item, type, onClose, onLike, onDownload, isLiked }: PDFView
               )}
 
               {/* Tags */}
-              {item.tags && item.tags.length > 0 && (
+              {isNote && note?.tags && note.tags.length > 0 && (
                 <Card className="bg-white/10 border-white/20">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-white text-lg">ট্যাগ</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-wrap gap-2">
-                      {item.tags.map((tag) => (
+                      {note.tags.map((tag) => (
                         <Badge key={tag} className="bg-blue-600/30 text-blue-300">
                           {tag}
                         </Badge>

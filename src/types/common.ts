@@ -1,3 +1,4 @@
+
 export interface ViewerItem {
   id: string;
   title: string;
@@ -54,14 +55,12 @@ export interface Question {
   school: string;
   district: string;
   year: number;
-  examType: string;
+  examType: 'test' | 'annual' | 'half-yearly' | 'model';
   duration: string;
   marks: number;
   downloadUrl: string;
-  fileUrl: string;
-  questionFileUrl?: string;
-  fileName: string;
-  fileSize: number;
+  previewUrl?: string;
+  tags: string[];
   author: string;
   authorId: string;
   uploadDate: Date;
@@ -71,5 +70,7 @@ export interface Question {
   comments: number;
   rating: number;
   verified: boolean;
-  tags: string[];
+  fileUrl: string;
+  fileName: string;
+  fileSize: number;
 }

@@ -1,16 +1,15 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Search, BookOpen, Download, Eye, Calendar, Clock, School, MapPin, Upload, Plus, Timer, Award, CheckCircle } from 'lucide-react';
+import { Search, BookOpen, Download, Eye, Calendar, Clock, School, MapPin, Upload, Plus } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import Navbar from '@/components/Navbar';
 import ExamSystem from '@/components/ExamSystem';
 import PDFUpload from '@/components/PDFUpload';
-import PDFViewer from '@/components/PDFViewer';
-import AIToggle from '@/components/AIToggle';
 import { useToast } from '@/hooks/use-toast';
 import { Question } from '@/types/common';
 
@@ -24,7 +23,6 @@ const QuestionBank = () => {
   const [selectedYear, setSelectedYear] = useState('all');
   const [selectedType, setSelectedType] = useState('all');
   const [showExamSystem, setShowExamSystem] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
   const [selectedQuestionPaper, setSelectedQuestionPaper] = useState<Question | null>(null);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const { toast } = useToast();
@@ -45,7 +43,6 @@ const QuestionBank = () => {
         marks: 100,
         downloadUrl: '/sample-question.pdf',
         fileUrl: '/sample-question.pdf',
-        questionFileUrl: '/sample-question.pdf',
         fileName: 'math-annual-2023.pdf',
         fileSize: 2048000,
         author: 'ঢাকা কলেজিয়েট স্কুল',
@@ -72,7 +69,6 @@ const QuestionBank = () => {
         marks: 100,
         downloadUrl: '/sample-physics.pdf',
         fileUrl: '/sample-physics.pdf',
-        questionFileUrl: '/sample-physics.pdf',
         fileName: 'physics-half-yearly-2023.pdf',
         fileSize: 1536000,
         author: 'ভিকারুননিসা নূন স্কুল',
@@ -99,7 +95,6 @@ const QuestionBank = () => {
         marks: 75,
         downloadUrl: '/sample-english.pdf',
         fileUrl: '/sample-english.pdf',
-        questionFileUrl: '/sample-english.pdf',
         fileName: 'english-test-2023.pdf',
         fileSize: 1024000,
         author: 'নটরডেম কলেজ',
@@ -133,12 +128,7 @@ const QuestionBank = () => {
   });
 
   const handleDownload = (question: Question) => {
-    setQuestions(prev => prev.map(q => 
-      q.id === question.id 
-        ? { ...q, downloads: q.downloads + 1 }
-        : q
-    ));
-    
+    // Simulate download
     toast({
       title: "ডাউনলোড শুরু হয়েছে",
       description: `${question.title} ডাউনলোড হচ্ছে...`,
@@ -146,8 +136,10 @@ const QuestionBank = () => {
   };
 
   const handlePreview = (question: Question) => {
-    setSelectedQuestionPaper(question);
-    setShowPreview(true);
+    toast({
+      title: "প্রিভিউ খোলা হচ্ছে",
+      description: `${question.title} প্রিভিউ মোডে খোলা হচ্ছে...`,
+    });
   };
 
   const handleStartExam = (question: Question) => {
@@ -189,63 +181,26 @@ const QuestionBank = () => {
 
   if (showExamSystem && selectedQuestionPaper) {
     return (
-      <>
-        <ExamSystem 
-          questionPaper={selectedQuestionPaper}
-          onExit={() => {
-            setShowExamSystem(false);
-            setSelectedQuestionPaper(null);
-          }}
-        />
-        <AIToggle />
-      </>
-    );
-  }
-
-  if (showPreview && selectedQuestionPaper) {
-    return (
-      <>
-        <PDFViewer 
-          item={selectedQuestionPaper}
-          type="question"
-          onClose={() => {
-            setShowPreview(false);
-            setSelectedQuestionPaper(null);
-          }}
-          onLike={() => {
-            // Handle question like
-            setQuestions(prev => prev.map(q => {
-              if (q.id === selectedQuestionPaper.id) {
-                const isLiked = q.likedBy.includes('current-user');
-                return {
-                  ...q,
-                  likes: isLiked ? q.likes - 1 : q.likes + 1,
-                  likedBy: isLiked 
-                    ? q.likedBy.filter(id => id !== 'current-user')
-                    : [...q.likedBy, 'current-user']
-                };
-              }
-              return q;
-            }));
-          }}
-          onDownload={() => handleDownload(selectedQuestionPaper)}
-          isLiked={selectedQuestionPaper.likedBy.includes('current-user')}
-        />
-        <AIToggle />
-      </>
+      <ExamSystem 
+        questionPaper={selectedQuestionPaper}
+        onExit={() => {
+          setShowExamSystem(false);
+          setSelectedQuestionPaper(null);
+        }}
+      />
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-100 to-blue-200">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
             প্রশ্ন ব্যাংক
           </h1>
-          <p className="text-gray-300 text-lg">
+          <p className="text-gray-700 text-lg">
             বিভিন্ন স্কুল ও কলেজের পরীক্ষার প্রশ্নপত্র এবং মডেল টেস্ট
           </p>
         </div>
@@ -259,25 +214,23 @@ const QuestionBank = () => {
                 প্রশ্নপত্র আপলোড করুন
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl bg-gray-900 border-gray-700 max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-2xl bg-white">
               <DialogHeader>
-                <DialogTitle className="text-white">প্রশ্নপত্র আপলোড করুন</DialogTitle>
+                <DialogTitle className="text-gray-800">প্রশ্নপত্র আপলোড করুন</DialogTitle>
               </DialogHeader>
-              <div className="max-h-[70vh] overflow-y-auto">
-                <PDFUpload 
-                  type="question"
-                  onUploadSuccess={handleUploadSuccess}
-                  onCancel={handleUploadCancel}
-                />
-              </div>
+              <PDFUpload 
+                type="question"
+                onUploadSuccess={handleUploadSuccess}
+                onCancel={handleUploadCancel}
+              />
             </DialogContent>
           </Dialog>
         </div>
 
         {/* Filters */}
-        <Card className="mb-8 bg-gray-800/50 backdrop-blur-lg border-gray-700 shadow-lg">
+        <Card className="mb-8 bg-white/70 backdrop-blur-lg border-white/30 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-white flex items-center">
+            <CardTitle className="text-gray-800 flex items-center">
               <Search className="mr-2 h-5 w-5" />
               খুঁজে নিন
             </CardTitle>
@@ -289,16 +242,16 @@ const QuestionBank = () => {
                 placeholder="প্রশ্নপত্র খুঁজুন..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
+                className="pl-10 bg-white/60 border-gray-200"
               />
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <Select value={selectedClass} onValueChange={setSelectedClass}>
-                <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                <SelectTrigger className="bg-white/60 border-gray-200">
                   <SelectValue placeholder="ক্লাস" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-600">
+                <SelectContent>
                   <SelectItem value="all">সব ক্লাস</SelectItem>
                   <SelectItem value="Class 6">Class 6</SelectItem>
                   <SelectItem value="Class 7">Class 7</SelectItem>
@@ -311,10 +264,10 @@ const QuestionBank = () => {
               </Select>
 
               <Select value={selectedSubject} onValueChange={setSelectedSubject}>
-                <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                <SelectTrigger className="bg-white/60 border-gray-200">
                   <SelectValue placeholder="বিষয়" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-600">
+                <SelectContent>
                   <SelectItem value="all">সব বিষয়</SelectItem>
                   <SelectItem value="গণিত">গণিত</SelectItem>
                   <SelectItem value="পদার্থবিজ্ঞান">পদার্থবিজ্ঞান</SelectItem>
@@ -326,10 +279,10 @@ const QuestionBank = () => {
               </Select>
 
               <Select value={selectedSchool} onValueChange={setSelectedSchool}>
-                <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                <SelectTrigger className="bg-white/60 border-gray-200">
                   <SelectValue placeholder="প্রতিষ্ঠান" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-600">
+                <SelectContent>
                   <SelectItem value="all">সব প্রতিষ্ঠান</SelectItem>
                   <SelectItem value="ঢাকা কলেজিয়েট স্কুল">ঢাকা কলেজিয়েট স্কুল</SelectItem>
                   <SelectItem value="ভিকারুননিসা নূন স্কুল">ভিকারুননিসা নূন স্কুল</SelectItem>
@@ -340,10 +293,10 @@ const QuestionBank = () => {
               </Select>
 
               <Select value={selectedDistrict} onValueChange={setSelectedDistrict}>
-                <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                <SelectTrigger className="bg-white/60 border-gray-200">
                   <SelectValue placeholder="জেলা" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-600">
+                <SelectContent>
                   <SelectItem value="all">সব জেলা</SelectItem>
                   <SelectItem value="ঢাকা">ঢাকা</SelectItem>
                   <SelectItem value="চট্টগ্রাম">চট্টগ্রাম</SelectItem>
@@ -357,10 +310,10 @@ const QuestionBank = () => {
               </Select>
 
               <Select value={selectedYear} onValueChange={setSelectedYear}>
-                <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                <SelectTrigger className="bg-white/60 border-gray-200">
                   <SelectValue placeholder="বছর" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-600">
+                <SelectContent>
                   <SelectItem value="all">সব বছর</SelectItem>
                   <SelectItem value="2024">২০২৪</SelectItem>
                   <SelectItem value="2023">২০২৩</SelectItem>
@@ -371,10 +324,10 @@ const QuestionBank = () => {
               </Select>
 
               <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                <SelectTrigger className="bg-white/60 border-gray-200">
                   <SelectValue placeholder="ধরন" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-600">
+                <SelectContent>
                   <SelectItem value="all">সব ধরন</SelectItem>
                   <SelectItem value="annual">বার্ষিক</SelectItem>
                   <SelectItem value="half-yearly">অর্ধবার্ষিক</SelectItem>
@@ -389,10 +342,10 @@ const QuestionBank = () => {
         {/* Results */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredQuestions.map((question) => (
-            <Card key={question.id} className="bg-gray-800/50 backdrop-blur-lg border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-blue-500/50">
+            <Card key={question.id} className="bg-white/70 backdrop-blur-lg border-white/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
-                  <CardTitle className="text-lg text-white line-clamp-2">
+                  <CardTitle className="text-lg text-gray-800 line-clamp-2">
                     {question.title}
                   </CardTitle>
                   <Badge className={`${getTypeColor(question.examType)} border-0 text-xs`}>
@@ -403,23 +356,23 @@ const QuestionBank = () => {
               
               <CardContent className="space-y-4">
                 <div className="space-y-2 text-sm">
-                  <div className="flex items-center text-gray-300">
+                  <div className="flex items-center text-gray-600">
                     <BookOpen className="mr-2 h-4 w-4" />
                     <span>{question.subject} • {question.class}</span>
                   </div>
-                  <div className="flex items-center text-gray-300">
+                  <div className="flex items-center text-gray-600">
                     <School className="mr-2 h-4 w-4" />
                     <span className="line-clamp-1">{question.school}</span>
                   </div>
-                  <div className="flex items-center text-gray-300">
+                  <div className="flex items-center text-gray-600">
                     <MapPin className="mr-2 h-4 w-4" />
                     <span>{question.district}</span>
                   </div>
-                  <div className="flex items-center text-gray-300">
+                  <div className="flex items-center text-gray-600">
                     <Calendar className="mr-2 h-4 w-4" />
                     <span>{question.year}</span>
                   </div>
-                  <div className="flex items-center text-gray-300">
+                  <div className="flex items-center text-gray-600">
                     <Clock className="mr-2 h-4 w-4" />
                     <span>{question.duration} • {question.marks} নম্বর</span>
                   </div>
@@ -427,23 +380,23 @@ const QuestionBank = () => {
 
                 <div className="flex flex-wrap gap-1">
                   {question.tags.slice(0, 3).map((tag, index) => (
-                    <Badge key={index} variant="outline" className="text-xs bg-blue-500/20 text-blue-300 border-blue-500/30">
+                    <Badge key={index} variant="outline" className="text-xs bg-blue-50 text-blue-600 border-blue-200">
                       {tag}
                     </Badge>
                   ))}
                   {question.tags.length > 3 && (
-                    <Badge variant="outline" className="text-xs bg-gray-500/20 text-gray-400 border-gray-500/30">
+                    <Badge variant="outline" className="text-xs bg-gray-50 text-gray-500 border-gray-200">
                       +{question.tags.length - 3}
                     </Badge>
                   )}
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 pt-2">
+                <div className="flex gap-2 pt-2">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => handlePreview(question)}
-                    className="bg-gray-700/50 border-blue-500/30 text-blue-300 hover:bg-blue-500/20"
+                    className="flex-1 bg-white/70 border-blue-200 text-blue-600 hover:bg-blue-50"
                   >
                     <Eye className="mr-1 h-3 w-3" />
                     প্রিভিউ
@@ -452,7 +405,7 @@ const QuestionBank = () => {
                     variant="outline"
                     size="sm"
                     onClick={() => handleDownload(question)}
-                    className="bg-gray-700/50 border-green-500/30 text-green-300 hover:bg-green-500/20"
+                    className="flex-1 bg-white/70 border-green-200 text-green-600 hover:bg-green-50"
                   >
                     <Download className="mr-1 h-3 w-3" />
                     ডাউনলোড
@@ -460,10 +413,9 @@ const QuestionBank = () => {
                   <Button
                     size="sm"
                     onClick={() => handleStartExam(question)}
-                    className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white"
                   >
-                    <Award className="mr-1 h-3 w-3" />
-                    পরীক্ষা
+                    পরীক্ষা দিন
                   </Button>
                 </div>
               </CardContent>
@@ -473,14 +425,12 @@ const QuestionBank = () => {
 
         {filteredQuestions.length === 0 && (
           <div className="text-center py-12">
-            <BookOpen className="h-16 w-16 text-gray-500 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-300 mb-2">কোনো প্রশ্নপত্র পাওয়া যায়নি</h3>
+            <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">কোনো প্রশ্নপত্র পাওয়া যায়নি</h3>
             <p className="text-gray-500">অন্য ফিল্টার ব্যবহার করে চেষ্টা করুন</p>
           </div>
         )}
       </div>
-      
-      <AIToggle />
     </div>
   );
 };
