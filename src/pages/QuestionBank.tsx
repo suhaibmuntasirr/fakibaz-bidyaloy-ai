@@ -65,7 +65,9 @@ const QuestionBank = () => {
         verified: true,
         fileUrl: '/sample-physics-question.pdf',
         fileName: 'hsc-physics-2023.pdf',
-        fileSize: 2500000
+        fileSize: 2500000,
+        chapter: 'তরঙ্গ ও শব্দ',
+        description: 'HSC পদার্থবিজ্ঞান বার্ষিক পরীক্ষার প্রশ্নপত্র - তরঙ্গ ও শব্দ অধ্যায়ের উপর বিস্তৃত প্রশ্ন'
       },
       {
         id: '2',
@@ -91,7 +93,9 @@ const QuestionBank = () => {
         verified: false,
         fileUrl: '/sample-math-test.pdf',
         fileName: 'ssc-math-test.pdf',
-        fileSize: 1800000
+        fileSize: 1800000,
+        chapter: 'বীজগণিত',
+        description: 'SSC গণিত বীজগণিত অধ্যায়ের উপর টেস্ট পরীক্ষার প্রশ্নপত্র'
       },
       {
         id: '3',
@@ -117,7 +121,9 @@ const QuestionBank = () => {
         verified: true,
         fileUrl: '/sample-chemistry.pdf',
         fileName: 'chemistry-half-yearly.pdf',
-        fileSize: 3200000
+        fileSize: 3200000,
+        chapter: 'জৈব রসায়ন',
+        description: 'একাদশ শ্রেণী রসায়ন জৈব রসায়ন অধ্যায়ের অর্ধবার্ষিক পরীক্ষার প্রশ্নপত্র'
       }
     ];
     setQuestions(sampleQuestions);

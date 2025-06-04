@@ -73,4 +73,6 @@ export interface Question {
   fileUrl: string;
   fileName: string;
   fileSize: number;
+  chapter: string;
+  description: string;
 }
