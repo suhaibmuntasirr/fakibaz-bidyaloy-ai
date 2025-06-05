@@ -1,4 +1,3 @@
-
 import { 
   collection, 
   addDoc, 
@@ -98,7 +97,37 @@ class FirebaseService {
     return await getDownloadURL(snapshot.ref);
   }
 
-  // Upload Note
+  // Calculate points based on rating and engagement
+  calculatePoints(rating: number, downloads: number, likes: number, uploadType: 'note' | 'question'): number {
+    let basePoints = uploadType === 'note' ? 10 : 15;
+    let qualityMultiplier = 1;
+    let bonusPoints = 0;
+
+    // Rating-based quality multiplier
+    if (rating >= 4.8) {
+      qualityMultiplier = 3.0;
+      bonusPoints += 50;
+    } else if (rating >= 4.5) {
+      qualityMultiplier = 2.5;
+      bonusPoints += 30;
+    } else if (rating >= 4.0) {
+      qualityMultiplier = 2.0;
+      bonusPoints += 20;
+    } else if (rating >= 3.5) {
+      qualityMultiplier = 1.5;
+      bonusPoints += 10;
+    } else if (rating >= 3.0) {
+      qualityMultiplier = 1.2;
+      bonusPoints += 5;
+    }
+
+    const downloadBonus = Math.min(downloads * 2, 100);
+    const likeBonus = Math.min(likes * 3, 75);
+
+    return Math.floor((basePoints + downloadBonus + likeBonus) * qualityMultiplier + bonusPoints);
+  }
+
+  // Upload Note with points calculation
   async uploadNote(noteData: Omit<UploadedNote, 'id' | 'createdAt'>, file: File): Promise<string> {
     try {
       const filePath = `notes/${Date.now()}_${file.name}`;
@@ -123,7 +152,7 @@ class FirebaseService {
 
       const docRef = await addDoc(collection(db, 'notes'), noteDoc);
       
-      // Update user points
+      // Update user points with base upload points
       await this.updateUserPoints(noteData.authorId, 10);
       
       return docRef.id;
@@ -388,6 +417,95 @@ class FirebaseService {
       }
     } catch (error) {
       console.error('Error creating/updating user profile:', error);
+    }
+  }
+
+  // Update rating and recalculate points
+  async updateRating(itemId: string, userId: string, rating: number, type: 'note' | 'question'): Promise<void> {
+    try {
+      const collectionName = type === 'note' ? 'notes' : 'questions';
+      const itemRef = doc(db, collectionName, itemId);
+      const itemDoc = await getDoc(itemRef);
+      
+      if (!itemDoc.exists()) return;
+      
+      const itemData = itemDoc.data();
+      const newRatingCount = itemData.ratingCount + 1;
+      const newRating = ((itemData.rating * itemData.ratingCount) + rating) / newRatingCount;
+      
+      await updateDoc(itemRef, {
+        rating: newRating,
+        ratingCount: newRatingCount
+      });
+
+      // Recalculate and update author points
+      const newPoints = this.calculatePoints(newRating, itemData.downloads, itemData.likes, type);
+      await this.updateAuthorPointsForItem(itemData.authorId, itemId, newPoints);
+      
+    } catch (error) {
+      console.error('Error updating rating:', error);
+    }
+  }
+
+  // Update author points for specific item
+  async updateAuthorPointsForItem(authorId: string, itemId: string, newPoints: number): Promise<void> {
+    try {
+      // Store item-specific points to track changes
+      const pointsRef = doc(db, 'userPoints', `${authorId}_${itemId}`);
+      const pointsDoc = await getDoc(pointsRef);
+      
+      let pointsDifference = newPoints;
+      if (pointsDoc.exists()) {
+        const oldPoints = pointsDoc.data().points || 0;
+        pointsDifference = newPoints - oldPoints;
+      }
+
+      // Update item-specific points record
+      await setDoc(pointsRef, {
+        authorId,
+        itemId,
+        points: newPoints,
+        lastUpdated: new Date()
+      });
+
+      // Update user's total points
+      if (pointsDifference !== 0) {
+        await this.updateUserPoints(authorId, pointsDifference);
+      }
+    } catch (error) {
+      console.error('Error updating author points for item:', error);
+    }
+  }
+
+  // Get user's earnings
+  async getUserEarnings(userId: string): Promise<{ totalPoints: number; totalEarnings: number; monthlyEarnings: number }> {
+    try {
+      const userRef = doc(db, 'users', userId);
+      const userDoc = await getDoc(userRef);
+      
+      if (!userDoc.exists()) {
+        return { totalPoints: 0, totalEarnings: 0, monthlyEarnings: 0 };
+      }
+
+      const userData = userDoc.data();
+      const totalPoints = userData.points || 0;
+      const totalEarnings = totalPoints * 0.5; // 1 point = 0.5 BDT
+      
+      // Calculate monthly earnings (points earned this month)
+      const currentMonth = new Date().getMonth();
+      const currentYear = new Date().getFullYear();
+      
+      // This would need to be implemented based on monthly point tracking
+      const monthlyEarnings = totalEarnings; // Simplified for now
+      
+      return {
+        totalPoints,
+        totalEarnings,
+        monthlyEarnings
+      };
+    } catch (error) {
+      console.error('Error getting user earnings:', error);
+      return { totalPoints: 0, totalEarnings: 0, monthlyEarnings: 0 };
     }
   }
 }

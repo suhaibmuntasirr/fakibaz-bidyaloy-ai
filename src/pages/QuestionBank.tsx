@@ -501,17 +501,19 @@ const QuestionBank = () => {
         )}
       </div>
 
-      {/* Upload Dialog */}
+      {/* Upload Dialog - Fixed positioning */}
       <Dialog open={showUpload} onOpenChange={setShowUpload}>
-        <DialogContent className="max-w-4xl bg-[#28282B] border-white/20 text-white">
+        <DialogContent className="w-[95vw] max-w-4xl max-h-[90vh] bg-[#28282B] border-white/20 text-white overflow-hidden">
           <DialogHeader>
             <DialogTitle className="text-white">প্রশ্নপত্র আপলোড করুন</DialogTitle>
           </DialogHeader>
-          <PDFUpload 
-            type="question"
-            onUploadSuccess={() => setShowUpload(false)}
-            onCancel={() => setShowUpload(false)}
-          />
+          <div className="max-h-[calc(90vh-120px)] overflow-y-auto">
+            <PDFUpload 
+              type="question"
+              onUploadSuccess={() => setShowUpload(false)}
+              onCancel={() => setShowUpload(false)}
+            />
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -529,7 +531,7 @@ const QuestionBank = () => {
 
       {/* Exam Dialog */}
       <Dialog open={showExam} onOpenChange={setShowExam}>
-        <DialogContent className="max-w-6xl max-h-[95vh] bg-[#28282B] border-white/20 text-white">
+        <DialogContent className="w-[95vw] max-w-6xl max-h-[95vh] bg-[#28282B] border-white/20 text-white">
           <DialogHeader>
             <DialogTitle className="text-white flex items-center justify-between">
               <span>পরীক্ষা: {examQuestion?.title}</span>
