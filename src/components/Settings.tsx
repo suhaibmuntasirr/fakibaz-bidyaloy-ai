@@ -82,14 +82,58 @@ const Settings = () => {
   useEffect(() => {
     const savedSettings = localStorage.getItem('userSettings');
     if (savedSettings) {
-      setSettings(JSON.parse(savedSettings));
+      try {
+        const parsedSettings = JSON.parse(savedSettings);
+        // Ensure all required properties exist with fallbacks
+        setSettings({
+          notifications: {
+            emailNotifications: true,
+            pushNotifications: true,
+            communityUpdates: true,
+            newNotes: false,
+            weeklyDigest: true,
+            examReminders: true,
+            ...parsedSettings.notifications
+          },
+          privacy: {
+            profileVisible: true,
+            showEmail: false,
+            allowMessages: true,
+            showOnlineStatus: false,
+            shareActivity: true,
+            ...parsedSettings.privacy
+          },
+          preferences: {
+            darkMode: true,
+            autoDownload: false,
+            defaultClass: 'Class 12',
+            defaultSubject: 'গণিত',
+            language: 'বাংলা',
+            fontSize: 'medium',
+            ...parsedSettings.preferences
+          },
+          dataManagement: {
+            backupEnabled: true,
+            syncEnabled: true,
+            autoDelete: false,
+            deleteAfterDays: 30,
+            ...parsedSettings.dataManagement
+          }
+        });
+      } catch (error) {
+        console.error('Error parsing saved settings:', error);
+      }
     }
     
     const savedProfile = localStorage.getItem('userProfile');
     if (savedProfile) {
-      const profile = JSON.parse(savedProfile);
-      setProfileData(profile);
-      setOriginalProfileData(profile);
+      try {
+        const profile = JSON.parse(savedProfile);
+        setProfileData(profile);
+        setOriginalProfileData(profile);
+      } catch (error) {
+        console.error('Error parsing saved profile:', error);
+      }
     }
   }, []);
 
@@ -422,7 +466,7 @@ const Settings = () => {
                   <p className="text-gray-400 text-sm">নতুন আপডেট এবং বার্তার জন্য ইমেইল পান</p>
                 </div>
                 <Switch
-                  checked={settings.notifications.emailNotifications}
+                  checked={settings.notifications?.emailNotifications || false}
                   onCheckedChange={(value) => handleNotificationChange('emailNotifications', value)}
                 />
               </div>
@@ -433,7 +477,7 @@ const Settings = () => {
                   <p className="text-gray-400 text-sm">ব্রাউজারে তাৎক্ষণিক নোটিফিকেশন পান</p>
                 </div>
                 <Switch
-                  checked={settings.notifications.pushNotifications}
+                  checked={settings.notifications?.pushNotifications || false}
                   onCheckedChange={(value) => handleNotificationChange('pushNotifications', value)}
                 />
               </div>
@@ -444,7 +488,7 @@ const Settings = () => {
                   <p className="text-gray-400 text-sm">কমিউনিটির নতুন খবর এবং ইভেন্ট</p>
                 </div>
                 <Switch
-                  checked={settings.notifications.communityUpdates}
+                  checked={settings.notifications?.communityUpdates || false}
                   onCheckedChange={(value) => handleNotificationChange('communityUpdates', value)}
                 />
               </div>
@@ -455,7 +499,7 @@ const Settings = () => {
                   <p className="text-gray-400 text-sm">আপনার ক্লাসের নতুন নোট আপলোড হলে জানান</p>
                 </div>
                 <Switch
-                  checked={settings.notifications.newNotes}
+                  checked={settings.notifications?.newNotes || false}
                   onCheckedChange={(value) => handleNotificationChange('newNotes', value)}
                 />
               </div>
@@ -466,7 +510,7 @@ const Settings = () => {
                   <p className="text-gray-400 text-sm">সপ্তাহে একবার সব আপডেট একসাথে পান</p>
                 </div>
                 <Switch
-                  checked={settings.notifications.weeklyDigest}
+                  checked={settings.notifications?.weeklyDigest || false}
                   onCheckedChange={(value) => handleNotificationChange('weeklyDigest', value)}
                 />
               </div>
@@ -477,7 +521,7 @@ const Settings = () => {
                   <p className="text-gray-400 text-sm">পরীক্ষার আগে রিমাইন্ডার পান</p>
                 </div>
                 <Switch
-                  checked={settings.notifications.examReminders}
+                  checked={settings.notifications?.examReminders || false}
                   onCheckedChange={(value) => handleNotificationChange('examReminders', value)}
                 />
               </div>
@@ -499,7 +543,7 @@ const Settings = () => {
                   <p className="text-gray-400 text-sm">অন্যরা আপনার প্রোফাইল দেখতে পাবে</p>
                 </div>
                 <Switch
-                  checked={settings.privacy.profileVisible}
+                  checked={settings.privacy?.profileVisible || false}
                   onCheckedChange={(value) => handlePrivacyChange('profileVisible', value)}
                 />
               </div>
@@ -510,7 +554,7 @@ const Settings = () => {
                   <p className="text-gray-400 text-sm">আপনার ইমেইল ঠিকানা প্রোফাইলে দেখাবে</p>
                 </div>
                 <Switch
-                  checked={settings.privacy.showEmail}
+                  checked={settings.privacy?.showEmail || false}
                   onCheckedChange={(value) => handlePrivacyChange('showEmail', value)}
                 />
               </div>
@@ -521,7 +565,7 @@ const Settings = () => {
                   <p className="text-gray-400 text-sm">অন্য ব্যবহারকারীরা আপনাকে বার্তা পাঠাতে পারবে</p>
                 </div>
                 <Switch
-                  checked={settings.privacy.allowMessages}
+                  checked={settings.privacy?.allowMessages || false}
                   onCheckedChange={(value) => handlePrivacyChange('allowMessages', value)}
                 />
               </div>
@@ -532,7 +576,7 @@ const Settings = () => {
                   <p className="text-gray-400 text-sm">আপনি অনলাইনে আছেন কিনা অন্যরা দেখতে পাবে</p>
                 </div>
                 <Switch
-                  checked={settings.privacy.showOnlineStatus}
+                  checked={settings.privacy?.showOnlineStatus || false}
                   onCheckedChange={(value) => handlePrivacyChange('showOnlineStatus', value)}
                 />
               </div>
@@ -543,7 +587,7 @@ const Settings = () => {
                   <p className="text-gray-400 text-sm">আপনার পড়াশোনার অগ্রগতি অন্যদের সাথে শেয়ার করুন</p>
                 </div>
                 <Switch
-                  checked={settings.privacy.shareActivity}
+                  checked={settings.privacy?.shareActivity || false}
                   onCheckedChange={(value) => handlePrivacyChange('shareActivity', value)}
                 />
               </div>
@@ -565,7 +609,7 @@ const Settings = () => {
                   <p className="text-gray-400 text-sm">গাঢ় থিম ব্যবহার করুন</p>
                 </div>
                 <Switch
-                  checked={settings.preferences.darkMode}
+                  checked={settings.preferences?.darkMode || false}
                   onCheckedChange={(value) => handlePreferenceChange('darkMode', value)}
                 />
               </div>
@@ -576,7 +620,7 @@ const Settings = () => {
                   <p className="text-gray-400 text-sm">নোট ক্লিক করলে সরাসরি ডাউনলোড হবে</p>
                 </div>
                 <Switch
-                  checked={settings.preferences.autoDownload}
+                  checked={settings.preferences?.autoDownload || false}
                   onCheckedChange={(value) => handlePreferenceChange('autoDownload', value)}
                 />
               </div>
@@ -585,7 +629,7 @@ const Settings = () => {
                 <div>
                   <Label htmlFor="defaultClass" className="text-white">ডিফল্ট ক্লাস</Label>
                   <select
-                    value={settings.preferences.defaultClass}
+                    value={settings.preferences?.defaultClass || 'Class 12'}
                     onChange={(e) => handlePreferenceChange('defaultClass', e.target.value)}
                     className="w-full mt-1 bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
                   >
@@ -601,7 +645,7 @@ const Settings = () => {
                 <div>
                   <Label htmlFor="defaultSubject" className="text-white">ডিফল্ট বিষয়</Label>
                   <select
-                    value={settings.preferences.defaultSubject}
+                    value={settings.preferences?.defaultSubject || 'গণিত'}
                     onChange={(e) => handlePreferenceChange('defaultSubject', e.target.value)}
                     className="w-full mt-1 bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
                   >
@@ -619,7 +663,7 @@ const Settings = () => {
                 <div>
                   <Label className="text-white">ভাষা</Label>
                   <select
-                    value={settings.preferences.language}
+                    value={settings.preferences?.language || 'বাংলা'}
                     onChange={(e) => handlePreferenceChange('language', e.target.value)}
                     className="w-full mt-1 bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
                   >
@@ -630,7 +674,7 @@ const Settings = () => {
                 <div>
                   <Label className="text-white">ফন্ট সাইজ</Label>
                   <select
-                    value={settings.preferences.fontSize}
+                    value={settings.preferences?.fontSize || 'medium'}
                     onChange={(e) => handlePreferenceChange('fontSize', e.target.value)}
                     className="w-full mt-1 bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
                   >
@@ -658,7 +702,7 @@ const Settings = () => {
                   <p className="text-gray-400 text-sm">আপনার ডেটা স্বয়ংক্রিয়ভাবে ব্যাকআপ করুন</p>
                 </div>
                 <Switch
-                  checked={settings.dataManagement.backupEnabled}
+                  checked={settings.dataManagement?.backupEnabled || false}
                   onCheckedChange={(value) => handleDataManagementChange('backupEnabled', value)}
                 />
               </div>
@@ -669,7 +713,7 @@ const Settings = () => {
                   <p className="text-gray-400 text-sm">বিভিন্ন ডিভাইসে ডেটা সিঙ্ক করুন</p>
                 </div>
                 <Switch
-                  checked={settings.dataManagement.syncEnabled}
+                  checked={settings.dataManagement?.syncEnabled || false}
                   onCheckedChange={(value) => handleDataManagementChange('syncEnabled', value)}
                 />
               </div>
@@ -680,15 +724,15 @@ const Settings = () => {
                   <p className="text-gray-400 text-sm">পুরাতন ফাইল স্বয়ংক্রিয়ভাবে মুছে ফেলুন</p>
                 </div>
                 <Switch
-                  checked={settings.dataManagement.autoDelete}
+                  checked={settings.dataManagement?.autoDelete || false}
                   onCheckedChange={(value) => handleDataManagementChange('autoDelete', value)}
                 />
               </div>
-              {settings.dataManagement.autoDelete && (
+              {settings.dataManagement?.autoDelete && (
                 <div className="ml-6">
                   <Label className="text-white">কত দিন পর ডিলিট করবে</Label>
                   <select
-                    value={settings.dataManagement.deleteAfterDays}
+                    value={settings.dataManagement?.deleteAfterDays || 30}
                     onChange={(e) => handleDataManagementChange('deleteAfterDays', parseInt(e.target.value))}
                     className="w-full mt-1 bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
                   >
