@@ -11,6 +11,9 @@ import Subscription from '@/pages/Subscription';
 import Settings from '@/components/Settings';
 import Auth from '@/pages/Auth';
 import NotFound from '@/pages/NotFound';
+import TermsConditions from '@/pages/TermsConditions';
+import RefundPolicy from '@/pages/RefundPolicy';
+import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AIToggle from '@/components/AIToggle';
 import './App.css';
@@ -23,6 +26,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/terms" element={<TermsConditions />} />
+            <Route path="/refund-policy" element={<RefundPolicy />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route 
               path="/notes" 
               element={

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Facebook, Youtube, Instagram, Linkedin, Phone, Mail, MapPin } from 'lucide-react';
 
 const Footer = () => {
@@ -37,9 +38,9 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="text-white font-semibold">লিংক</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors text-sm">আমাদের সম্পর্কে</a></li>
+              <li><Link to="/" className="text-gray-300 hover:text-white transition-colors text-sm">আমাদের সম্পর্কে</Link></li>
               <li><a href="#" className="text-gray-300 hover:text-white transition-colors text-sm">ক্যারিয়ার</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors text-sm">ক্লাস</a></li>
+              <li><Link to="/notes" className="text-gray-300 hover:text-white transition-colors text-sm">ক্লাস</Link></li>
               <li><a href="#" className="text-gray-300 hover:text-white transition-colors text-sm">টিউটর পোর্টাল</a></li>
             </ul>
           </div>
@@ -102,12 +103,12 @@ const Footer = () => {
               </div>
             </div>
             
-            <div className="flex items-center space-x-6 text-sm text-gray-300">
-              <a href="#" className="hover:text-white transition-colors">Terms & Conditions</a>
-              <span>|</span>
-              <a href="#" className="hover:text-white transition-colors">Refund Policy</a>
-              <span>|</span>
-              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm text-gray-300">
+              <Link to="/terms" className="hover:text-white transition-colors">Terms & Conditions</Link>
+              <span className="hidden sm:inline">|</span>
+              <Link to="/refund-policy" className="hover:text-white transition-colors">Refund Policy</Link>
+              <span className="hidden sm:inline">|</span>
+              <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
             </div>
           </div>
           
