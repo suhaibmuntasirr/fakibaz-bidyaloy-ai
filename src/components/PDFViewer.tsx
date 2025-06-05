@@ -48,7 +48,7 @@ interface PDFViewerProps {
   onRate?: (rating: number) => void;
   onComment?: (comment: string) => void;
   isLiked: boolean;
-  comments?: Array<{id: string, author: string, text: string, timestamp: Date}>;
+  comments?: Array<{id: string, author: string, text: string, timestamp: Date | string}>;
   newComment?: string;
   onCommentChange?: (text: string) => void;
   userRating?: number;
@@ -86,6 +86,11 @@ const PDFViewer = ({
     if (onComment && newComment.trim()) {
       onComment(newComment);
     }
+  };
+
+  const formatTimestamp = (timestamp: Date | string) => {
+    const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
+    return date.toLocaleDateString('bn-BD');
   };
 
   return (
@@ -226,7 +231,7 @@ const PDFViewer = ({
                         <Calendar className="h-4 w-4 mr-2 text-gray-300" />
                         <span className="text-gray-300">আপলোড:</span>
                         <span className="text-white ml-2">
-                          {item.uploadDate.toLocaleDateString('bn-BD')}
+                          {formatTimestamp(item.uploadDate)}
                         </span>
                       </div>
                     </CardContent>
@@ -359,7 +364,7 @@ const PDFViewer = ({
                                     {comment.author}
                                   </span>
                                   <span className="text-gray-400 text-xs">
-                                    {comment.timestamp.toLocaleDateString('bn-BD')}
+                                    {formatTimestamp(comment.timestamp)}
                                   </span>
                                 </div>
                                 <p className="text-gray-300 text-sm">{comment.text}</p>

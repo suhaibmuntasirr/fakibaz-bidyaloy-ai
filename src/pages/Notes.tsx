@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -135,10 +134,18 @@ const Notes = () => {
       setLikedNotes(JSON.parse(savedLikes));
     }
 
-    // Load comments from localStorage
+    // Load comments from localStorage and convert timestamps to Date objects
     const savedComments = localStorage.getItem('noteComments');
     if (savedComments) {
-      setComments(JSON.parse(savedComments));
+      const parsedComments = JSON.parse(savedComments);
+      const commentsWithDates = Object.keys(parsedComments).reduce((acc, key) => {
+        acc[key] = parsedComments[key].map((comment: any) => ({
+          ...comment,
+          timestamp: new Date(comment.timestamp)
+        }));
+        return acc;
+      }, {} as {[key: string]: Array<{id: string, author: string, text: string, timestamp: Date}>});
+      setComments(commentsWithDates);
     }
 
     // Load ratings from localStorage
@@ -226,7 +233,17 @@ const Notes = () => {
     };
     
     setComments(newComments);
-    localStorage.setItem('noteComments', JSON.stringify(newComments));
+    
+    // Convert timestamps to strings for localStorage
+    const commentsForStorage = Object.keys(newComments).reduce((acc, key) => {
+      acc[key] = newComments[key].map(comment => ({
+        ...comment,
+        timestamp: comment.timestamp.toISOString()
+      }));
+      return acc;
+    }, {} as any);
+    
+    localStorage.setItem('noteComments', JSON.stringify(commentsForStorage));
     setNewComment(prev => ({ ...prev, [noteId]: '' }));
     
     // Update comment count
