@@ -19,7 +19,9 @@ import {
   Upload,
   X,
   Send,
-  ThumbsUp
+  ThumbsUp,
+  Grid3X3,
+  List
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import PDFUpload from '@/components/PDFUpload';
@@ -42,6 +44,8 @@ const Notes = () => {
   const [newComment, setNewComment] = useState<{[key: string]: string}>({});
   const [showComments, setShowComments] = useState<{[key: string]: boolean}>({});
   const [ratings, setRatings] = useState<{[key: string]: number}>({});
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [selectedCategory, setSelectedCategory] = useState('সব ধরণ');
   const { toast } = useToast();
 
   // Check for search query from URL params
@@ -58,66 +62,66 @@ const Notes = () => {
     const sampleNotes: Note[] = [
       {
         id: '1',
-        title: 'পদার্থবিজ্ঞান - নিউটনের সূত্র',
-        class: 'Class 11',
-        subject: 'পদার্থবিজ্ঞান',
-        chapter: 'গতিবিদ্যা',
-        description: 'নিউটনের তিনটি সূত্রের বিস্তারিত ব্যাখ্যা এবং উদাহরণ',
-        author: 'রহিম স্যার',
+        title: 'বাংলা ব্যাকরণ - সমাস',
+        class: 'Class 8',
+        subject: 'বাংলা',
+        chapter: 'Chapter 5',
+        description: 'বাংলা ব্যাকরণের সমাস অংশের সম্পূর্ণ নোট',
+        author: 'আফিফা রুমান',
         authorId: 'teacher1',
         fileUrl: '/sample-physics.pdf',
         fileName: 'newton-laws.pdf',
         fileSize: 2500000,
         uploadDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-        likes: 45,
+        likes: 78,
         likedBy: [],
-        downloads: 120,
-        comments: 8,
-        rating: 4.5,
+        downloads: 155,
+        comments: 23,
+        rating: 4.9,
         verified: true,
-        tags: ['নিউটন', 'গতিবিদ্যা', 'পদার্থবিজ্ঞান']
+        tags: ['সমাস', 'ব্যাকরণ', 'বাংলা']
       },
       {
         id: '2',
-        title: 'গণিত - ক্যালকুলাস মূলনীতি',
-        class: 'Class 12',
+        title: 'গণিত - ত্রিভুজ সমীকরণ সমাধান',
+        class: 'Class 9',
         subject: 'গণিত',
-        chapter: 'অবকলন',
-        description: 'ক্যালকুলাসের মূল ধারণা এবং অবকলনের নিয়মাবলী',
-        author: 'করিম স্যার',
+        chapter: 'Chapter 3',
+        description: 'ত্রিভুজ সমীকরণের বিস্তারিত সমাধান এবং উদাহরণ',
+        author: 'রাশেল আহমেদ',
         authorId: 'teacher2',
         fileUrl: '/sample-math.pdf',
         fileName: 'calculus-basics.pdf',
         fileSize: 1800000,
         uploadDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-        likes: 32,
+        likes: 45,
         likedBy: [],
         downloads: 89,
         comments: 12,
-        rating: 4.2,
+        rating: 4.8,
         verified: true,
-        tags: ['ক্যালকুলাস', 'অবকলন', 'গণিত']
+        tags: ['ত্রিভুজ', 'সমীকরণ', 'গণিত']
       },
       {
         id: '3',
-        title: 'রসায়ন - জৈব যৌগের বৈশিষ্ট্য',
-        class: 'Class 10',
-        subject: 'রসায়ন',
-        chapter: 'জৈব রসায়ন',
-        description: 'বিভিন্ন জৈব যৌগের গঠন এবং ধর্ম',
-        author: 'সালমা ম্যাডাম',
+        title: 'Physics - Motion in a Straight Line',
+        class: 'Class 11',
+        subject: 'পদার্থবিজ্ঞান',
+        chapter: 'Chapter 2',
+        description: 'Complete notes on motion in a straight line with examples',
+        author: 'সাবা খান',
         authorId: 'teacher3',
         fileUrl: '/sample-chemistry.pdf',
         fileName: 'organic-compounds.pdf',
         fileSize: 3200000,
         uploadDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-        likes: 28,
+        likes: 32,
         likedBy: [],
         downloads: 67,
-        comments: 5,
-        rating: 4.0,
+        comments: 8,
+        rating: 4.5,
         verified: false,
-        tags: ['জৈব', 'যৌগ', 'রসায়ন']
+        tags: ['motion', 'physics', 'straight line']
       }
     ];
     setNotes(sampleNotes);
@@ -163,8 +167,12 @@ const Notes = () => {
       filtered = filtered.filter(note => note.subject === selectedSubject);
     }
 
+    if (selectedCategory !== 'সব ধরণ') {
+      // Filter by category logic here
+    }
+
     setFilteredNotes(filtered);
-  }, [notes, searchQuery, selectedClass, selectedSubject]);
+  }, [notes, searchQuery, selectedClass, selectedSubject, selectedCategory]);
 
   const handleLike = (noteId: string) => {
     const isLiked = likedNotes.includes(noteId);
@@ -265,122 +273,193 @@ const Notes = () => {
 
   const classes = ['Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'];
   const subjects = ['গণিত', 'পদার্থবিজ্ঞান', 'রসায়ন', 'জীববিজ্ঞান', 'ইংরেজি', 'বাংলা', 'ইতিহাস', 'ভূগোল'];
+  const categories = ['সব ধরণ', 'Chapter Summary', 'Question Bank', 'Formula Sheet', 'Practice Problems', 'Exam Tips'];
+
+  const getGradientClass = (index: number) => {
+    const gradients = [
+      'from-blue-500 to-cyan-500',
+      'from-purple-500 to-pink-500', 
+      'from-green-500 to-teal-500',
+      'from-orange-500 to-red-500',
+      'from-indigo-500 to-purple-500',
+      'from-pink-500 to-rose-500'
+    ];
+    return gradients[index % gradients.length];
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen bg-[#1a1a1a]">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
-            নোট সংগ্রহ
-          </h1>
-          <p className="text-gray-300 text-lg">
-            সেরা মানের নোট খুঁজুন এবং ডাউনলোড করুন
-          </p>
+          <div className="flex items-center justify-center mb-4">
+            <BookOpen className="h-8 w-8 text-blue-400 mr-3" />
+            <h1 className="text-4xl font-bold text-white">নোট ব্যাংক</h1>
+          </div>
         </div>
 
-        {/* Search and Filters */}
-        <Card className="mb-8 bg-white/10 backdrop-blur-lg border-white/20">
+        {/* Search Bar */}
+        <div className="mb-6">
+          <div className="relative max-w-2xl mx-auto">
+            <Search className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
+            <Input
+              placeholder="নোট খুঁজুন..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 h-14 bg-[#2d2d2d] border-gray-600 text-white placeholder:text-gray-400 text-lg rounded-xl"
+            />
+          </div>
+          <div className="flex justify-center mt-4">
+            <Button
+              onClick={() => setShowUpload(true)}
+              className="bg-[#2d2d2d] hover:bg-[#3d3d3d] text-white border border-gray-600 px-6 py-2 rounded-lg"
+            >
+              <Upload className="mr-2 h-4 w-4" />
+              নোট আপলোড করুন
+            </Button>
+          </div>
+        </div>
+
+        {/* Filters */}
+        <Card className="mb-8 bg-[#2d2d2d] border-gray-700">
           <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="relative md:col-span-2">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="নোট খুঁজুন..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                />
-              </div>
+            <div className="flex items-center mb-4">
+              <Filter className="h-5 w-5 text-gray-400 mr-2" />
+              <span className="text-white font-medium">ফিল্টার দেখুন</span>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <Input
+                placeholder="নোট খুঁজুন..."
+                className="bg-[#1a1a1a] border-gray-600 text-white placeholder:text-gray-400"
+              />
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-[#1a1a1a] border border-gray-600 text-white rounded-md px-3 py-2"
               >
-                <option value="">সব ক্লাস</option>
+                <option value="">ক্লাস নির্বাচন</option>
                 {classes.map(cls => (
-                  <option key={cls} value={cls} className="bg-gray-800">{cls}</option>
+                  <option key={cls} value={cls} className="bg-[#1a1a1a]">{cls}</option>
                 ))}
               </select>
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-[#1a1a1a] border border-gray-600 text-white rounded-md px-3 py-2"
               >
-                <option value="">সব বিষয়</option>
+                <option value="">বিষয় নির্বাচন</option>
                 {subjects.map(subject => (
-                  <option key={subject} value={subject} className="bg-gray-800">{subject}</option>
+                  <option key={subject} value={subject} className="bg-[#1a1a1a]">{subject}</option>
                 ))}
               </select>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="bg-[#1a1a1a] border border-gray-600 text-white rounded-md px-3 py-2"
+              >
+                {categories.map(category => (
+                  <option key={category} value={category} className="bg-[#1a1a1a]">{category}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {categories.slice(1).map((category) => (
+                <Button
+                  key={category}
+                  variant={selectedCategory === category ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedCategory(category)}
+                  className={selectedCategory === category 
+                    ? "bg-blue-600 hover:bg-blue-700 text-white" 
+                    : "bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700"
+                  }
+                >
+                  {category}
+                </Button>
+              ))}
+            </div>
+
+            <div className="mt-6 flex justify-center">
+              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-2 rounded-lg">
+                <Search className="mr-2 h-4 w-4" />
+                খুঁজুন
+              </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* Upload Button */}
-        <div className="mb-8 text-center">
-          <Button
-            onClick={() => setShowUpload(true)}
-            className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700"
-          >
-            <Upload className="mr-2 h-4 w-4" />
-            নোট আপলোড করুন
-          </Button>
+        {/* Results Header */}
+        <div className="flex items-center justify-between mb-6">
+          <span className="text-gray-400">{filteredNotes.length} টি নোট পাওয়া গেছে</span>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant={viewMode === 'grid' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('grid')}
+              className={viewMode === 'grid' 
+                ? "bg-blue-600 hover:bg-blue-700" 
+                : "bg-transparent border-gray-600 text-gray-400 hover:bg-gray-700"
+              }
+            >
+              <Grid3X3 className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('list')}
+              className={viewMode === 'list' 
+                ? "bg-blue-600 hover:bg-blue-700" 
+                : "bg-transparent border-gray-600 text-gray-400 hover:bg-gray-700"
+              }
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
 
         {/* Notes Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredNotes.map((note) => (
-            <Card key={note.id} className="bg-white/10 backdrop-blur-lg border-white/20 hover:border-white/30 transition-all duration-300">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-white text-lg mb-2">{note.title}</CardTitle>
-                    <div className="flex flex-wrap gap-2 mb-2">
-                      <Badge className="bg-blue-600/20 text-blue-300">{note.class}</Badge>
-                      <Badge className="bg-green-600/20 text-green-300">{note.subject}</Badge>
-                      {note.verified && (
-                        <Badge className="bg-yellow-600/20 text-yellow-300">✓ যাচাইকৃত</Badge>
-                      )}
-                    </div>
-                  </div>
+          {filteredNotes.map((note, index) => (
+            <Card key={note.id} className="bg-[#2d2d2d] border-gray-700 hover:border-gray-600 transition-all duration-300 overflow-hidden">
+              {/* Gradient Header */}
+              <div className={`h-32 bg-gradient-to-br ${getGradientClass(index)} flex items-center justify-center`}>
+                <BookOpen className="h-12 w-12 text-white" />
+              </div>
+              
+              <CardHeader className="pb-2">
+                <CardTitle className="text-white text-lg mb-2">{note.title}</CardTitle>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  <Badge className="bg-blue-600/20 text-blue-300 border-blue-600/30">{note.class}</Badge>
+                  <Badge className="bg-green-600/20 text-green-300 border-green-600/30">{note.subject}</Badge>
+                  {note.verified && (
+                    <Badge className="bg-yellow-600/20 text-yellow-300 border-yellow-600/30">✓</Badge>
+                  )}
                 </div>
-                <p className="text-gray-300 text-sm">{note.description}</p>
+                <p className="text-gray-400 text-sm">{note.chapter}</p>
               </CardHeader>
               
-              <CardContent>
+              <CardContent className="pt-0">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-2">
-                    <Avatar className="h-8 w-8">
+                    <Avatar className="h-6 w-6">
                       <AvatarFallback className="bg-blue-600 text-white text-xs">
                         {note.author.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
-                      <p className="text-white text-sm font-medium">{note.author}</p>
-                      <p className="text-gray-400 text-xs">
-                        {Math.floor((Date.now() - note.uploadDate.getTime()) / (1000 * 60 * 60 * 24))} দিন আগে
-                      </p>
-                    </div>
+                    <span className="text-gray-300 text-sm">{note.author}</span>
                   </div>
-                  <p className="text-gray-400 text-xs">
+                  <span className="text-gray-500 text-xs">
                     {(note.fileSize / 1024 / 1024).toFixed(1)} MB
-                  </p>
-                </div>
-
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1 mb-4">
-                  {note.tags.map((tag, index) => (
-                    <Badge key={index} variant="outline" className="text-gray-400 border-gray-600 text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
+                  </span>
                 </div>
 
                 {/* Stats */}
                 <div className="flex items-center justify-between text-sm text-gray-400 mb-4">
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-3">
                     <button
                       onClick={() => handleLike(note.id)}
                       className={`flex items-center space-x-1 transition-colors ${
@@ -390,13 +469,10 @@ const Notes = () => {
                       <Heart className={`h-4 w-4 ${likedNotes.includes(note.id) ? 'fill-current' : ''}`} />
                       <span>{note.likes}</span>
                     </button>
-                    <button
-                      onClick={() => setShowComments(prev => ({ ...prev, [note.id]: !prev[note.id] }))}
-                      className="flex items-center space-x-1 hover:text-blue-400 transition-colors"
-                    >
+                    <div className="flex items-center space-x-1">
                       <MessageSquare className="h-4 w-4" />
                       <span>{note.comments}</span>
-                    </button>
+                    </div>
                     <div className="flex items-center space-x-1">
                       <Download className="h-4 w-4" />
                       <span>{note.downloads}</span>
@@ -404,71 +480,38 @@ const Notes = () => {
                   </div>
                   <div className="flex items-center space-x-1">
                     {[1, 2, 3, 4, 5].map((star) => (
-                      <button
+                      <Star
                         key={star}
-                        onClick={() => handleRate(note.id, star)}
-                        className={`hover:text-yellow-400 transition-colors ${
-                          (ratings[note.id] || note.rating) >= star ? 'text-yellow-400' : 'text-gray-600'
+                        className={`h-3 w-3 ${
+                          (ratings[note.id] || note.rating) >= star 
+                            ? 'text-yellow-400 fill-current' 
+                            : 'text-gray-600'
                         }`}
-                      >
-                        <Star className={`h-3 w-3 ${(ratings[note.id] || note.rating) >= star ? 'fill-current' : ''}`} />
-                      </button>
+                      />
                     ))}
                   </div>
                 </div>
 
-                {/* Comments Section */}
-                {showComments[note.id] && (
-                  <div className="border-t border-white/10 pt-4 space-y-3">
-                    {comments[note.id]?.map((comment) => (
-                      <div key={comment.id} className="bg-black/20 p-3 rounded-lg">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-white text-sm font-medium">{comment.author}</span>
-                          <span className="text-gray-500 text-xs">
-                            {Math.floor((Date.now() - comment.timestamp.getTime()) / (1000 * 60))}m ago
-                          </span>
-                        </div>
-                        <p className="text-gray-300 text-sm">{comment.text}</p>
-                      </div>
-                    ))}
-                    
-                    <div className="flex space-x-2">
-                      <Input
-                        placeholder="মন্তব্য লিখুন..."
-                        value={newComment[note.id] || ''}
-                        onChange={(e) => setNewComment(prev => ({ ...prev, [note.id]: e.target.value }))}
-                        className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            handleAddComment(note.id);
-                          }
-                        }}
-                      />
-                      <Button
-                        size="sm"
-                        onClick={() => handleAddComment(note.id)}
-                        className="bg-blue-600 hover:bg-blue-700"
-                      >
-                        <Send className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </div>
-                )}
+                <span className="text-gray-500 text-xs block mb-4">
+                  {Math.floor((Date.now() - note.uploadDate.getTime()) / (1000 * 60 * 60 * 24))} দিন আগে
+                </span>
 
                 {/* Action Buttons */}
-                <div className="flex space-x-2 mt-4">
+                <div className="flex space-x-2">
                   <Button
                     onClick={() => handlePreview(note)}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700"
+                    className="flex-1 bg-transparent border border-gray-600 text-gray-300 hover:bg-gray-700"
+                    size="sm"
                   >
-                    <Eye className="mr-2 h-4 w-4" />
-                    প্রিভিউ
+                    <Eye className="mr-2 h-3 w-3" />
+                    দেখুন
                   </Button>
                   <Button
                     onClick={() => handleDownload(note)}
-                    className="flex-1 bg-green-600 hover:bg-green-700"
+                    className={`flex-1 bg-gradient-to-r ${getGradientClass(index)} hover:opacity-90`}
+                    size="sm"
                   >
-                    <Download className="mr-2 h-4 w-4" />
+                    <Download className="mr-2 h-3 w-3" />
                     ডাউনলোড
                   </Button>
                 </div>
