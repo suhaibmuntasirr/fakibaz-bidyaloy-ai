@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,7 +22,8 @@ import {
   Send,
   ThumbsUp,
   Grid3X3,
-  List
+  List,
+  Plus
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import PDFUpload from '@/components/PDFUpload';
@@ -245,6 +247,13 @@ const Notes = () => {
     setRatings(newRatings);
     localStorage.setItem('noteRatings', JSON.stringify(newRatings));
 
+    // Update note rating
+    setNotes(prev => prev.map(note => 
+      note.id === noteId 
+        ? { ...note, rating: rating }
+        : note
+    ));
+
     toast({
       title: "রেটিং দেওয়া হয়েছে",
       description: `আপনি ${rating} স্টার রেটিং দিয়েছেন`,
@@ -300,24 +309,24 @@ const Notes = () => {
           </div>
         </div>
 
-        {/* Search Bar */}
+        {/* Search Bar & Upload Button */}
         <div className="mb-6">
-          <div className="relative max-w-2xl mx-auto">
-            <Search className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
-            <Input
-              placeholder="নোট খুঁজুন..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 h-14 bg-[#2d2d2d] border-gray-600 text-white placeholder:text-gray-400 text-lg rounded-xl"
-            />
-          </div>
-          <div className="flex justify-center mt-4">
+          <div className="flex items-center max-w-4xl mx-auto gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
+              <Input
+                placeholder="নোট খুঁজুন..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-12 h-14 bg-[#2d2d2d] border-gray-600 text-white placeholder:text-gray-400 text-lg rounded-xl"
+              />
+            </div>
             <Button
               onClick={() => setShowUpload(true)}
-              className="bg-[#2d2d2d] hover:bg-[#3d3d3d] text-white border border-gray-600 px-6 py-2 rounded-lg"
+              className="h-14 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 rounded-xl"
             >
-              <Upload className="mr-2 h-4 w-4" />
-              নোট আপলোড করুন
+              <Plus className="mr-2 h-5 w-5" />
+              নোট আপলোড
             </Button>
           </div>
         </div>
@@ -327,14 +336,10 @@ const Notes = () => {
           <CardContent className="p-6">
             <div className="flex items-center mb-4">
               <Filter className="h-5 w-5 text-gray-400 mr-2" />
-              <span className="text-white font-medium">ফিল্টার দেখুন</span>
+              <span className="text-white font-medium">ফিল্টার</span>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <Input
-                placeholder="নোট খুঁজুন..."
-                className="bg-[#1a1a1a] border-gray-600 text-white placeholder:text-gray-400"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
@@ -381,13 +386,6 @@ const Notes = () => {
                   {category}
                 </Button>
               ))}
-            </div>
-
-            <div className="mt-6 flex justify-center">
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-2 rounded-lg">
-                <Search className="mr-2 h-4 w-4" />
-                খুঁজুন
-              </Button>
             </div>
           </CardContent>
         </Card>
@@ -531,15 +529,17 @@ const Notes = () => {
 
       {/* Upload Dialog */}
       <Dialog open={showUpload} onOpenChange={setShowUpload}>
-        <DialogContent className="max-w-4xl bg-[#28282B] border-white/20 text-white">
+        <DialogContent className="max-w-4xl max-h-[90vh] bg-[#28282B] border-white/20 text-white overflow-hidden">
           <DialogHeader>
             <DialogTitle className="text-white">নোট আপলোড করুন</DialogTitle>
           </DialogHeader>
-          <PDFUpload 
-            type="note"
-            onUploadSuccess={() => setShowUpload(false)}
-            onCancel={() => setShowUpload(false)}
-          />
+          <div className="max-h-[calc(90vh-100px)] overflow-y-auto">
+            <PDFUpload 
+              type="note"
+              onUploadSuccess={() => setShowUpload(false)}
+              onCancel={() => setShowUpload(false)}
+            />
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -551,7 +551,13 @@ const Notes = () => {
           onClose={() => setShowPreview(false)}
           onLike={() => handleLike(selectedNote.id)}
           onDownload={() => handleDownload(selectedNote)}
+          onRate={(rating) => handleRate(selectedNote.id, rating)}
+          onComment={(comment) => handleAddComment(selectedNote.id)}
           isLiked={likedNotes.includes(selectedNote.id)}
+          comments={comments[selectedNote.id] || []}
+          newComment={newComment[selectedNote.id] || ''}
+          onCommentChange={(text) => setNewComment(prev => ({ ...prev, [selectedNote.id]: text }))}
+          userRating={ratings[selectedNote.id]}
         />
       )}
     </div>
