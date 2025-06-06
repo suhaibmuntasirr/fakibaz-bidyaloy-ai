@@ -147,13 +147,16 @@ class FirebaseService {
         rating: 0,
         ratingCount: 0,
         verified: false,
-        tags: [noteData.class, noteData.subject]
+        tags: [...(noteData.tags || []), noteData.class, noteData.subject]
       };
 
       const docRef = await addDoc(collection(db, 'notes'), noteDoc);
       
       // Update user points with base upload points
       await this.updateUserPoints(noteData.authorId, 10);
+      
+      // Update user profile upload count
+      await this.updateUserUploadCount(noteData.authorId, 'note');
       
       return docRef.id;
     } catch (error) {
@@ -197,13 +200,16 @@ class FirebaseService {
         rating: 0,
         ratingCount: 0,
         verified: false,
-        tags: [questionData.class, questionData.subject]
+        tags: [...(questionData.tags || []), questionData.class, questionData.subject]
       };
 
       const docRef = await addDoc(collection(db, 'questions'), questionDoc);
       
       // Update user points
       await this.updateUserPoints(questionData.authorId, 15);
+      
+      // Update user profile upload count
+      await this.updateUserUploadCount(questionData.authorId, 'question');
       
       return docRef.id;
     } catch (error) {
@@ -362,12 +368,42 @@ class FirebaseService {
   async updateUserPoints(userId: string, points: number): Promise<void> {
     try {
       const userRef = doc(db, 'users', userId);
+      const userDoc = await getDoc(userRef);
+      
+      if (userDoc.exists()) {
+        await updateDoc(userRef, {
+          points: increment(points),
+          lastActive: new Date()
+        });
+      } else {
+        // Create user profile if it doesn't exist
+        await setDoc(userRef, {
+          uid: userId,
+          points: points,
+          notesUploaded: 0,
+          questionsUploaded: 0,
+          badge: 'Bronze',
+          joinedAt: new Date(),
+          lastActive: new Date()
+        });
+      }
+    } catch (error) {
+      console.error('Error updating user points:', error);
+    }
+  }
+
+  // Update user upload count
+  async updateUserUploadCount(userId: string, type: 'note' | 'question'): Promise<void> {
+    try {
+      const userRef = doc(db, 'users', userId);
+      const field = type === 'note' ? 'notesUploaded' : 'questionsUploaded';
+      
       await updateDoc(userRef, {
-        points: increment(points),
+        [field]: increment(1),
         lastActive: new Date()
       });
     } catch (error) {
-      console.error('Error updating user points:', error);
+      console.error('Error updating user upload count:', error);
     }
   }
 
@@ -400,7 +436,10 @@ class FirebaseService {
       if (!userDoc.exists()) {
         // Create new user profile
         await setDoc(userRef, {
-          ...userData,
+          uid: userData.uid,
+          fullName: userData.fullName || '',
+          email: userData.email || '',
+          phoneNumber: userData.phoneNumber || '',
           points: 0,
           notesUploaded: 0,
           questionsUploaded: 0,

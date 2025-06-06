@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, onAuthStateChanged, signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
+import { firebaseService } from '@/services/firebaseService';
 
 interface UserProfile {
   uid: string;
@@ -10,7 +11,12 @@ interface UserProfile {
   email: string;
   phoneNumber: string;
   studentIdUrl?: string;
-  createdAt: Date;
+  points: number;
+  notesUploaded: number;
+  questionsUploaded: number;
+  badge: 'Bronze' | 'Silver' | 'Gold' | 'Platinum';
+  joinedAt: Date;
+  lastActive: Date;
 }
 
 interface AuthContextType {
@@ -58,6 +64,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
           const userDoc = await getDoc(doc(db, 'users', user.uid));
           if (userDoc.exists()) {
             setUserProfile(userDoc.data() as UserProfile);
+          } else {
+            // Create new user profile if it doesn't exist
+            const newProfile = {
+              uid: user.uid,
+              fullName: user.displayName || '',
+              email: user.email || '',
+              phoneNumber: user.phoneNumber || ''
+            };
+            
+            await firebaseService.createOrUpdateUserProfile(newProfile);
+            
+            // Fetch the created profile
+            const newUserDoc = await getDoc(doc(db, 'users', user.uid));
+            if (newUserDoc.exists()) {
+              setUserProfile(newUserDoc.data() as UserProfile);
+            }
           }
         } catch (error) {
           console.error('Error fetching user profile:', error);

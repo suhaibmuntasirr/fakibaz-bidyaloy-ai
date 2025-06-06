@@ -16,6 +16,9 @@ import {
   Award
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { firebaseService } from '@/services/firebaseService';
+import { analyticsService } from '@/services/analyticsService';
 import PointsSystem from '@/components/PointsSystem';
 
 interface PDFUploadProps {
@@ -35,7 +38,7 @@ const PDFUpload: React.FC<PDFUploadProps> = ({ type, onUploadSuccess, onCancel }
     school: '',
     year: '',
     examType: '',
-    difficulty: 'Medium',
+    difficulty: 'Medium' as 'Easy' | 'Medium' | 'Hard',
     marks: '',
     description: '',
     tags: ''
@@ -45,6 +48,7 @@ const PDFUpload: React.FC<PDFUploadProps> = ({ type, onUploadSuccess, onCancel }
   const fileInputRef = useRef<HTMLInputElement>(null);
   const answerInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { currentUser, userProfile } = useAuth();
 
   // Sample data for points preview
   const samplePoints = {
@@ -96,6 +100,15 @@ const PDFUpload: React.FC<PDFUploadProps> = ({ type, onUploadSuccess, onCancel }
   };
 
   const handleSubmit = async () => {
+    if (!currentUser || !userProfile) {
+      toast({
+        title: "লগইন প্রয়োজন",
+        description: "আপলোড করতে প্রথমে লগইন করুন",
+        variant: "destructive"
+      });
+      return;
+    }
+
     if (!selectedFile) {
       toast({
         title: "ফাইল নির্বাচন করুন",
@@ -117,16 +130,95 @@ const PDFUpload: React.FC<PDFUploadProps> = ({ type, onUploadSuccess, onCancel }
     setIsUploading(true);
 
     try {
-      // Simulate upload process
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      let uploadId: string;
       
-      toast({
-        title: "আপলোড সফল!",
-        description: `আপনার ${type === 'note' ? 'নোট' : 'প্রশ্নপত্র'} সফলভাবে আপলোড হয়েছে`,
+      if (type === 'note') {
+        // Upload Note
+        const noteData = {
+          title: formData.title,
+          class: formData.class,
+          subject: formData.subject,
+          chapter: formData.chapter || 'অধ্যায় নির্দিষ্ট করা হয়নি',
+          description: formData.description || '',
+          authorId: currentUser.uid,
+          authorName: userProfile.fullName || currentUser.email || 'Unknown User',
+          tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : []
+        };
+
+        uploadId = await firebaseService.uploadNote(noteData, selectedFile);
+
+        // Track analytics
+        await analyticsService.trackUpload('note', formData.subject, formData.class, currentUser.uid);
+        
+        toast({
+          title: "নোট আপলোড সফল!",
+          description: "আপনার নোট সফলভাবে আপলোড হয়েছে এবং আপনি পয়েন্ট পেয়েছেন",
+        });
+      } else {
+        // Upload Question
+        if (!formData.marks) {
+          toast({
+            title: "নম্বর প্রয়োজন",
+            description: "প্রশ্নপত্রের জন্য নম্বর উল্লেখ করুন",
+            variant: "destructive"
+          });
+          setIsUploading(false);
+          return;
+        }
+
+        const questionData = {
+          title: formData.title,
+          class: formData.class,
+          subject: formData.subject,
+          school: formData.school || 'স্কুল নির্দিষ্ট করা হয়নি',
+          year: formData.year || new Date().getFullYear().toString(),
+          examType: formData.examType || 'test',
+          difficulty: formData.difficulty,
+          marks: formData.marks,
+          description: formData.description || '',
+          authorId: currentUser.uid,
+          authorName: userProfile.fullName || currentUser.email || 'Unknown User',
+          tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : []
+        };
+
+        uploadId = await firebaseService.uploadQuestion(questionData, selectedFile, answerFile || undefined);
+
+        // Track analytics
+        await analyticsService.trackUpload('question', formData.subject, formData.class, currentUser.uid);
+        
+        toast({
+          title: "প্রশ্নপত্র আপলোড সফল!",
+          description: "আপনার প্রশ্নপত্র সফলভাবে আপলোড হয়েছে এবং আপনি পয়েন্ট পেয়েছেন",
+        });
+      }
+
+      // Track page view for uploaded content
+      await analyticsService.trackPageView(`upload_${type}_success`, currentUser.uid);
+      
+      // Reset form
+      setSelectedFile(null);
+      setAnswerFile(null);
+      setFormData({
+        title: '',
+        class: '',
+        subject: '',
+        chapter: '',
+        school: '',
+        year: '',
+        examType: '',
+        difficulty: 'Medium',
+        marks: '',
+        description: '',
+        tags: ''
       });
       
+      // Clear file inputs
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      if (answerInputRef.current) answerInputRef.current.value = '';
+
       onUploadSuccess();
     } catch (error) {
+      console.error('Upload error:', error);
       toast({
         title: "আপলোড ব্যর্থ",
         description: "আপলোড করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।",
@@ -146,6 +238,22 @@ const PDFUpload: React.FC<PDFUploadProps> = ({ type, onUploadSuccess, onCancel }
       if (answerInputRef.current) answerInputRef.current.value = '';
     }
   };
+
+  // Check if user is logged in
+  if (!currentUser) {
+    return (
+      <div className="text-center py-8">
+        <AlertCircle className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-white mb-2">লগইন প্রয়োজন</h3>
+        <p className="text-gray-400 mb-4">
+          {type === 'note' ? 'নোট' : 'প্রশ্নপত্র'} আপলোড করতে প্রথমে লগইন করুন
+        </p>
+        <Button onClick={onCancel} variant="outline" className="bg-transparent border-white/20 text-white hover:bg-white/10">
+          ফিরে যান
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 max-h-[calc(90vh-120px)] overflow-y-auto">
@@ -344,7 +452,7 @@ const PDFUpload: React.FC<PDFUploadProps> = ({ type, onUploadSuccess, onCancel }
                     </div>
 
                     <div>
-                      <Label className="text-white">নম্বর</Label>
+                      <Label className="text-white">নম্বর *</Label>
                       <Input
                         value={formData.marks}
                         onChange={(e) => handleInputChange('marks', e.target.value)}
