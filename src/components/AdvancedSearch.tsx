@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,7 +12,7 @@ import {
 import { searchService, SearchResult, SearchFilters } from '@/services/searchService';
 import { analyticsService } from '@/services/analyticsService';
 import { useAuth } from '@/contexts/AuthContext';
-import { useToast } = require('@/hooks/use-toast');
+import { useToast } from '@/hooks/use-toast';
 
 interface AdvancedSearchProps {
   onResultSelect?: (result: SearchResult) => void;
