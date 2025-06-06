@@ -1,4 +1,3 @@
-
 import { algoliasearch } from 'algoliasearch';
 
 // Advanced search service with Algolia integration
@@ -52,26 +51,32 @@ class SearchService {
       attributesToSnippet: ['description:20']
     };
 
-    const { results } = await this.client.search({
+    const response = await this.client.search({
       requests: [{
         indexName: this.indexName,
         ...searchParams
       }]
     });
 
-    const hits = results[0].hits;
-    return hits.map((hit: any) => ({
-      id: hit.objectID,
-      title: hit.title,
-      type: hit.type,
-      subject: hit.subject,
-      class: hit.class,
-      author: hit.author,
-      rating: hit.rating || 0,
-      downloads: hit.downloads || 0,
-      snippet: hit._snippetResult?.description?.value || hit.description || '',
-      relevanceScore: hit._rankingInfo?.nbExactWords || 0
-    }));
+    // Fix: Properly access the hits from the search response
+    const searchResult = response.results[0];
+    if ('hits' in searchResult) {
+      const hits = searchResult.hits;
+      return hits.map((hit: any) => ({
+        id: hit.objectID,
+        title: hit.title,
+        type: hit.type,
+        subject: hit.subject,
+        class: hit.class,
+        author: hit.author,
+        rating: hit.rating || 0,
+        downloads: hit.downloads || 0,
+        snippet: hit._snippetResult?.description?.value || hit.description || '',
+        relevanceScore: hit._rankingInfo?.nbExactWords || 0
+      }));
+    }
+    
+    return [];
   }
 
   // Index educational content to Algolia
