@@ -76,6 +76,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({ onResultSelect }) => {
         query: query.trim()
       };
 
+      console.log('Searching with Algolia...', searchFilters);
       const searchResults = await searchService.search(searchFilters);
       setResults(searchResults);
       setSuggestions([]);
@@ -87,6 +88,11 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({ onResultSelect }) => {
         toast({
           title: "কোন ফলাফল পাওয়া যায়নি",
           description: "অন্য শব্দ দিয়ে খোঁজ করুন",
+        });
+      } else {
+        toast({
+          title: "খোঁজ সম্পন্ন",
+          description: `${searchResults.length}টি ফলাফল পাওয়া গেছে`,
         });
       }
     } catch (error) {

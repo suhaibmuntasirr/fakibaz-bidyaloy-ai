@@ -1,7 +1,7 @@
 
-// Advanced search service with multiple providers
-// Note: API keys should be set in environment variables
+import { algoliasearch } from 'algoliasearch';
 
+// Advanced search service with Algolia integration
 export interface SearchResult {
   id: string;
   title: string;
@@ -29,22 +29,16 @@ export interface SearchFilters {
 }
 
 class SearchService {
-  private algoliaAppId = ''; // Set your Algolia App ID
-  private algoliaApiKey = ''; // Set your Algolia Search API Key
-  private algoliaIndex = 'educational_content'; // Your Algolia index name
+  private client = algoliasearch('0DOY2W5HXJ', '58cba489ac1115d4b83f952bed5ea396');
+  private indexName = 'educational_content';
 
   async search(filters: SearchFilters): Promise<SearchResult[]> {
     try {
-      // Primary search using Algolia (when configured)
-      if (this.algoliaAppId && this.algoliaApiKey) {
-        return await this.algoliaSearch(filters);
-      }
-      
-      // Fallback to Firebase search
-      return await this.firebaseSearch(filters);
+      // Use Algolia search
+      return await this.algoliaSearch(filters);
     } catch (error) {
-      console.error('Search error:', error);
-      // Always fallback to Firebase search
+      console.error('Algolia search error:', error);
+      // Fallback to Firebase search
       return await this.firebaseSearch(filters);
     }
   }
@@ -58,29 +52,109 @@ class SearchService {
       attributesToSnippet: ['description:20']
     };
 
-    const response = await fetch(`https://${this.algoliaAppId}-dsn.algolia.net/1/indexes/${this.algoliaIndex}/query`, {
-      method: 'POST',
-      headers: {
-        'X-Algolia-Application-Id': this.algoliaAppId,
-        'X-Algolia-API-Key': this.algoliaApiKey,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(searchParams)
+    const { results } = await this.client.search({
+      requests: [{
+        indexName: this.indexName,
+        ...searchParams
+      }]
     });
 
-    const data = await response.json();
-    return data.hits.map((hit: any) => ({
+    const hits = results[0].hits;
+    return hits.map((hit: any) => ({
       id: hit.objectID,
       title: hit.title,
       type: hit.type,
       subject: hit.subject,
       class: hit.class,
       author: hit.author,
-      rating: hit.rating,
-      downloads: hit.downloads,
-      snippet: hit._snippetResult?.description?.value || '',
+      rating: hit.rating || 0,
+      downloads: hit.downloads || 0,
+      snippet: hit._snippetResult?.description?.value || hit.description || '',
       relevanceScore: hit._rankingInfo?.nbExactWords || 0
     }));
+  }
+
+  // Index educational content to Algolia
+  async indexEducationalContent() {
+    try {
+      console.log('Starting to index educational content...');
+      
+      // Sample educational data - replace with your actual data
+      const educationalContent = [
+        {
+          objectID: '1',
+          title: 'গণিতের মৌলিক সূত্রাবলী',
+          description: 'দশম শ্রেণীর গণিতের সকল মৌলিক সূত্র এবং তাদের প্রয়োগ',
+          type: 'note',
+          subject: 'গণিত',
+          class: 'Class 10',
+          author: 'রফিক স্যার',
+          rating: 4.5,
+          downloads: 150,
+          tags: ['সূত্র', 'গণিত', 'দশম শ্রেণী']
+        },
+        {
+          objectID: '2',
+          title: 'পদার্থবিজ্ঞান - নিউটনের সূত্র',
+          description: 'নিউটনের গতির তিনটি সূত্র এবং তাদের ব্যাখ্যা',
+          type: 'note',
+          subject: 'পদার্থবিজ্ঞান',
+          class: 'Class 9',
+          author: 'সালমা ম্যাডাম',
+          rating: 4.8,
+          downloads: 200,
+          tags: ['পদার্থবিজ্ঞান', 'নিউটন', 'গতি']
+        },
+        {
+          objectID: '3',
+          title: 'রসায়ন প্রশ্ন ব্যাংক',
+          description: 'একাদশ শ্রেণীর রসায়নের গুরুত্বপূর্ণ প্রশ্ন সমূহ',
+          type: 'question',
+          subject: 'রসায়ন',
+          class: 'Class 11',
+          author: 'করিম স্যার',
+          rating: 4.2,
+          downloads: 120,
+          tags: ['রসায়ন', 'প্রশ্ন', 'একাদশ শ্রেণী']
+        },
+        {
+          objectID: '4',
+          title: 'বাংলা ব্যাকরণ - কারক',
+          description: 'বাংলা ব্যাকরণের কারক অধ্যায়ের বিস্তারিত আলোচনা',
+          type: 'note',
+          subject: 'বাংলা',
+          class: 'Class 8',
+          author: 'রহিমা ম্যাডাম',
+          rating: 4.3,
+          downloads: 180,
+          tags: ['বাংলা', 'ব্যাকরণ', 'কারক']
+        },
+        {
+          objectID: '5',
+          title: 'ইংরেজি গ্রামার - Tense',
+          description: 'ইংরেজি গ্রামারের টেন্স সম্পর্কে বিস্তারিত',
+          type: 'note',
+          subject: 'ইংরেজি',
+          class: 'Class 7',
+          author: 'জনাব আহমেদ',
+          rating: 4.6,
+          downloads: 220,
+          tags: ['ইংরেজি', 'গ্রামার', 'টেন্স']
+        }
+      ];
+
+      // Index the content
+      await this.client.saveObjects({
+        indexName: this.indexName,
+        objects: educationalContent
+      });
+
+      console.log('Successfully indexed educational content!');
+      return true;
+    } catch (error) {
+      console.error('Error indexing content:', error);
+      return false;
+    }
   }
 
   private async firebaseSearch(filters: SearchFilters): Promise<SearchResult[]> {
