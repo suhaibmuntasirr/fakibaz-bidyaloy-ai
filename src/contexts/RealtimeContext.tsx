@@ -12,8 +12,8 @@ interface RealtimeContextType {
 const RealtimeContext = createContext<RealtimeContextType | undefined>(undefined);
 
 export const RealtimeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { user } = useAuth();
-  const { notifications, unreadCount } = useNotifications(user?.uid || '');
+  const { currentUser } = useAuth();
+  const { notifications, unreadCount } = useNotifications(currentUser?.uid || '');
   const onlineUsers = useOnlineUsers();
 
   return (

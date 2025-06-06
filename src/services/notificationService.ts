@@ -1,7 +1,7 @@
 
 import { realtimeService } from './realtimeService';
 
-export type NotificationType = 'like' | 'comment' | 'download' | 'achievement' | 'system' | 'payment';
+export type NotificationType = 'like' | 'comment' | 'download' | 'achievement' | 'system';
 
 export interface NotificationData {
   title: string;
@@ -115,7 +115,7 @@ class NotificationService {
     await this.sendNotification({
       title: 'পেমেন্ট সফল! ✅',
       message: `আপনার ${planName} সাবস্ক্রিপশন সক্রিয় হয়েছে`,
-      type: 'payment',
+      type: 'system',
       userId,
       data: { planName }
     });

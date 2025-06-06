@@ -19,7 +19,7 @@ const PaymentGateway: React.FC = () => {
   const [selectedPlan, setSelectedPlan] = useState<PaymentPlan | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'sslcommerz' | 'mobile'>('stripe');
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const PaymentGateway: React.FC = () => {
   };
 
   const handleSubscribe = async (plan: PaymentPlan) => {
-    if (!user) {
+    if (!currentUser) {
       toast({
         title: "লগইন প্রয়োজন",
         description: "সাবস্ক্রিপশনের জন্য প্রথমে লগইন করুন",
@@ -63,11 +63,11 @@ const PaymentGateway: React.FC = () => {
           amount: plan.price,
           payment_method: paymentMethod
         },
-        userId: user.uid
+        userId: currentUser.uid
       });
 
       // Create checkout session
-      const session = await paymentService.createCheckoutSession(plan.id, user.uid);
+      const session = await paymentService.createCheckoutSession(plan.id, currentUser.uid);
       
       if (session.url) {
         // Open payment page in new tab

@@ -2,6 +2,14 @@
 // Analytics service for tracking user behavior
 // Note: Set your analytics API keys in environment variables
 
+// Declare global variables for analytics
+declare global {
+  function gtag(...args: any[]): void;
+  const mixpanel: {
+    track: (event: string, properties?: any) => void;
+  };
+}
+
 export interface AnalyticsEvent {
   name: string;
   parameters?: Record<string, any>;

@@ -21,7 +21,7 @@ const RealTimeChat: React.FC<RealTimeChatProps> = ({ chatRoomId, className = '' 
   const [isLoading, setIsLoading] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -47,15 +47,15 @@ const RealTimeChat: React.FC<RealTimeChatProps> = ({ chatRoomId, className = '' 
   };
 
   const handleSendMessage = async () => {
-    if (!newMessage.trim() || !user || isLoading) return;
+    if (!newMessage.trim() || !currentUser || isLoading) return;
 
     setIsLoading(true);
     try {
       await realtimeService.sendMessage(
         chatRoomId,
         newMessage.trim(),
-        user.uid,
-        user.displayName || 'অজ্ঞাত ব্যবহারকারী'
+        currentUser.uid,
+        currentUser.displayName || 'অজ্ঞাত ব্যবহারকারী'
       );
       setNewMessage('');
     } catch (error) {

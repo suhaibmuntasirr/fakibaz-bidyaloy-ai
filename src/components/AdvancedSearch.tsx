@@ -29,7 +29,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({ onResultSelect }) => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [popularSearches, setPopularSearches] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -81,7 +81,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({ onResultSelect }) => {
       setSuggestions([]);
 
       // Track search analytics
-      await analyticsService.trackSearch(query, searchResults.length, user?.uid);
+      await analyticsService.trackSearch(query, searchResults.length, currentUser?.uid);
 
       if (searchResults.length === 0) {
         toast({
@@ -127,7 +127,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({ onResultSelect }) => {
         query: query,
         position: results.indexOf(result)
       },
-      userId: user?.uid
+      userId: currentUser?.uid
     });
   };
 
