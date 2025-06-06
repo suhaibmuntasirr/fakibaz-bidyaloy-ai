@@ -1,4 +1,3 @@
-
 // Analytics service for tracking user behavior
 // Note: Set your analytics API keys in environment variables
 
@@ -7,6 +6,7 @@ declare global {
   function gtag(...args: any[]): void;
   const mixpanel: {
     track: (event: string, properties?: any) => void;
+    init: (token: string) => void;
   };
 }
 
@@ -27,7 +27,26 @@ export interface UserActivity {
 
 class AnalyticsService {
   private googleAnalyticsId = ''; // Set your GA4 measurement ID
-  private mixpanelToken = ''; // Set your Mixpanel token
+  private mixpanelToken = '571342d7f4f5159dadfd2bf1b77635f4'; // Your Mixpanel token
+
+  constructor() {
+    this.initializeMixpanel();
+  }
+
+  private initializeMixpanel() {
+    // Initialize Mixpanel
+    if (this.mixpanelToken && typeof window !== 'undefined') {
+      // Load Mixpanel script
+      const script = document.createElement('script');
+      script.src = 'https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js';
+      script.onload = () => {
+        if (typeof mixpanel !== 'undefined') {
+          mixpanel.init(this.mixpanelToken);
+        }
+      };
+      document.head.appendChild(script);
+    }
+  }
 
   // Track custom events
   async trackEvent(event: AnalyticsEvent): Promise<void> {
