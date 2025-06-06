@@ -111,12 +111,12 @@ const RealTimeChat: React.FC<RealTimeChatProps> = ({ chatRoomId, className = '' 
                 <div
                   key={message.id}
                   className={`flex ${
-                    message.userId === user?.uid ? 'justify-end' : 'justify-start'
+                    message.userId === currentUser?.uid ? 'justify-end' : 'justify-start'
                   }`}
                 >
                   <div
                     className={`max-w-[70%] rounded-lg p-3 ${
-                      message.userId === user?.uid
+                      message.userId === currentUser?.uid
                         ? 'bg-blue-600 text-white'
                         : 'bg-white/10 text-gray-200'
                     }`}
