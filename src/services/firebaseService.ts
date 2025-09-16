@@ -128,7 +128,7 @@ class FirebaseService {
   }
 
   // Upload Note with points calculation
-  async uploadNote(noteData: Omit<UploadedNote, 'id' | 'createdAt'>, file: File): Promise<string> {
+  async uploadNote(noteData: Pick<UploadedNote, 'title' | 'class' | 'subject' | 'chapter' | 'description' | 'authorId' | 'authorName' | 'tags'>, file: File): Promise<string> {
     try {
       const filePath = `notes/${Date.now()}_${file.name}`;
       const fileUrl = await this.uploadFile(file, filePath);
@@ -167,7 +167,7 @@ class FirebaseService {
 
   // Upload Question
   async uploadQuestion(
-    questionData: Omit<UploadedQuestion, 'id' | 'createdAt'>, 
+    questionData: Pick<UploadedQuestion, 'title' | 'class' | 'subject' | 'school' | 'year' | 'examType' | 'difficulty' | 'marks' | 'description' | 'authorId' | 'authorName' | 'tags'>, 
     questionFile: File, 
     answerFile?: File
   ): Promise<string> {
