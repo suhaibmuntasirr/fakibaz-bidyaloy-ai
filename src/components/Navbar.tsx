@@ -91,7 +91,7 @@ const Navbar = () => {
                 </Button>
 
                 {showUserMenu && (
-                  <div className="absolute right-0 top-12 w-48 bg-[#28282B] border border-white/20 rounded-lg shadow-lg py-2 z-50">
+                  <div className="absolute right-0 top-12 w-48 bg-black/90 backdrop-blur-lg border border-white/20 rounded-lg shadow-2xl py-2 z-50">
                     <div className="px-4 py-2 border-b border-white/10">
                       <p className="text-white font-medium">
                         {currentUser.displayName || 'ব্যবহারকারী'}

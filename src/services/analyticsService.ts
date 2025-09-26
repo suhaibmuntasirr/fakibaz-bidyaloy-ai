@@ -34,17 +34,28 @@ class AnalyticsService {
   }
 
   private initializeMixpanel() {
-    // Initialize Mixpanel
+    // Initialize Mixpanel only if token is properly set
     if (this.mixpanelToken && typeof window !== 'undefined') {
-      // Load Mixpanel script
-      const script = document.createElement('script');
-      script.src = 'https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js';
-      script.onload = () => {
-        if (typeof mixpanel !== 'undefined') {
-          mixpanel.init(this.mixpanelToken);
-        }
-      };
-      document.head.appendChild(script);
+      try {
+        // Load Mixpanel script
+        const script = document.createElement('script');
+        script.src = 'https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js';
+        script.onload = () => {
+          try {
+            if (typeof window !== 'undefined' && (window as any).mixpanel) {
+              (window as any).mixpanel.init(this.mixpanelToken);
+            }
+          } catch (error) {
+            console.warn('Mixpanel initialization failed:', error);
+          }
+        };
+        script.onerror = () => {
+          console.warn('Failed to load Mixpanel script');
+        };
+        document.head.appendChild(script);
+      } catch (error) {
+        console.warn('Mixpanel setup failed:', error);
+      }
     }
   }
 
@@ -60,11 +71,15 @@ class AnalyticsService {
       }
 
       // Mixpanel
-      if (this.mixpanelToken && typeof mixpanel !== 'undefined') {
-        mixpanel.track(event.name, {
-          ...event.parameters,
-          user_id: event.userId
-        });
+      if (this.mixpanelToken && typeof window !== 'undefined' && (window as any).mixpanel) {
+        try {
+          (window as any).mixpanel.track(event.name, {
+            ...event.parameters,
+            user_id: event.userId
+          });
+        } catch (error) {
+          console.warn('Mixpanel tracking failed:', error);
+        }
       }
 
       // Store in Firebase for custom analytics

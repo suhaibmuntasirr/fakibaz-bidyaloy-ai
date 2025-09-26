@@ -17,18 +17,18 @@ const ClassSelection = () => {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-12">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
       {classes.map((classItem) => (
         <Card 
           key={classItem.id}
           className="bg-white/10 backdrop-blur-lg border border-white/20 hover:border-white/40 transition-all cursor-pointer group hover:scale-105"
           onClick={() => navigate(classItem.route)}
         >
-          <CardContent className="p-8 text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-              <GraduationCap className="h-10 w-10 text-white" />
+          <CardContent className="p-6 md:p-8 text-center">
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6 group-hover:scale-110 transition-transform">
+              <GraduationCap className="h-8 w-8 md:h-10 md:w-10 text-white" />
             </div>
-            <h3 className="text-white font-semibold text-lg">{classItem.name}</h3>
+            <h3 className="text-white font-semibold text-base md:text-lg">{classItem.name}</h3>
           </CardContent>
         </Card>
       ))}

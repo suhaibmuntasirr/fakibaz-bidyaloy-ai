@@ -127,15 +127,15 @@ const Index = () => {
       <section className="py-16 px-4 bg-black/20">
         <div className="container mx-auto max-w-5xl">
           <h2 className="text-3xl font-bold text-center mb-12">আমাদের বৈশিষ্ট্য</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
             {/* Feature 1 */}
             <div className="text-center">
               <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <BookOpen className="h-12 w-12 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">নোট এবং সারাংশ</h3>
-              <p className="text-gray-300">
-                সহজ ভাষায় লেখা নোট এবং সারাংশ।
+            <h3 className="text-xl font-semibold mb-2">নোট ও সারাংশ</h3>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                সহজ ভাষায় লেখা নোট এবং সারাংশ সবার জন্য উপলব্ধ।
               </p>
             </div>
 
@@ -144,9 +144,9 @@ const Index = () => {
               <div className="w-24 h-24 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FileText className="h-12 w-12 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">প্রশ্ন ব্যাংক</h3>
-              <p className="text-gray-300">
-                বিভিন্ন পরীক্ষার প্রশ্নপত্র।
+            <h3 className="text-xl font-semibold mb-2">প্রশ্ন ব্যাংক</h3>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                বিভিন্ন পরীক্ষার প্রশ্নপত্র ও সমাধান।
               </p>
             </div>
 
@@ -155,9 +155,9 @@ const Index = () => {
               <div className="w-24 h-24 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="h-12 w-12 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">কমিউনিটি</h3>
-              <p className="text-gray-300">
-                অন্যান্য শিক্ষার্থীদের সাথে আলোচনা।
+            <h3 className="text-xl font-semibold mb-2">কমিউনিটি</h3>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                অন্যান্য শিক্ষার্থীদের সাথে আলোচনা ও সহায়তা।
               </p>
             </div>
           </div>
