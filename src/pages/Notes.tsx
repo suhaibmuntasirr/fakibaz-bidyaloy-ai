@@ -314,7 +314,7 @@ const Notes = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#1a1a1a]">
+    <div className="min-h-screen bg-gradient-to-br from-[#28282B] via-[#1a1a1d] to-[#28282B]">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
@@ -322,8 +322,9 @@ const Notes = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <BookOpen className="h-8 w-8 text-blue-400 mr-3" />
-            <h1 className="text-4xl font-bold text-white">নোট ব্যাংক</h1>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">নোট ব্যাংক</h1>
           </div>
+          <p className="text-gray-300 text-lg">সহজ ভাষায় লেখা নোট এবং সারাংশ সবার জন্য উপলব্ধ</p>
         </div>
 
         {/* Search Bar & Upload Button */}
@@ -349,10 +350,10 @@ const Notes = () => {
         </div>
 
         {/* Filters */}
-        <Card className="mb-8 bg-[#2d2d2d] border-gray-700">
+        <Card className="mb-8 bg-white/10 backdrop-blur-lg border-white/20">
           <CardContent className="p-6">
             <div className="flex items-center mb-4">
-              <Filter className="h-5 w-5 text-gray-400 mr-2" />
+              <Filter className="h-5 w-5 text-blue-400 mr-2" />
               <span className="text-white font-medium">ফিল্টার</span>
             </div>
             
@@ -360,30 +361,30 @@ const Notes = () => {
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-[#1a1a1a] border border-gray-600 text-white rounded-md px-3 py-2"
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
               >
                 <option value="">ক্লাস নির্বাচন</option>
                 {classes.map(cls => (
-                  <option key={cls} value={cls} className="bg-[#1a1a1a]">{cls}</option>
+                  <option key={cls} value={cls} className="bg-gray-800">{cls}</option>
                 ))}
               </select>
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-[#1a1a1a] border border-gray-600 text-white rounded-md px-3 py-2"
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
               >
                 <option value="">বিষয় নির্বাচন</option>
                 {subjects.map(subject => (
-                  <option key={subject} value={subject} className="bg-[#1a1a1a]">{subject}</option>
+                  <option key={subject} value={subject} className="bg-gray-800">{subject}</option>
                 ))}
               </select>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-[#1a1a1a] border border-gray-600 text-white rounded-md px-3 py-2"
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
               >
                 {categories.map(category => (
-                  <option key={category} value={category} className="bg-[#1a1a1a]">{category}</option>
+                  <option key={category} value={category} className="bg-gray-800">{category}</option>
                 ))}
               </select>
             </div>
@@ -396,8 +397,8 @@ const Notes = () => {
                   size="sm"
                   onClick={() => setSelectedCategory(category)}
                   className={selectedCategory === category 
-                    ? "bg-blue-600 hover:bg-blue-700 text-white" 
-                    : "bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700"
+                    ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600" 
+                    : "bg-transparent border-white/30 text-gray-300 hover:bg-white/10 hover:border-white/50"
                   }
                 >
                   {category}
@@ -439,7 +440,7 @@ const Notes = () => {
         {/* Notes Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredNotes.map((note, index) => (
-            <Card key={note.id} className="bg-[#2d2d2d] border-gray-700 hover:border-gray-600 transition-all duration-300 overflow-hidden">
+            <Card key={note.id} className="bg-white/10 backdrop-blur-lg border-white/20 hover:border-white/40 transition-all duration-300 overflow-hidden group">
               {/* Gradient Header */}
               <div className={`h-32 bg-gradient-to-br ${getGradientClass(index)} flex items-center justify-center`}>
                 <BookOpen className="h-12 w-12 text-white" />
