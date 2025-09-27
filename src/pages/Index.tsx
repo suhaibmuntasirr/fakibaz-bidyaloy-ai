@@ -87,18 +87,18 @@ const Index = () => {
             AI শিক্ষক, নোট শেয়ারিং, প্রশ্ন ব্যাংক এবং কমিউনিটি - সবকিছু এক জায়গায়
           </p>
 
-          {/* Search Section with reduced spacing */}
+          {/* Simple Glass Search Bar */}
           <div className="relative mb-6">
             <Search className="absolute left-4 top-4 h-6 w-6 text-white/70" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="কি খুঁজছেন? (যেমন: পদার্থবিজ্ঞান নোট, গণিত প্রশ্ন)"
-              className="pl-12 py-4 text-lg bg-white/10 border-white/20 text-white placeholder:text-white/60 rounded-xl backdrop-blur-lg"
+              placeholder="Type here..."
+              className="pl-12 py-4 text-lg bg-white/5 backdrop-blur-md border border-white/10 text-white placeholder:text-white/50 rounded-full hover:border-white/20 focus:border-white/30 transition-all duration-300"
             />
             <Button 
-              className="absolute right-2 top-2 bg-blue-600 hover:bg-blue-700"
+              className="absolute right-2 top-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border-0 rounded-full w-10 h-10 p-0"
               onClick={handleSearch}
             >
               <Search className="h-4 w-4" />
