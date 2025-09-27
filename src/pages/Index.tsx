@@ -79,7 +79,7 @@ const Index = () => {
           {/* Additional gradient overlay for depth */}
           <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/30"></div>
         
-        <div className="container mx-auto max-w-4xl relative z-10">
+        <div className="container mx-auto max-w-6xl relative z-10">
           <h1 className="text-5xl font-bold text-white mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             কি শিখতে চাও?
           </h1>
@@ -87,15 +87,15 @@ const Index = () => {
             AI শিক্ষক, নোট শেয়ারিং, প্রশ্ন ব্যাংক এবং কমিউনিটি - সবকিছু এক জায়গায়
           </p>
 
-          {/* Simple Glass Search Bar */}
-          <div className="relative mb-6">
+          {/* Wider Glass Search Bar with Bengali Suggestions */}
+          <div className="relative mb-6 max-w-4xl mx-auto">
             <Search className="absolute left-4 top-4 h-6 w-6 text-white/70" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Type here..."
-              className="pl-12 py-4 text-lg bg-white/5 backdrop-blur-md border border-white/10 text-white placeholder:text-white/50 rounded-full hover:border-white/20 focus:border-white/30 transition-all duration-300"
+              placeholder="কি খুঁজছেন? (যেমন: পদার্থবিজ্ঞান নোট, গণিত প্রশ্ন)"
+              className="pl-12 py-4 text-lg bg-white/5 backdrop-blur-md border border-white/10 text-white placeholder:text-white/50 rounded-full hover:border-white/20 focus:border-white/30 transition-all duration-300 w-full"
             />
             <Button 
               className="absolute right-2 top-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border-0 rounded-full w-10 h-10 p-0"
