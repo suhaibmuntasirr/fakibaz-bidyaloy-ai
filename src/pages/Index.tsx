@@ -10,6 +10,7 @@ import Footer from '@/components/Footer';
 import AdBanner from '@/components/AdBanner';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import heroBackground from '@/assets/hero-background.png';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -54,20 +55,29 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#28282B] text-white">
-      <Navbar />
-      
-      {/* Ad Banner below navbar */}
-      <AdBanner 
-        imageUrl="/lovable-uploads/e283b105-0747-4859-9cef-ef35fb06dd9d.png"
-        altText="বিশেষ অফার"
-        onClick={() => console.log('Ad clicked')}
+    <div className="min-h-screen relative text-white overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div 
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroBackground})` }}
       />
+      <div className="fixed inset-0 bg-black/30" />
+      
+      {/* Content */}
+      <div className="relative z-10">
+        <Navbar />
+        
+        {/* Ad Banner below navbar */}
+        <AdBanner 
+          imageUrl="/lovable-uploads/e283b105-0747-4859-9cef-ef35fb06dd9d.png"
+          altText="বিশেষ অফার"
+          onClick={() => console.log('Ad clicked')}
+        />
 
-      {/* Hero Section with Full Width Gradient Background */}
-      <section className="relative py-12 px-4 text-center">
-        {/* Full Width Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/30 via-purple-900/20 to-indigo-900/30"></div>
+        {/* Hero Section with Enhanced Glass Effects */}
+        <section className="relative py-12 px-4 text-center">
+          {/* Additional gradient overlay for depth */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/30"></div>
         
         <div className="container mx-auto max-w-4xl relative z-10">
           <h1 className="text-5xl font-bold text-white mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
@@ -112,16 +122,22 @@ const Index = () => {
               প্রশ্ন দেখুন
             </Button>
           </div>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* Class Selection with better spacing */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto max-w-5xl">
-          <h2 className="text-2xl font-bold text-center mb-12">যে কোন ক্লাসের নোট পাও এখানেই</h2>
-          <ClassSelection />
-        </div>
-      </section>
+        {/* Class Selection with Enhanced Glass Effects */}
+        <section className="py-16 px-4 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-transparent"></div>
+          <div className="container mx-auto max-w-6xl relative z-10">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">
+                যে কোন ক্লাসের নোট পাও এখানেই
+              </h2>
+              <p className="text-lg text-gray-300/80">আপনার শিক্ষার স্তর অনুযায়ী নোট ও সম্পদ খুঁজুন</p>
+            </div>
+            <ClassSelection />
+          </div>
+        </section>
 
       {/* Features Section */}
       <section className="py-16 px-4 bg-black/20">
@@ -188,8 +204,9 @@ const Index = () => {
         </div>
       </section>
 
-      <div className="relative z-10">
-        <Footer />
+        <div className="relative z-10">
+          <Footer />
+        </div>
       </div>
     </div>
   );
