@@ -21,17 +21,17 @@ const ClassSelection = () => {
       {classes.map((classItem) => (
         <Card 
           key={classItem.id}
-          className="group bg-white/95 backdrop-blur-sm border border-white/20 hover:shadow-xl cursor-pointer transition-all duration-300 hover:scale-105"
+          className="group bg-black/20 backdrop-blur-md border border-white/10 hover:border-white/20 hover:bg-black/30 cursor-pointer transition-all duration-300 hover:scale-105 rounded-2xl"
           onClick={() => navigate(classItem.route)}
         >
           <CardContent className="p-6 md:p-8 text-center">
-            {/* Colored Circle Icon like reference */}
+            {/* Glass Effect Icon */}
             <div className={`w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br ${classItem.gradient} rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
               <GraduationCap className="h-8 w-8 md:h-10 md:w-10 text-white" />
             </div>
             
-            {/* Bengali Text */}
-            <h3 className="text-gray-800 font-semibold text-base md:text-lg">
+            {/* White Text on Glass */}
+            <h3 className="text-white font-semibold text-base md:text-lg">
               {classItem.name}
             </h3>
           </CardContent>
