@@ -203,40 +203,47 @@ const Index = () => {
           </div>
         </section>
 
-      {/* Features Section */}
-      <section className="py-16 px-4 bg-black/20">
-        <div className="container mx-auto max-w-5xl">
-          <h2 className="text-3xl font-bold text-center mb-12">আমাদের বৈশিষ্ট্য</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
-            {/* Feature 1 */}
-            <div className="text-center">
-              <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <BookOpen className="h-12 w-12 text-white" />
+      {/* Features Section with Glass Effects */}
+      <section className="py-20 px-4 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/5 to-transparent"></div>
+        <div className="container mx-auto max-w-6xl relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">
+              আমাদের বৈশিষ্ট্য
+            </h2>
+            <p className="text-lg text-gray-300/80">আপনার শিক্ষার যাত্রায় আমাদের সেবাসমূহ</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Feature 1 - Notes */}
+            <div className="group bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 hover:bg-white/10 transition-all duration-300 hover:scale-105 rounded-2xl p-8 text-center">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-500/20 to-blue-600/20 backdrop-blur-sm border border-blue-400/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-blue-500/10">
+                <BookOpen className="h-10 w-10 text-blue-400" />
               </div>
-            <h3 className="text-xl font-semibold mb-2">নোট ও সারাংশ</h3>
-              <p className="text-gray-300 text-sm leading-relaxed">
+              <h3 className="text-xl font-semibold mb-4 text-white">নোট ও সারাংশ</h3>
+              <p className="text-gray-300/80 leading-relaxed">
                 সহজ ভাষায় লেখা নোট এবং সারাংশ সবার জন্য উপলব্ধ।
               </p>
             </div>
 
-            {/* Feature 2 */}
-            <div className="text-center">
-              <div className="w-24 h-24 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FileText className="h-12 w-12 text-white" />
+            {/* Feature 2 - Question Bank */}
+            <div className="group bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 hover:bg-white/10 transition-all duration-300 hover:scale-105 rounded-2xl p-8 text-center">
+              <div className="w-20 h-20 bg-gradient-to-br from-purple-500/20 to-purple-600/20 backdrop-blur-sm border border-purple-400/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-purple-500/10">
+                <FileText className="h-10 w-10 text-purple-400" />
               </div>
-            <h3 className="text-xl font-semibold mb-2">প্রশ্ন ব্যাংক</h3>
-              <p className="text-gray-300 text-sm leading-relaxed">
+              <h3 className="text-xl font-semibold mb-4 text-white">প্রশ্ন ব্যাংক</h3>
+              <p className="text-gray-300/80 leading-relaxed">
                 বিভিন্ন পরীক্ষার প্রশ্নপত্র ও সমাধান।
               </p>
             </div>
 
-            {/* Feature 3 */}
-            <div className="text-center">
-              <div className="w-24 h-24 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="h-12 w-12 text-white" />
+            {/* Feature 3 - Community */}
+            <div className="group bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 hover:bg-white/10 transition-all duration-300 hover:scale-105 rounded-2xl p-8 text-center">
+              <div className="w-20 h-20 bg-gradient-to-br from-green-500/20 to-emerald-600/20 backdrop-blur-sm border border-green-400/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-green-500/10">
+                <Users className="h-10 w-10 text-green-400" />
               </div>
-            <h3 className="text-xl font-semibold mb-2">কমিউনিটি</h3>
-              <p className="text-gray-300 text-sm leading-relaxed">
+              <h3 className="text-xl font-semibold mb-4 text-white">কমিউনিটি</h3>
+              <p className="text-gray-300/80 leading-relaxed">
                 অন্যান্য শিক্ষার্থীদের সাথে আলোচনা ও সহায়তা।
               </p>
             </div>
