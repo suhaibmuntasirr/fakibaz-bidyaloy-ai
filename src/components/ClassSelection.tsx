@@ -17,7 +17,7 @@ const ClassSelection = () => {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+    <div className="grid grid-cols-6 gap-4 md:gap-6">
       {classes.map((classItem) => (
         <Card 
           key={classItem.id}
@@ -31,7 +31,7 @@ const ClassSelection = () => {
             </div>
             
             {/* White Text on Glass */}
-            <h3 className="text-white font-semibold text-base md:text-lg">
+            <h3 className="text-white font-semibold text-sm md:text-base">
               {classItem.name}
             </h3>
           </CardContent>

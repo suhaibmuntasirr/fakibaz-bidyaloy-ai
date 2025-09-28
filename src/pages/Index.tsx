@@ -87,8 +87,8 @@ const Index = () => {
             AI শিক্ষক, নোট শেয়ারিং, প্রশ্ন ব্যাংক এবং কমিউনিটি - সবকিছু এক জায়গায়
           </p>
 
-          {/* Extra Wide Glass Search Bar with Bengali Suggestions */}
-          <div className="relative mb-6 max-w-5xl mx-auto">
+          {/* Wider Glass Search Bar with Bengali Suggestions */}
+          <div className="relative mb-6 max-w-4xl mx-auto">
             <Search className="absolute left-4 top-4 h-6 w-6 text-white/70" />
             <Input
               value={searchQuery}
