@@ -139,16 +139,9 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Quick Actions Glass Cards */}
-        <section className="py-16 px-4 relative">
+        {/* Quick Actions Glass Cards - Below Class Selection */}
+        <section className="py-8 px-4 relative">
           <div className="container mx-auto max-w-6xl relative z-10">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-green-300 via-blue-300 to-purple-300 bg-clip-text text-transparent">
-                দ্রুত শুরু করুন
-              </h2>
-              <p className="text-lg text-gray-300/80">আপনার প্রয়োজন অনুযায়ী সেবা বেছে নিন</p>
-            </div>
-            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Upload Notes Card */}
               <div 
@@ -161,7 +154,7 @@ const Index = () => {
                       <FileText className="h-6 w-6 text-white" />
                     </div>
                     <div className="text-left">
-                      <h3 className="text-white font-semibold text-base">এখনই আপনার নোট আপলোড করুন</h3>
+                      <h3 className="text-white font-semibold text-base">আপনার নোট আপলোড করুন</h3>
                       <p className="text-gray-300/80 text-sm">আপনার নোট শেয়ার করুন</p>
                     </div>
                   </div>
@@ -191,7 +184,7 @@ const Index = () => {
               {/* Group Study Card */}
               <div 
                 className="group bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 hover:bg-white/10 cursor-pointer transition-all duration-300 hover:scale-105 rounded-2xl p-4"
-                onClick={() => navigate('/community?tab=study-groups')}
+                onClick={() => navigate('/community')}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
