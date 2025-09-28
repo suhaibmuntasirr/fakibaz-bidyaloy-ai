@@ -139,6 +139,56 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Quick Actions Glass Cards */}
+        <section className="py-16 px-4 relative">
+          <div className="container mx-auto max-w-6xl relative z-10">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-green-300 via-blue-300 to-purple-300 bg-clip-text text-transparent">
+                দ্রুত শুরু করুন
+              </h2>
+              <p className="text-lg text-gray-300/80">আপনার প্রয়োজন অনুযায়ী সেবা বেছে নিন</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Upload Notes Card */}
+              <div 
+                className="group bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 hover:bg-white/10 cursor-pointer transition-all duration-300 hover:scale-105 rounded-2xl p-6 text-center"
+                onClick={() => navigate('/notes?upload=true')}
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <FileText className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-white font-semibold text-lg mb-2">এখনই আপনার নোট আপলোড করুন</h3>
+                <p className="text-gray-300/80 text-sm">আপনার নোট শেয়ার করুন এবং অন্যদের সাহায্য করুন</p>
+              </div>
+
+              {/* Exam Questions Card */}
+              <div 
+                className="group bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 hover:bg-white/10 cursor-pointer transition-all duration-300 hover:scale-105 rounded-2xl p-6 text-center"
+                onClick={() => navigate('/question-bank')}
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <Award className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-white font-semibold text-lg mb-2">স্কুলের প্রশ্নে পরীক্ষা দিন</h3>
+                <p className="text-gray-300/80 text-sm">বিভিন্ন বিষয়ের প্রশ্ন দিয়ে নিজেকে যাচাই করুন</p>
+              </div>
+
+              {/* Group Study Card */}
+              <div 
+                className="group bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 hover:bg-white/10 cursor-pointer transition-all duration-300 hover:scale-105 rounded-2xl p-6 text-center"
+                onClick={() => navigate('/community?tab=study-groups')}
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <Users className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-white font-semibold text-lg mb-2">গ্রুপ স্টাডি করুন</h3>
+                <p className="text-gray-300/80 text-sm">অন্যদের সাথে মিলে পড়াশোনা করুন</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
       {/* Features Section */}
       <section className="py-16 px-4 bg-black/20">
         <div className="container mx-auto max-w-5xl">
