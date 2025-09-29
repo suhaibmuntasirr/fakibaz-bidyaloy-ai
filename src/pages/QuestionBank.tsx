@@ -25,6 +25,7 @@ import PDFViewer from '@/components/PDFViewer';
 import ExamSystem from '@/components/ExamSystem';
 import { useToast } from '@/hooks/use-toast';
 import { Question } from '@/types/common';
+import heroBackground from '@/assets/hero-background.png';
 
 const QuestionBank = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -278,7 +279,14 @@ const QuestionBank = () => {
   const schools = [...new Set(questions.map(q => q.school))];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f1632] relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden"
+      style={{
+        backgroundImage: `url(${heroBackground})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
       {/* Background decorative elements */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl"></div>
