@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Youtube, Instagram, Linkedin, Phone, Mail, MapPin } from 'lucide-react';
+import paymentOptions from '@/assets/payment-options.png';
 
 const Footer = () => {
   return (
@@ -109,6 +110,17 @@ const Footer = () => {
               <Link to="/refund-policy" className="hover:text-white transition-colors">Refund Policy</Link>
               <span className="hidden sm:inline">|</span>
               <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            </div>
+          </div>
+          
+          {/* Payment Options */}
+          <div className="mt-8 pt-6 border-t border-white/10">
+            <div className="flex justify-center">
+              <img 
+                src={paymentOptions} 
+                alt="Payment Options" 
+                className="max-w-full h-auto"
+              />
             </div>
           </div>
           

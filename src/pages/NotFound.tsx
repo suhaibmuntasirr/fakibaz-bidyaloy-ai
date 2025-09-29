@@ -16,7 +16,13 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-[#28282B] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f1632] relative overflow-hidden flex items-center justify-center px-4">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-40 right-20 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-cyan-500/20 rounded-full blur-3xl"></div>
+      </div>
       <Card className="bg-black/20 backdrop-blur-lg border border-white/10 max-w-md w-full">
         <CardContent className="text-center p-8">
           <div className="text-6xl font-bold text-white mb-4">404</div>
