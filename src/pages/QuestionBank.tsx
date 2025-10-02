@@ -407,15 +407,19 @@ const QuestionBank = () => {
             
             return (
               <Card key={question.id} className={`bg-transparent backdrop-blur-xl border-2 ${colorSet.border} hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl`}>
-                {/* Oval colored title section - 20% of card */}
-                <div className={`relative h-24 bg-gradient-to-br ${colorSet.gradient} rounded-b-[3rem] flex items-center justify-center px-6`}>
-                  <CardTitle className="text-white text-lg font-bold text-center leading-tight">
-                    {question.title}
-                  </CardTitle>
+                {/* Oval colored title section - 15% of card with blur below */}
+                <div className="relative">
+                  <div className={`relative h-20 bg-gradient-to-br ${colorSet.gradient} rounded-b-[3rem] flex items-center justify-center px-6`}>
+                    <CardTitle className="text-white text-base font-bold text-center leading-tight">
+                      {question.title}
+                    </CardTitle>
+                  </div>
+                  {/* Blur effect below oval */}
+                  <div className={`absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-b ${colorSet.gradient} opacity-30 blur-xl`}></div>
                 </div>
                 
                 {/* Card content */}
-                <CardHeader className="pt-4">
+                <CardHeader className="pt-6">
                   <div className="flex flex-wrap gap-2 mb-3">
                     <Badge className="bg-blue-600/20 text-blue-300 border-blue-400/20">{question.class}</Badge>
                     <Badge className="bg-green-600/20 text-green-300 border-green-400/20">{question.subject}</Badge>

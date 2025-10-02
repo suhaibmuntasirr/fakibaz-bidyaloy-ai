@@ -458,27 +458,31 @@ const Notes = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredNotes.map((note, index) => {
             const colors = [
-              'from-blue-500 to-cyan-500',
-              'from-purple-500 to-pink-500', 
-              'from-green-500 to-emerald-500',
-              'from-orange-500 to-red-500',
-              'from-indigo-500 to-blue-500',
-              'from-pink-500 to-rose-500'
+              { gradient: 'from-cyan-500 to-blue-600', border: 'border-cyan-500/50' },
+              { gradient: 'from-purple-500 to-pink-600', border: 'border-purple-500/50' },
+              { gradient: 'from-green-500 to-teal-600', border: 'border-green-500/50' },
+              { gradient: 'from-orange-500 to-red-600', border: 'border-orange-500/50' },
+              { gradient: 'from-blue-500 to-indigo-600', border: 'border-blue-500/50' },
+              { gradient: 'from-pink-500 to-rose-600', border: 'border-pink-500/50' },
             ];
-            const colorClass = colors[index % colors.length];
+            const colorSet = colors[index % colors.length];
             
             return (
-              <Card key={note.id} className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all group overflow-hidden rounded-xl">
-                {/* Top colored oval section with icon - 30% of card height */}
-                <div className={`h-24 bg-gradient-to-br ${colorClass} flex items-center justify-center relative rounded-t-xl`}>
-                  <img 
-                    src={bookIcon} 
-                    alt="Book Icon" 
-                    className="w-8 h-8 filter brightness-0 invert opacity-90"
-                  />
+              <Card key={note.id} className={`bg-transparent backdrop-blur-xl border-2 ${colorSet.border} hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl`}>
+                {/* Top colored oval section with icon and blur effect */}
+                <div className="relative">
+                  <div className={`h-24 bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl`}>
+                    <img 
+                      src={bookIcon} 
+                      alt="Book Icon" 
+                      className="w-10 h-10 filter brightness-0 invert opacity-90"
+                    />
+                  </div>
+                  {/* Blur effect below oval */}
+                  <div className={`absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-b ${colorSet.gradient} opacity-30 blur-xl`}></div>
                 </div>
                 
-                <CardContent className="p-6">
+                <CardContent className="p-6 pt-8">
                   <div className="space-y-4">
                     {/* Title and Badges */}
                     <div>
@@ -573,55 +577,6 @@ const Notes = () => {
                       >
                         <Heart className={`h-4 w-4 ${likedNotes.includes(note.id) ? 'fill-current' : ''}`} />
                       </Button>
-                    </div>
-                    
-                    {/* Comments Section */}
-                    <div className="border-t border-white/10 pt-4">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowComments(prev => ({ ...prev, [note.id]: !prev[note.id] }))}
-                        className="text-gray-400 hover:text-white p-0 h-auto"
-                      >
-                        <MessageSquare className="h-4 w-4 mr-1" />
-                        {showComments[note.id] ? 'মন্তব্য লুকান' : `${comments[note.id]?.length || 0} টি মন্তব্য দেখুন`}
-                      </Button>
-                      
-                      {showComments[note.id] && (
-                        <div className="mt-3 space-y-3">
-                          {/* Comment input */}
-                          <div className="flex gap-2">
-                            <Input
-                              placeholder="মন্তব্য লিখুন..."
-                              value={newComment[note.id] || ''}
-                              onChange={(e) => setNewComment(prev => ({ ...prev, [note.id]: e.target.value }))}
-                              className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                            />
-                            <Button 
-                              size="sm" 
-                              onClick={() => handleAddComment(note.id)}
-                              className="bg-blue-600 hover:bg-blue-700"
-                            >
-                              <Send className="h-4 w-4" />
-                            </Button>
-                          </div>
-                          
-                          {/* Comments list */}
-                          <div className="space-y-2 max-h-48 overflow-y-auto">
-                            {comments[note.id]?.map((comment) => (
-                              <div key={comment.id} className="bg-white/5 rounded-lg p-3">
-                                <div className="flex items-center justify-between mb-1">
-                                  <span className="text-sm font-medium text-white">{comment.author}</span>
-                                  <span className="text-xs text-gray-500">
-                                    {comment.timestamp.toLocaleDateString('bn-BD')}
-                                  </span>
-                                </div>
-                                <p className="text-sm text-gray-300">{comment.text}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </CardContent>
