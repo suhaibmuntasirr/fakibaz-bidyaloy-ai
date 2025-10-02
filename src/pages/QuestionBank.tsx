@@ -394,22 +394,22 @@ const QuestionBank = () => {
         {/* Questions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredQuestions.map((question, index) => {
-            // Color palette for oval sections
+            // Color palette for oval sections and borders
             const colors = [
-              'from-cyan-500 to-blue-600',
-              'from-purple-500 to-pink-600',
-              'from-green-500 to-teal-600',
-              'from-orange-500 to-red-600',
-              'from-blue-500 to-indigo-600',
-              'from-pink-500 to-rose-600',
+              { gradient: 'from-cyan-500 to-blue-600', border: 'border-cyan-500/50' },
+              { gradient: 'from-purple-500 to-pink-600', border: 'border-purple-500/50' },
+              { gradient: 'from-green-500 to-teal-600', border: 'border-green-500/50' },
+              { gradient: 'from-orange-500 to-red-600', border: 'border-orange-500/50' },
+              { gradient: 'from-blue-500 to-indigo-600', border: 'border-blue-500/50' },
+              { gradient: 'from-pink-500 to-rose-600', border: 'border-pink-500/50' },
             ];
-            const colorClass = colors[index % colors.length];
+            const colorSet = colors[index % colors.length];
             
             return (
-              <Card key={question.id} className="bg-white/5 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden">
-                {/* Oval colored title section - 30% of card */}
-                <div className={`relative h-32 bg-gradient-to-br ${colorClass} rounded-b-[3rem] flex items-center justify-center px-6`}>
-                  <CardTitle className="text-white text-xl font-bold text-center leading-tight">
+              <Card key={question.id} className={`bg-transparent backdrop-blur-xl border-2 ${colorSet.border} hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl`}>
+                {/* Oval colored title section - 20% of card */}
+                <div className={`relative h-24 bg-gradient-to-br ${colorSet.gradient} rounded-b-[3rem] flex items-center justify-center px-6`}>
+                  <CardTitle className="text-white text-lg font-bold text-center leading-tight">
                     {question.title}
                   </CardTitle>
                 </div>
@@ -494,7 +494,7 @@ const QuestionBank = () => {
                 <div className="grid grid-cols-1 gap-2">
                   <Button
                     onClick={() => handleStartExam(question)}
-                    className="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700"
+                    className="w-full bg-gradient-to-r from-red-500 via-pink-500 via-purple-500 via-blue-600 to-cyan-400 hover:opacity-90 transition-opacity rounded-full"
                   >
                     <Play className="mr-2 h-4 w-4" />
                     পরীক্ষা দিন
