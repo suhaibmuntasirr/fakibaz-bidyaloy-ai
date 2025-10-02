@@ -393,28 +393,43 @@ const QuestionBank = () => {
 
         {/* Questions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredQuestions.map((question) => (
-            <Card key={question.id} className="bg-white/10 backdrop-blur-lg border-white/20 hover:border-white/30 transition-all duration-300">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-white text-lg mb-2">{question.title}</CardTitle>
-                    <div className="flex flex-wrap gap-2 mb-2">
-                      <Badge className="bg-blue-600/20 text-blue-300">{question.class}</Badge>
-                      <Badge className="bg-green-600/20 text-green-300">{question.subject}</Badge>
-                      <Badge className="bg-purple-600/20 text-purple-300">
-                        {getExamTypeLabel(question.examType)}
-                      </Badge>
-                      {question.verified && (
-                        <Badge className="bg-yellow-600/20 text-yellow-300">✓ যাচাইকৃত</Badge>
-                      )}
-                    </div>
-                  </div>
+          {filteredQuestions.map((question, index) => {
+            // Color palette for oval sections
+            const colors = [
+              'from-cyan-500 to-blue-600',
+              'from-purple-500 to-pink-600',
+              'from-green-500 to-teal-600',
+              'from-orange-500 to-red-600',
+              'from-blue-500 to-indigo-600',
+              'from-pink-500 to-rose-600',
+            ];
+            const colorClass = colors[index % colors.length];
+            
+            return (
+              <Card key={question.id} className="bg-white/5 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden">
+                {/* Oval colored title section - 30% of card */}
+                <div className={`relative h-32 bg-gradient-to-br ${colorClass} rounded-b-[3rem] flex items-center justify-center px-6`}>
+                  <CardTitle className="text-white text-xl font-bold text-center leading-tight">
+                    {question.title}
+                  </CardTitle>
                 </div>
-                <p className="text-gray-300 text-sm flex items-center">
-                  <School className="mr-1 h-3 w-3" />
-                  {question.school}
-                </p>
+                
+                {/* Card content */}
+                <CardHeader className="pt-4">
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    <Badge className="bg-blue-600/20 text-blue-300 border-blue-400/20">{question.class}</Badge>
+                    <Badge className="bg-green-600/20 text-green-300 border-green-400/20">{question.subject}</Badge>
+                    <Badge className="bg-purple-600/20 text-purple-300 border-purple-400/20">
+                      {getExamTypeLabel(question.examType)}
+                    </Badge>
+                    {question.verified && (
+                      <Badge className="bg-yellow-600/20 text-yellow-300 border-yellow-400/20">✓ যাচাইকৃত</Badge>
+                    )}
+                  </div>
+                  <p className="text-gray-300 text-sm flex items-center">
+                    <School className="mr-1 h-3 w-3" />
+                    {question.school}
+                  </p>
                 <p className="text-gray-400 text-xs">{question.district} • {question.year}</p>
               </CardHeader>
               
@@ -505,7 +520,8 @@ const QuestionBank = () => {
                 </div>
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
         </div>
 
         {filteredQuestions.length === 0 && (
