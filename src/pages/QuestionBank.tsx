@@ -16,7 +16,8 @@ import {
   Users,
   X,
   Play,
-  School
+  School,
+  Plus
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -308,18 +309,19 @@ const QuestionBank = () => {
         </div>
 
         {/* Search and Filters */}
-        <Card className="mb-8 bg-white/10 backdrop-blur-lg border-white/20">
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              <div className="relative md:col-span-2 lg:col-span-2">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="প্রশ্নপত্র খুঁজুন..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                />
-              </div>
+        <Card className="mb-8 bg-white/5 backdrop-blur-xl border-2 border-transparent bg-gradient-to-b from-white/20 to-transparent rounded-3xl p-[2px]">
+          <div className="bg-gradient-to-br from-slate-900/80 to-purple-900/80 backdrop-blur-xl rounded-3xl">
+            <CardContent className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div className="relative md:col-span-2 lg:col-span-2">
+                  <Search className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
+                  <Input
+                    placeholder="প্রশ্নপত্র খুঁজুন..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-12 h-12 bg-white/5 backdrop-blur-lg border-2 border-transparent bg-gradient-to-r from-white via-blue-200 to-purple-300 bg-clip-border rounded-2xl text-white placeholder:text-gray-300 [background-clip:padding-box,border-box] [background-origin:padding-box,border-box] [background-image:linear-gradient(to_right,rgba(255,255,255,0.05),rgba(255,255,255,0.05)),linear-gradient(to_right,white,#93c5fd,#1e3a8a,#a855f7,#ec4899)]"
+                  />
+                </div>
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
@@ -377,16 +379,17 @@ const QuestionBank = () => {
                 মোট {filteredQuestions.length} টি প্রশ্নপত্র পাওয়া গেছে
               </div>
             </div>
-          </CardContent>
+            </CardContent>
+          </div>
         </Card>
 
         {/* Upload Button */}
         <div className="mb-8 text-center">
           <Button
             onClick={() => setShowUpload(true)}
-            className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700"
+            className="bg-gradient-to-r from-blue-900 via-purple-700 to-purple-400 hover:from-blue-950 hover:via-purple-800 hover:to-purple-500 text-white px-8 py-6 text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
           >
-            <Upload className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 h-5 w-5" />
             প্রশ্নপত্র আপলোড করুন
           </Button>
         </div>
@@ -406,16 +409,17 @@ const QuestionBank = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <Card key={question.id} className={`bg-transparent backdrop-blur-xl border-2 ${colorSet.border} hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl`}>
-                {/* Oval colored title section - 15% of card with blur below */}
-                <div className="relative">
-                  <div className={`relative h-20 bg-gradient-to-br ${colorSet.gradient} rounded-b-[3rem] flex items-center justify-center px-6`}>
+              <Card key={question.id} className={`relative bg-transparent backdrop-blur-xl overflow-hidden rounded-3xl border-2 border-transparent p-[2px] bg-gradient-to-b from-white to-${colorSet.gradient.split(' ')[1].replace('to-', '')} bg-clip-border hover:shadow-2xl transition-all duration-300`}>
+                <div className="bg-gradient-to-br from-slate-900/40 to-purple-900/40 backdrop-blur-2xl rounded-3xl h-full">
+                  {/* Oval colored title section - 15% of card with blur below */}
+                  <div className="relative">
+                    <div className={`relative h-16 bg-gradient-to-br ${colorSet.gradient} rounded-b-[3rem] flex items-center justify-center px-6`}>
                     <CardTitle className="text-white text-base font-bold text-center leading-tight">
                       {question.title}
                     </CardTitle>
                   </div>
-                  {/* Blur effect below oval */}
-                  <div className={`absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-b ${colorSet.gradient} opacity-30 blur-xl`}></div>
+                  {/* Enhanced blur effect below oval */}
+                  <div className={`absolute -bottom-4 left-0 right-0 h-16 bg-gradient-to-b ${colorSet.gradient} blur-2xl opacity-60`}></div>
                 </div>
                 
                 {/* Card content */}
@@ -521,9 +525,10 @@ const QuestionBank = () => {
                       ডাউনলোড
                     </Button>
                   </div>
+                  </div>
+                </CardContent>
                 </div>
-              </CardContent>
-            </Card>
+              </Card>
             );
           })}
         </div>

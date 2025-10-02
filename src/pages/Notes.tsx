@@ -348,12 +348,12 @@ const Notes = () => {
         <div className="mb-6">
           <div className="flex items-center max-w-4xl mx-auto gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-4 top-4 h-5 w-5 text-gray-300" />
               <Input
                 placeholder="নোট খুঁজুন..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-14 bg-[#2d2d2d] border-gray-600 text-white placeholder:text-gray-400 text-lg rounded-xl"
+                className="pl-12 h-14 bg-white/5 backdrop-blur-lg border-2 border-transparent bg-gradient-to-r from-white via-blue-200 to-purple-300 bg-clip-border rounded-2xl text-white placeholder:text-gray-300 text-lg [background-clip:padding-box,border-box] [background-origin:padding-box,border-box] [background-image:linear-gradient(to_right,rgba(255,255,255,0.05),rgba(255,255,255,0.05)),linear-gradient(to_right,white,#93c5fd,#1e3a8a,#a855f7,#ec4899)]"
               />
             </div>
             <Button
@@ -458,20 +458,21 @@ const Notes = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredNotes.map((note, index) => {
             const colors = [
-              { gradient: 'from-cyan-500 to-blue-600', border: 'border-cyan-500/50' },
-              { gradient: 'from-purple-500 to-pink-600', border: 'border-purple-500/50' },
-              { gradient: 'from-green-500 to-teal-600', border: 'border-green-500/50' },
-              { gradient: 'from-orange-500 to-red-600', border: 'border-orange-500/50' },
-              { gradient: 'from-blue-500 to-indigo-600', border: 'border-blue-500/50' },
-              { gradient: 'from-pink-500 to-rose-600', border: 'border-pink-500/50' },
+              { gradient: 'from-cyan-500 to-blue-600', borderColor: 'cyan-500' },
+              { gradient: 'from-purple-500 to-pink-600', borderColor: 'purple-500' },
+              { gradient: 'from-green-500 to-teal-600', borderColor: 'green-500' },
+              { gradient: 'from-orange-500 to-red-600', borderColor: 'orange-500' },
+              { gradient: 'from-blue-500 to-indigo-600', borderColor: 'blue-500' },
+              { gradient: 'from-pink-500 to-rose-600', borderColor: 'pink-500' },
             ];
             const colorSet = colors[index % colors.length];
             
             return (
-              <Card key={note.id} className={`bg-transparent backdrop-blur-xl border-2 ${colorSet.border} hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl`}>
-                {/* Top colored oval section with icon and blur effect */}
-                <div className="relative">
-                  <div className={`h-24 bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl`}>
+              <Card key={note.id} className={`relative bg-transparent backdrop-blur-xl overflow-hidden rounded-3xl border-2 border-transparent p-[2px] bg-gradient-to-b from-white to-${colorSet.borderColor} bg-clip-border hover:shadow-2xl transition-all duration-300`}>
+                <div className="bg-gradient-to-br from-slate-900/40 to-purple-900/40 backdrop-blur-2xl rounded-3xl h-full">
+                  {/* Top colored oval section with icon and blur effect */}
+                  <div className="relative">
+                    <div className={`h-24 bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl`}>
                     <img 
                       src={bookIcon} 
                       alt="Book Icon" 
@@ -580,6 +581,7 @@ const Notes = () => {
                     </div>
                   </div>
                 </CardContent>
+                </div>
               </Card>
             );
           })}
