@@ -409,16 +409,21 @@ const QuestionBank = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <Card key={question.id} className="relative bg-transparent backdrop-blur-xl border-2 hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl"
+              <Card key={question.id} className="relative bg-transparent backdrop-blur-xl hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl"
                 style={{
-                  borderImage: `linear-gradient(180deg, rgba(255,255,255,0.8), ${
+                  border: '2px solid transparent',
+                  borderRadius: '24px',
+                  backgroundImage: `linear-gradient(#1a1a2e, #1a1a2e), 
+                    linear-gradient(to bottom, rgba(255,255,255,0.8), ${
                     colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.6)' : 
                     colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.6)' : 
                     colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.6)' : 
                     colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.6)' : 
                     colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.6)' : 
                     'rgba(236,72,153,0.6)'
-                  }) 1`
+                  })`,
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box'
                 }}
               >
                 {/* Oval colored title section - 15% of card with glowing blur below */}

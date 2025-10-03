@@ -49,63 +49,56 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
   };
 
   return (
-    <Card className="bg-white/10 backdrop-blur-lg border-white/20">
-      <CardHeader>
-        <CardTitle className="text-white text-center">লগইন করুন</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <Label htmlFor="email" className="text-white">ইমেইল ঠিকানা</Label>
-            <Input
-              id="email"
-              type="email"
-              {...register('email', { 
-                required: 'ইমেইল প্রয়োজন',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'সঠিক ইমেইল ঠিকানা দিন'
-                }
-              })}
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-              placeholder="আপনার ইমেইল লিখুন"
-            />
-            {errors.email && (
-              <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>
-            )}
-          </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div>
+        <Label htmlFor="email" className="text-white">ইমেইল ঠিকানা</Label>
+        <Input
+          id="email"
+          type="email"
+          {...register('email', { 
+            required: 'ইমেইল প্রয়োজন',
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: 'সঠিক ইমেইল ঠিকানা দিন'
+            }
+          })}
+          className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 rounded-xl"
+          placeholder="আপনার ইমেইল লিখুন"
+        />
+        {errors.email && (
+          <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>
+        )}
+      </div>
 
-          <div>
-            <Label htmlFor="password" className="text-white">পাসওয়ার্ড</Label>
-            <Input
-              id="password"
-              type="password"
-              {...register('password', { required: 'পাসওয়ার্ড প্রয়োজন' })}
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-              placeholder="আপনার পাসওয়ার্ড লিখুন"
-            />
-            {errors.password && (
-              <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
-            )}
-          </div>
+      <div>
+        <Label htmlFor="password" className="text-white">পাসওয়ার্ড</Label>
+        <Input
+          id="password"
+          type="password"
+          {...register('password', { required: 'পাসওয়ার্ড প্রয়োজন' })}
+          className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 rounded-xl"
+          placeholder="আপনার পাসওয়ার্ড লিখুন"
+        />
+        {errors.password && (
+          <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
+        )}
+      </div>
 
-          <Button 
-            type="submit" 
-            className="w-full bg-blue-600 hover:bg-blue-700"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                লগইন হচ্ছে...
-              </>
-            ) : (
-              'লগইন করুন'
-            )}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+      <Button 
+        type="submit" 
+        className="w-full bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white rounded-xl"
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            লগইন হচ্ছে...
+          </>
+        ) : (
+          'লগইন করুন'
+        )}
+      </Button>
+    </form>
   );
 };
 
