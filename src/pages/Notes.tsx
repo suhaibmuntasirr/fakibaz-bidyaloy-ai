@@ -367,7 +367,11 @@ const Notes = () => {
         </div>
 
         {/* Filters */}
-        <Card className="mb-8 bg-white/10 backdrop-blur-lg border-white/20">
+        <Card className="mb-8 bg-white/10 backdrop-blur-lg border-2 rounded-3xl"
+          style={{
+            borderImage: 'linear-gradient(135deg, rgba(255,255,255,0.8), rgba(147,197,253,0.6), rgba(59,130,246,0.6), rgba(147,51,234,0.6), rgba(236,72,153,0.6)) 1'
+          }}
+        >
           <CardContent className="p-6">
             <div className="flex items-center mb-4">
               <Filter className="h-5 w-5 text-blue-400 mr-2" />
@@ -378,7 +382,7 @@ const Notes = () => {
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-white/10 border border-white/20 text-white rounded-2xl px-3 py-2"
               >
                 <option value="">ক্লাস নির্বাচন</option>
                 {classes.map(cls => (
@@ -388,7 +392,7 @@ const Notes = () => {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-white/10 border border-white/20 text-white rounded-2xl px-3 py-2"
               >
                 <option value="">বিষয় নির্বাচন</option>
                 {subjects.map(subject => (
@@ -398,7 +402,7 @@ const Notes = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-white/10 border border-white/20 text-white rounded-2xl px-3 py-2"
               >
                 {categories.map(category => (
                   <option key={category} value={category} className="bg-gray-800">{category}</option>
@@ -414,8 +418,8 @@ const Notes = () => {
                   size="sm"
                   onClick={() => setSelectedCategory(category)}
                   className={selectedCategory === category 
-                    ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600" 
-                    : "bg-transparent border-white/30 text-gray-300 hover:bg-white/10 hover:border-white/50"
+                    ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600 rounded-2xl" 
+                    : "bg-transparent border-white/30 text-gray-300 hover:bg-white/10 hover:border-white/50 rounded-2xl"
                   }
                 >
                   {category}
@@ -468,18 +472,30 @@ const Notes = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <Card key={note.id} className={`bg-transparent backdrop-blur-xl border-2 ${colorSet.border} hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl`}>
-                {/* Top colored oval section with icon and blur effect */}
+              <Card key={note.id} className="relative bg-transparent backdrop-blur-xl border-2 hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl"
+                style={{
+                  borderImage: `linear-gradient(180deg, rgba(255,255,255,0.8), ${
+                    colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.6)' : 
+                    colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.6)' : 
+                    colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.6)' : 
+                    colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.6)' : 
+                    colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.6)' : 
+                    'rgba(236,72,153,0.6)'
+                  }) 1`
+                }}
+              >
+                {/* Top colored oval section with icon and glowing blur effect */}
                 <div className="relative">
-                  <div className={`h-24 bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl`}>
+                  <div className={`h-24 bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl z-10 relative`}>
                     <img 
                       src={bookIcon} 
                       alt="Book Icon" 
                       className="w-10 h-10 filter brightness-0 invert opacity-90"
                     />
                   </div>
-                  {/* Blur effect below oval */}
-                  <div className={`absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-b ${colorSet.gradient} opacity-30 blur-xl`}></div>
+                  {/* Soft glowing blur effect extending downward */}
+                  <div className={`absolute top-0 left-0 right-0 h-32 bg-gradient-to-b ${colorSet.gradient} opacity-40 blur-2xl rounded-t-3xl -z-10`}></div>
+                  <div className={`absolute top-8 left-0 right-0 h-24 bg-gradient-to-b ${colorSet.gradient.replace('to-', 'via-')} to-transparent opacity-30 blur-xl`}></div>
                 </div>
                 
                 <CardContent className="p-6 pt-8">
