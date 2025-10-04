@@ -369,8 +369,11 @@ const Notes = () => {
         {/* Filters */}
         <Card className="mb-8 bg-white/10 backdrop-blur-lg border-2 rounded-3xl relative overflow-hidden"
           style={{
-            borderImage: 'linear-gradient(135deg, rgba(255,255,255,0.8), rgba(147,197,253,0.6), rgba(59,130,246,0.6), rgba(147,51,234,0.6), rgba(236,72,153,0.6)) 1',
-            borderRadius: '1.5rem'
+            border: '2px solid transparent',
+            borderRadius: '24px',
+            backgroundImage: 'linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)), linear-gradient(135deg, rgba(255,255,255,0.8), rgba(147,197,253,0.6), rgba(59,130,246,0.6), rgba(147,51,234,0.6), rgba(236,72,153,0.6))',
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box'
           }}
         >
           <CardContent className="p-6">
@@ -477,7 +480,7 @@ const Notes = () => {
                 style={{
                   border: '2px solid transparent',
                   borderRadius: '24px',
-                  backgroundImage: `linear-gradient(#1a1a2e, #1a1a2e), 
+                  backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0)), 
                     linear-gradient(to bottom, rgba(255,255,255,0.8), ${
                     colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.6)' : 
                     colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.6)' : 
