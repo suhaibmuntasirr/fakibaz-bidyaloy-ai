@@ -386,7 +386,7 @@ const Notes = () => {
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-white/5 backdrop-blur-md border border-white/30 text-white rounded-2xl px-3 py-2 shadow-lg"
+                className="bg-gray-500/20 backdrop-blur-sm border border-gray-400/30 text-white rounded-2xl px-3 py-2"
               >
                 <option value="">ক্লাস নির্বাচন</option>
                 {classes.map(cls => (
@@ -396,7 +396,7 @@ const Notes = () => {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-white/5 backdrop-blur-md border border-white/30 text-white rounded-2xl px-3 py-2 shadow-lg"
+                className="bg-gray-500/20 backdrop-blur-sm border border-gray-400/30 text-white rounded-2xl px-3 py-2"
               >
                 <option value="">বিষয় নির্বাচন</option>
                 {subjects.map(subject => (
@@ -406,7 +406,7 @@ const Notes = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-white/5 backdrop-blur-md border border-white/30 text-white rounded-2xl px-3 py-2 shadow-lg"
+                className="bg-gray-500/20 backdrop-blur-sm border border-gray-400/30 text-white rounded-2xl px-3 py-2"
               >
                 {categories.map(category => (
                   <option key={category} value={category} className="bg-gray-800">{category}</option>
@@ -494,18 +494,17 @@ const Notes = () => {
                   className="rounded-[calc(1.5rem-1.5px)] overflow-hidden"
                   style={{ backgroundColor: 'transparent' }}
                 >
-                {/* Top colored oval section with icon and glowing blur effect */}
+                {/* Top colored oval section with icon */}
                 <div className="relative">
-                  <div className={`h-24 bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl z-10 relative`}>
+                  <div className={`h-24 bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl`}>
                     <img 
                       src={bookIcon} 
                       alt="Book Icon" 
                       className="w-10 h-10 filter brightness-0 invert opacity-90"
                     />
                   </div>
-                  {/* Soft glowing blur effect extending downward */}
-                  <div className={`absolute top-0 left-0 right-0 h-32 bg-gradient-to-b ${colorSet.gradient} opacity-40 blur-2xl rounded-t-3xl -z-10`}></div>
-                  <div className={`absolute top-8 left-0 right-0 h-24 bg-gradient-to-b ${colorSet.gradient.replace('to-', 'via-')} to-transparent opacity-30 blur-xl`}></div>
+                  {/* Small blur below header */}
+                  <div className={`absolute top-20 left-0 right-0 h-8 bg-gradient-to-b ${colorSet.gradient} opacity-20 blur-lg`}></div>
                 </div>
                 
                 <CardContent className="p-6 pt-8">
