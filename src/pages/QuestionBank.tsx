@@ -401,46 +401,37 @@ const QuestionBank = () => {
         {/* Questions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredQuestions.map((question, index) => {
-            // Color palette for oval sections and borders
-            const colors = [
-              { gradient: 'from-cyan-500 to-blue-600', border: 'border-cyan-500/50' },
-              { gradient: 'from-purple-500 to-pink-600', border: 'border-purple-500/50' },
-              { gradient: 'from-green-500 to-teal-600', border: 'border-green-500/50' },
-              { gradient: 'from-orange-500 to-red-600', border: 'border-orange-500/50' },
-              { gradient: 'from-blue-500 to-indigo-600', border: 'border-blue-500/50' },
-              { gradient: 'from-pink-500 to-rose-600', border: 'border-pink-500/50' },
+            // Color palette for gradients
+            const gradients = [
+              'linear-gradient(135deg, #06b6d4, #3b82f6)',
+              'linear-gradient(135deg, #a855f7, #ec4899)',
+              'linear-gradient(135deg, #10b981, #14b8a6)',
+              'linear-gradient(135deg, #f97316, #ef4444)',
+              'linear-gradient(135deg, #3b82f6, #6366f1)',
+              'linear-gradient(135deg, #ec4899, #f43f5e)',
             ];
-            const colorSet = colors[index % colors.length];
+            const borderGradient = gradients[index % gradients.length];
             
             return (
               <div 
                 key={question.id} 
-                className="rounded-3xl p-[1.5px]"
+                className="rounded-3xl p-[2px] transition-all duration-300 hover:scale-105"
                 style={{
-                  background: `linear-gradient(135deg, ${
-                    colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.6), rgba(6,182,212,0.3)' : 
-                    colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.6), rgba(168,85,247,0.3)' : 
-                    colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.6), rgba(20,184,166,0.3)' : 
-                    colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.6), rgba(239,68,68,0.3)' : 
-                    colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.6), rgba(99,102,241,0.3)' : 
-                    'rgba(236,72,153,0.6), rgba(236,72,153,0.3)'
-                  })`
+                  background: borderGradient
                 }}
               >
-                <div 
-                  className="rounded-[calc(1.5rem-1.5px)] overflow-hidden"
-                  style={{ backgroundColor: 'transparent' }}
-                >
-                {/* Oval colored title section - 15% of card */}
-                <div className="relative">
-                  <div className={`relative h-20 bg-gradient-to-br ${colorSet.gradient} rounded-b-[3rem] flex items-center justify-center px-6`}>
+                <div className="rounded-[calc(1.5rem-2px)] overflow-hidden bg-slate-900/80 backdrop-blur-sm">
+                  {/* Colored header section */}
+                  <div 
+                    className="h-20 flex items-center justify-center px-6"
+                    style={{
+                      background: borderGradient
+                    }}
+                  >
                     <CardTitle className="text-white text-base font-bold text-center leading-tight">
                       {question.title}
                     </CardTitle>
                   </div>
-                  {/* Small blur below header */}
-                  <div className={`absolute top-16 left-0 right-0 h-8 bg-gradient-to-b ${colorSet.gradient} opacity-20 blur-lg`}></div>
-                </div>
                 
                 {/* Card content */}
                 <CardHeader className="pt-6">
