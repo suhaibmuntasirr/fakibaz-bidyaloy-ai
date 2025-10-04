@@ -476,12 +476,12 @@ const Notes = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <Card key={note.id} className="relative bg-transparent backdrop-blur-xl hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl"
+              <Card key={note.id} className="relative overflow-hidden rounded-3xl"
                 style={{
+                  background: 'transparent',
                   border: '2px solid transparent',
                   borderRadius: '24px',
-                  backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0)), 
-                    linear-gradient(to bottom, rgba(255,255,255,0.8), ${
+                  backgroundImage: `linear-gradient(to bottom, rgba(255,255,255,0.8), ${
                     colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.6)' : 
                     colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.6)' : 
                     colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.6)' : 
@@ -490,7 +490,10 @@ const Notes = () => {
                     'rgba(236,72,153,0.6)'
                   })`,
                   backgroundOrigin: 'border-box',
-                  backgroundClip: 'padding-box, border-box'
+                  backgroundClip: 'border-box',
+                  WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+                  WebkitMaskComposite: 'xor',
+                  maskComposite: 'exclude'
                 }}
               >
                 {/* Top colored oval section with icon and glowing blur effect */}
