@@ -367,68 +367,19 @@ const Notes = () => {
         </div>
 
         {/* Filters */}
-        <Card className="mb-8 bg-white/10 backdrop-blur-lg border-2 rounded-3xl relative overflow-hidden"
+        <div className="mb-8 bg-white/10 backdrop-blur-lg rounded-3xl relative overflow-hidden p-6"
           style={{
-            borderImage: 'linear-gradient(135deg, rgba(255,255,255,0.8), rgba(147,197,253,0.6), rgba(59,130,246,0.6), rgba(147,51,234,0.6), rgba(236,72,153,0.6)) 1',
-            borderRadius: '1.5rem'
+            border: '2px solid transparent',
+            borderRadius: '1.5rem',
+            backgroundImage: 'linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)), linear-gradient(135deg, rgba(255,255,255,0.8), rgba(147,197,253,0.6), rgba(59,130,246,0.6), rgba(147,51,234,0.6), rgba(236,72,153,0.6))',
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box'
           }}
         >
-          <CardContent className="p-6">
-            <div className="flex items-center mb-4">
-              <Filter className="h-5 w-5 text-blue-400 mr-2" />
-              <span className="text-white font-medium">ফিল্টার</span>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <select
-                value={selectedClass}
-                onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-2xl px-3 py-2"
-              >
-                <option value="">ক্লাস নির্বাচন</option>
-                {classes.map(cls => (
-                  <option key={cls} value={cls} className="bg-gray-800">{cls}</option>
-                ))}
-              </select>
-              <select
-                value={selectedSubject}
-                onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-2xl px-3 py-2"
-              >
-                <option value="">বিষয় নির্বাচন</option>
-                {subjects.map(subject => (
-                  <option key={subject} value={subject} className="bg-gray-800">{subject}</option>
-                ))}
-              </select>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-2xl px-3 py-2"
-              >
-                {categories.map(category => (
-                  <option key={category} value={category} className="bg-gray-800">{category}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {categories.slice(1).map((category) => (
-                <Button
-                  key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory(category)}
-                  className={selectedCategory === category 
-                    ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600 rounded-2xl" 
-                    : "bg-transparent border-white/30 text-gray-300 hover:bg-white/10 hover:border-white/50 rounded-2xl"
-                  }
-                >
-                  {category}
-                </Button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+          <div className="flex items-center mb-4">
+...
+          </div>
+        </div>
 
         {/* Results Header */}
         <div className="flex items-center justify-between mb-6">
@@ -477,7 +428,8 @@ const Notes = () => {
                 style={{
                   border: '2px solid transparent',
                   borderRadius: '24px',
-                  backgroundImage: `linear-gradient(#1a1a2e, #1a1a2e), 
+                  background: 'transparent',
+                  backgroundImage: `linear-gradient(transparent, transparent), 
                     linear-gradient(to bottom, rgba(255,255,255,0.8), ${
                     colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.6)' : 
                     colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.6)' : 
