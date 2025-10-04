@@ -72,7 +72,7 @@ const Auth = () => {
           {/* Left Side - Features */}
           <div className="space-y-8">
             <div className="text-center lg:text-left">
-              <h1 className="text-4xl font-bold text-white mb-4">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
                 ফাকিবাজে স্বাগতম
               </h1>
               <p className="text-gray-300 text-lg mb-8">
@@ -80,7 +80,7 @@ const Auth = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {features.map((feature, index) => (
                 <Card key={index} className={`bg-gradient-to-br ${
                   index === 0 ? 'from-black/40 to-blue-900/30' :
@@ -89,7 +89,10 @@ const Auth = () => {
                   index === 3 ? 'from-black/40 to-purple-900/30' :
                   index === 4 ? 'from-black/40 to-red-900/30' :
                   'from-black/40 to-cyan-900/30'
-                } backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all duration-300`}>
+                } backdrop-blur-lg border-2 border-transparent bg-clip-padding relative
+                  before:absolute before:inset-0 before:-z-10 before:rounded-lg before:p-[2px]
+                  before:bg-gradient-to-r before:from-white before:via-blue-400 before:via-blue-600 before:via-purple-600 before:via-pink-500 before:to-pink-400
+                  hover:border-white/20 transition-all duration-300`}>
                   <CardContent className="p-6 text-center">
                     <div className="mb-4 flex justify-center">
                       {feature.icon}
@@ -131,9 +134,11 @@ const Auth = () => {
 
           {/* Right Side - Auth Forms */}
           <div className="flex justify-center">
-            <Card className="w-full max-w-md bg-black/20 backdrop-blur-xl border border-white/20 shadow-2xl">
+            <Card className="w-full max-w-md bg-transparent backdrop-blur-xl border-2 border-transparent bg-clip-padding relative shadow-2xl
+              before:absolute before:inset-0 before:-z-10 before:rounded-lg before:p-[2px]
+              before:bg-gradient-to-r before:from-white before:via-blue-400 before:via-blue-600 before:via-purple-600 before:via-pink-500 before:to-pink-400">
               <CardHeader className="text-center">
-                <CardTitle className="text-2xl font-bold text-white">
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                   {activeTab === 'login' ? 'লগইন করুন' : 'নতুন অ্যাকাউন্ট তৈরি করুন'}
                 </CardTitle>
                 <p className="text-gray-300">

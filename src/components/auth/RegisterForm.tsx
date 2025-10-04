@@ -80,12 +80,7 @@ const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
   };
 
   return (
-    <Card className="bg-white/10 backdrop-blur-lg border-white/20">
-      <CardHeader>
-        <CardTitle className="text-white text-center">নতুন অ্যাকাউন্ট তৈরি করুন</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <Label htmlFor="fullName" className="text-white">পূর্ণ নাম *</Label>
             <Input
@@ -175,23 +170,21 @@ const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
             </div>
           </div>
 
-          <Button 
-            type="submit" 
-            className="w-full bg-blue-600 hover:bg-blue-700"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                অ্যাকাউন্ট তৈরি হচ্ছে...
-              </>
-            ) : (
-              'অ্যাকাউন্ট তৈরি করুন'
-            )}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+        <Button 
+          type="submit" 
+          className="w-full bg-gradient-to-r from-blue-400 via-blue-600 via-purple-600 via-purple-400 to-pink-500 hover:opacity-90 transition-opacity text-white"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              অ্যাকাউন্ট তৈরি হচ্ছে...
+            </>
+          ) : (
+            'অ্যাকাউন্ট তৈরি করুন'
+          )}
+        </Button>
+    </form>
   );
 };
 

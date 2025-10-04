@@ -308,7 +308,9 @@ const QuestionBank = () => {
         </div>
 
         {/* Search and Filters */}
-        <Card className="mb-8 bg-white/10 backdrop-blur-lg border-white/20">
+        <Card className="mb-8 bg-white/10 backdrop-blur-lg rounded-3xl border-2 border-transparent bg-clip-padding relative
+          before:absolute before:inset-0 before:-z-10 before:rounded-3xl before:p-[2px]
+          before:bg-gradient-to-r before:from-white before:via-blue-400 before:via-blue-600 before:via-purple-600 before:via-pink-500 before:to-pink-400">
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <div className="relative md:col-span-2 lg:col-span-2">
@@ -372,24 +374,22 @@ const QuestionBank = () => {
                   <option key={type.value} value={type.value} className="bg-gray-800">{type.label}</option>
                 ))}
               </select>
-              <div className="text-white text-sm flex items-center">
-                <School className="mr-1 h-3 w-3" />
-                মোট {filteredQuestions.length} টি প্রশ্নপত্র পাওয়া গেছে
+              <div className="flex items-center justify-between">
+                <div className="text-white text-sm flex items-center">
+                  <School className="mr-1 h-3 w-3" />
+                  মোট {filteredQuestions.length} টি প্রশ্নপত্র পাওয়া গেছে
+                </div>
+                <Button
+                  onClick={() => setShowUpload(true)}
+                  className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700"
+                >
+                  <Upload className="mr-2 h-4 w-4" />
+                  প্রশ্নপত্র আপলোড করুন
+                </Button>
               </div>
             </div>
           </CardContent>
         </Card>
-
-        {/* Upload Button */}
-        <div className="mb-8 text-center">
-          <Button
-            onClick={() => setShowUpload(true)}
-            className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700"
-          >
-            <Upload className="mr-2 h-4 w-4" />
-            প্রশ্নপত্র আপলোড করুন
-          </Button>
-        </div>
 
         {/* Questions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

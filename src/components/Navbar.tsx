@@ -23,9 +23,9 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-black/30 backdrop-blur-lg border-b border-white/10 sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+    <nav className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl mx-4 mt-4 sticky top-4 z-50 shadow-xl">
+      <div className="container mx-auto px-6">
+        <div className="flex items-center justify-between h-20">
           {/* Logo and Brand */}
           <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
             <img 
@@ -36,8 +36,8 @@ const Navbar = () => {
             <span className="text-xl font-bold text-white">Fakibaz</span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Desktop Navigation - Center Aligned */}
+          <div className="hidden md:flex items-center justify-center flex-1 space-x-12">
             <Link 
               to="/" 
               className="text-white hover:text-blue-400 transition-colors flex items-center"

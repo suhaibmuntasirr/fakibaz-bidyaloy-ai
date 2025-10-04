@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { MessageCircle, Heart, Share2, Users, Plus, Search, Clock, HelpCircle, Lightbulb, Target, Send, Image, X, Copy, MessageSquare, Facebook, Twitter } from 'lucide-react';
+import { MessageCircle, Heart, Share2, Users, Plus, Search, Clock, HelpCircle, Lightbulb, Target, Send, Image, X, Copy, MessageSquare, Facebook, Twitter, Upload } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import TrendingTopics from '@/components/TrendingTopics';
@@ -376,10 +376,10 @@ const Community = () => {
                 </Card>
 
                 {/* Create Post */}
-                <Card className="bg-white/10 backdrop-blur-lg border border-white/20">
+                <Card className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl">
                   <CardHeader>
                     <CardTitle className="text-white flex items-center">
-                      <Plus className="mr-2 h-5 w-5" />
+                      <Upload className="mr-2 h-5 w-5" />
                       নতুন পোস্ট লিখুন
                     </CardTitle>
                   </CardHeader>
@@ -452,7 +452,7 @@ const Community = () => {
                                   : [...prev, tag]
                               );
                             }}
-                            className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                            className="rounded-full bg-white/10 border-white/20 text-white hover:bg-white/20 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600"
                           >
                             {tag}
                           </Button>
@@ -462,7 +462,7 @@ const Community = () => {
 
                     <Button
                       onClick={handleCreatePost}
-                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                      className="w-full bg-gradient-to-r from-blue-400 via-blue-600 via-purple-600 via-purple-400 to-pink-500 hover:opacity-90 transition-opacity"
                     >
                       পোস্ট প্রকাশ করুন
                     </Button>
@@ -472,7 +472,7 @@ const Community = () => {
                 {/* Posts List */}
                 <div className="space-y-4">
                   {filteredPosts.map((post) => (
-                    <Card key={post.id} className="bg-white/10 backdrop-blur-lg border border-white/20 hover:border-white/30 transition-all duration-300">
+                    <Card key={post.id} className="bg-white/10 backdrop-blur-lg border border-white/20 hover:border-white/30 transition-all duration-300 rounded-3xl">
                       <CardContent className="p-6">
                         <div className="flex items-start space-x-4">
                           <Avatar className="h-12 w-12">
@@ -486,14 +486,18 @@ const Community = () => {
                             <div className="flex items-center justify-between">
                               <div>
                                 <h4 className="text-white font-semibold">{post.author.name}</h4>
-                                <p className="text-gray-400 text-sm">
-                                  {post.author.class} • {post.author.school}
-                                </p>
+                                <div className="flex items-center space-x-2">
+                                  <Badge className="bg-blue-600/20 text-blue-300 border-blue-400/20 text-xs">
+                                    {post.author.class}
+                                  </Badge>
+                                  <Badge className="bg-gray-600/20 text-gray-300 border-gray-400/20 text-xs flex items-center">
+                                    <Clock className="h-3 w-3 mr-1" />
+                                    {Math.floor((Date.now() - post.timestamp.getTime()) / (1000 * 60 * 60))}h ago
+                                  </Badge>
+                                </div>
                               </div>
                               <div className="flex items-center text-gray-400 text-sm">
                                 {getPostIcon(post.type)}
-                                <Clock className="h-3 w-3 ml-2 mr-1" />
-                                {Math.floor((Date.now() - post.timestamp.getTime()) / (1000 * 60 * 60))}h ago
                               </div>
                             </div>
 
@@ -678,8 +682,14 @@ const Community = () => {
 
           {/* Right Sidebar */}
           <div className="space-y-6">
-            <CommunityStats />
-            <TrendingTopics />
+            <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-6">
+              <h3 className="text-xl font-bold text-white mb-4">কমিউনিটি পরিসংখ্যান</h3>
+              <CommunityStats />
+            </div>
+            <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-6">
+              <h3 className="text-xl font-bold text-white mb-4">ট্রেন্ডিং টপিক</h3>
+              <TrendingTopics />
+            </div>
           </div>
         </div>
       </div>

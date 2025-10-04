@@ -49,12 +49,7 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
   };
 
   return (
-    <Card className="bg-white/10 backdrop-blur-lg border-white/20">
-      <CardHeader>
-        <CardTitle className="text-white text-center">লগইন করুন</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <Label htmlFor="email" className="text-white">ইমেইল ঠিকানা</Label>
             <Input
@@ -89,23 +84,21 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
             )}
           </div>
 
-          <Button 
-            type="submit" 
-            className="w-full bg-blue-600 hover:bg-blue-700"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                লগইন হচ্ছে...
-              </>
-            ) : (
-              'লগইন করুন'
-            )}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+        <Button 
+          type="submit" 
+          className="w-full bg-gradient-to-r from-blue-400 via-blue-600 via-purple-600 via-purple-400 to-pink-500 hover:opacity-90 transition-opacity text-white"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              লগইন হচ্ছে...
+            </>
+          ) : (
+            'লগইন করুন'
+          )}
+        </Button>
+    </form>
   );
 };
 
