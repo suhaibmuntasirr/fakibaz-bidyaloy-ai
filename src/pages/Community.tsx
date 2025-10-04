@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { MessageCircle, Heart, Share2, Users, Plus, Search, Clock, HelpCircle, Lightbulb, Target, Send, Image, X, Copy, MessageSquare, Facebook, Twitter, Upload } from 'lucide-react';
+import { MessageCircle, Heart, Share2, Users, Plus, Search, Clock, HelpCircle, Lightbulb, Target, Send, Image, X, Copy, MessageSquare, Facebook, Twitter } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import TrendingTopics from '@/components/TrendingTopics';
@@ -334,7 +334,7 @@ const Community = () => {
       
       <Navbar />
       
-      <div className="container mx-auto px-4 pt-28 pb-8">
+      <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
             ছাত্রছাত্রী কমিউনিটি
@@ -376,10 +376,10 @@ const Community = () => {
                 </Card>
 
                 {/* Create Post */}
-                <Card className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl">
+                <Card className="bg-white/10 backdrop-blur-lg border border-white/20">
                   <CardHeader>
-                    <CardTitle className="text-white flex items-center text-left">
-                      <Upload className="mr-2 h-5 w-5" />
+                    <CardTitle className="text-white flex items-center">
+                      <Plus className="mr-2 h-5 w-5" />
                       নতুন পোস্ট লিখুন
                     </CardTitle>
                   </CardHeader>
@@ -438,7 +438,7 @@ const Community = () => {
                     </div>
                     
                     <div className="space-y-2">
-                      <p className="text-sm text-gray-300">দ্রুত ট্যাগ:</p>
+                      <p className="text-sm text-gray-300">ট্যাগ যোগ করুন:</p>
                       <div className="flex flex-wrap gap-2">
                         {postTags.map((tag) => (
                           <Button
@@ -452,10 +452,7 @@ const Community = () => {
                                   : [...prev, tag]
                               );
                             }}
-                            className={selectedTags.includes(tag) 
-                              ? "bg-gradient-to-r from-blue-600 to-purple-600 border-0 text-white rounded-full" 
-                              : "bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-full"
-                            }
+                            className="bg-white/10 border-white/20 text-white hover:bg-white/20"
                           >
                             {tag}
                           </Button>
@@ -465,7 +462,7 @@ const Community = () => {
 
                     <Button
                       onClick={handleCreatePost}
-                      className="w-full bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 hover:opacity-90 text-white rounded-lg"
+                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                     >
                       পোস্ট প্রকাশ করুন
                     </Button>
@@ -475,7 +472,7 @@ const Community = () => {
                 {/* Posts List */}
                 <div className="space-y-4">
                   {filteredPosts.map((post) => (
-                    <Card key={post.id} className="bg-white/10 backdrop-blur-lg border border-white/20 hover:border-white/30 transition-all duration-300 rounded-2xl">
+                    <Card key={post.id} className="bg-white/10 backdrop-blur-lg border border-white/20 hover:border-white/30 transition-all duration-300">
                       <CardContent className="p-6">
                         <div className="flex items-start space-x-4">
                           <Avatar className="h-12 w-12">
@@ -681,22 +678,8 @@ const Community = () => {
 
           {/* Right Sidebar */}
           <div className="space-y-6">
-            <Card className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-white">কমিউনিটি পরিসংখ্যান</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CommunityStats />
-              </CardContent>
-            </Card>
-            <Card className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-white">ট্রেন্ডিং টপিক</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <TrendingTopics />
-              </CardContent>
-            </Card>
+            <CommunityStats />
+            <TrendingTopics />
           </div>
         </div>
       </div>

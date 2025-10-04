@@ -80,10 +80,17 @@ const Auth = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {features.map((feature, index) => (
-                <Card key={index} className="bg-transparent backdrop-blur-lg border-0 bg-gradient-to-r from-white/5 via-blue-500/10 via-purple-500/10 to-pink-500/10 p-[1px] hover:p-[2px] transition-all duration-300 rounded-2xl">
-                  <CardContent className="p-6 text-center bg-transparent rounded-2xl">
+                <Card key={index} className={`bg-gradient-to-br ${
+                  index === 0 ? 'from-black/40 to-blue-900/30' :
+                  index === 1 ? 'from-black/40 to-green-900/30' :
+                  index === 2 ? 'from-black/40 to-yellow-900/30' :
+                  index === 3 ? 'from-black/40 to-purple-900/30' :
+                  index === 4 ? 'from-black/40 to-red-900/30' :
+                  'from-black/40 to-cyan-900/30'
+                } backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all duration-300`}>
+                  <CardContent className="p-6 text-center">
                     <div className="mb-4 flex justify-center">
                       {feature.icon}
                     </div>
@@ -98,24 +105,35 @@ const Auth = () => {
               ))}
             </div>
 
-            {/* Welcome Message */}
-            <Card className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl">
-              <CardContent className="p-6 text-center">
-                <h3 className="text-white font-bold text-2xl mb-2 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  ফাকিবাজে স্বাগতম
+            {/* Stats Section */}
+            <Card className="bg-gradient-to-br from-black/40 to-indigo-900/30 backdrop-blur-lg border border-white/10">
+              <CardContent className="p-6">
+                <h3 className="text-white font-bold text-xl mb-4 text-center">
+                  আমাদের কমিউনিটি
                 </h3>
-                <p className="text-gray-300 text-base">
-                  বাংলাদেশের সবচেয়ে বড় শিক্ষা প্ল্যাটফর্মে যোগ দিন
-                </p>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-400 mb-1">১০,০০০+</div>
+                    <div className="text-gray-300 text-sm">শিক্ষার্থী</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-400 mb-1">৫০,০০০+</div>
+                    <div className="text-gray-300 text-sm">শেয়ারকৃত নোট</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-purple-400 mb-1">২৪/৭</div>
+                    <div className="text-gray-300 text-sm">AI সহায়তা</div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
 
           {/* Right Side - Auth Forms */}
           <div className="flex justify-center">
-            <Card className="w-full max-w-md bg-black/20 backdrop-blur-xl border border-white/20 shadow-2xl rounded-2xl">
+            <Card className="w-full max-w-md bg-black/20 backdrop-blur-xl border border-white/20 shadow-2xl">
               <CardHeader className="text-center">
-                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                <CardTitle className="text-2xl font-bold text-white">
                   {activeTab === 'login' ? 'লগইন করুন' : 'নতুন অ্যাকাউন্ট তৈরি করুন'}
                 </CardTitle>
                 <p className="text-gray-300">

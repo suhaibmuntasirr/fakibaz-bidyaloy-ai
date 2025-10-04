@@ -16,8 +16,7 @@ import {
   Users,
   X,
   Play,
-  School,
-  Plus
+  School
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -297,7 +296,7 @@ const QuestionBank = () => {
       
       <Navbar />
       
-      <div className="container mx-auto px-4 pt-28 pb-8">
+      <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
@@ -309,8 +308,8 @@ const QuestionBank = () => {
         </div>
 
         {/* Search and Filters */}
-        <div className="mb-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-[1px]">
-          <div className="p-6 bg-transparent rounded-2xl">
+        <Card className="mb-8 bg-white/10 backdrop-blur-lg border-white/20">
+          <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <div className="relative md:col-span-2 lg:col-span-2">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -318,13 +317,13 @@ const QuestionBank = () => {
                   placeholder="প্রশ্নপত্র খুঁজুন..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-gray-600/30 border-0 text-white placeholder:text-gray-400 rounded-full"
+                  className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                 />
               </div>
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-gray-600/30 border-0 text-white rounded-full px-4 py-2"
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
               >
                 <option value="">সব ক্লাস</option>
                 {classes.map(cls => (
@@ -334,7 +333,7 @@ const QuestionBank = () => {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-gray-600/30 border-0 text-white rounded-full px-4 py-2"
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
               >
                 <option value="">সব বিষয়</option>
                 {subjects.map(subject => (
@@ -344,7 +343,7 @@ const QuestionBank = () => {
               <select
                 value={selectedDistrict}
                 onChange={(e) => setSelectedDistrict(e.target.value)}
-                className="bg-gray-600/30 border-0 text-white rounded-full px-4 py-2"
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
               >
                 <option value="">সব জেলা</option>
                 {districts.map(district => (
@@ -354,7 +353,7 @@ const QuestionBank = () => {
               <select
                 value={selectedSchool}
                 onChange={(e) => setSelectedSchool(e.target.value)}
-                className="bg-gray-600/30 border-0 text-white rounded-full px-4 py-2"
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
               >
                 <option value="">সব প্রতিষ্ঠান</option>
                 {schools.map(school => (
@@ -366,107 +365,167 @@ const QuestionBank = () => {
               <select
                 value={selectedExamType}
                 onChange={(e) => setSelectedExamType(e.target.value)}
-                className="bg-gray-600/30 border-0 text-white rounded-full px-4 py-2"
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
               >
                 <option value="">সব ধরণ</option>
                 {examTypes.map(type => (
                   <option key={type.value} value={type.value} className="bg-gray-800">{type.label}</option>
                 ))}
               </select>
-              <div className="flex items-center justify-between gap-4">
-                <div className="text-white text-sm flex items-center">
-                  <School className="mr-1 h-3 w-3" />
-                  মোট {filteredQuestions.length} টি প্রশ্নপত্র পাওয়া গেছে
-                </div>
-                <Button
-                  onClick={() => setShowUpload(true)}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  প্রশ্নপত্র আপলোড করুন
-                </Button>
+              <div className="text-white text-sm flex items-center">
+                <School className="mr-1 h-3 w-3" />
+                মোট {filteredQuestions.length} টি প্রশ্নপত্র পাওয়া গেছে
               </div>
             </div>
-          </div>
+          </CardContent>
+        </Card>
+
+        {/* Upload Button */}
+        <div className="mb-8 text-center">
+          <Button
+            onClick={() => setShowUpload(true)}
+            className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700"
+          >
+            <Upload className="mr-2 h-4 w-4" />
+            প্রশ্নপত্র আপলোড করুন
+          </Button>
         </div>
 
         {/* Questions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredQuestions.map((question) => (
-            <Card key={question.id} className="bg-card/50 backdrop-blur border-border hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex items-start justify-between mb-2">
-                  <CardTitle className="text-lg flex-1">{question.title}</CardTitle>
-                  {question.verified && (
-                    <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
-                      ✓ Verified
+          {filteredQuestions.map((question, index) => {
+            // Color palette for oval sections and borders
+            const colors = [
+              { gradient: 'from-cyan-500 to-blue-600', border: 'border-cyan-500/50' },
+              { gradient: 'from-purple-500 to-pink-600', border: 'border-purple-500/50' },
+              { gradient: 'from-green-500 to-teal-600', border: 'border-green-500/50' },
+              { gradient: 'from-orange-500 to-red-600', border: 'border-orange-500/50' },
+              { gradient: 'from-blue-500 to-indigo-600', border: 'border-blue-500/50' },
+              { gradient: 'from-pink-500 to-rose-600', border: 'border-pink-500/50' },
+            ];
+            const colorSet = colors[index % colors.length];
+            
+            return (
+              <Card key={question.id} className={`bg-transparent backdrop-blur-xl border-2 ${colorSet.border} hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl`}>
+                {/* Oval colored title section - 15% of card with blur below */}
+                <div className="relative">
+                  <div className={`relative h-20 bg-gradient-to-br ${colorSet.gradient} rounded-b-[3rem] flex items-center justify-center px-6`}>
+                    <CardTitle className="text-white text-base font-bold text-center leading-tight">
+                      {question.title}
+                    </CardTitle>
+                  </div>
+                  {/* Blur effect below oval */}
+                  <div className={`absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-b ${colorSet.gradient} opacity-30 blur-xl`}></div>
+                </div>
+                
+                {/* Card content */}
+                <CardHeader className="pt-6">
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    <Badge className="bg-blue-600/20 text-blue-300 border-blue-400/20">{question.class}</Badge>
+                    <Badge className="bg-green-600/20 text-green-300 border-green-400/20">{question.subject}</Badge>
+                    <Badge className="bg-purple-600/20 text-purple-300 border-purple-400/20">
+                      {getExamTypeLabel(question.examType)}
                     </Badge>
-                  )}
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">{question.class}</Badge>
-                  <Badge variant="secondary">{question.subject}</Badge>
-                  <Badge variant="outline">{getExamTypeLabel(question.examType)}</Badge>
-                </div>
+                    {question.verified && (
+                      <Badge className="bg-yellow-600/20 text-yellow-300 border-yellow-400/20">✓ যাচাইকৃত</Badge>
+                    )}
+                  </div>
+                  <p className="text-gray-300 text-sm flex items-center">
+                    <School className="mr-1 h-3 w-3" />
+                    {question.school}
+                  </p>
+                <p className="text-gray-400 text-xs">{question.district} • {question.year}</p>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-2 text-sm">
-                  <School className="h-4 w-4 text-muted-foreground" />
-                  <span className="font-medium truncate">{question.school}</span>
+              
+              <CardContent>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-2">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-blue-600 text-white text-xs">
+                        {question.author.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="text-white text-sm font-medium">{question.author}</p>
+                      <p className="text-gray-400 text-xs">
+                        {Math.floor((Date.now() - question.uploadDate.getTime()) / (1000 * 60 * 60 * 24))} দিন আগে
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-gray-400 text-xs">
+                    {(question.fileSize / 1024 / 1024).toFixed(1)} MB
+                  </p>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    {question.duration}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Award className="h-3 w-3" />
-                    {question.marks} নম্বর
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Download className="h-3 w-3" />
-                    {question.downloads}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback>{question.author.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{question.author}</p>
-                    <p className="text-xs text-muted-foreground">{question.year}</p>
+                {/* Exam Info */}
+                <div className="bg-black/20 p-3 rounded-lg mb-4">
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="flex items-center text-gray-300">
+                      <Clock className="h-3 w-3 mr-1" />
+                      <span>{question.duration}</span>
+                    </div>
+                    <div className="flex items-center text-gray-300">
+                      <Award className="h-3 w-3 mr-1" />
+                      <span>{question.marks} নম্বর</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex gap-2">
+                {/* Tags */}
+                <div className="flex flex-wrap gap-1 mb-4">
+                  {question.tags.map((tag, index) => (
+                    <Badge key={index} variant="outline" className="text-gray-400 border-gray-600 text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+
+                {/* Stats */}
+                <div className="flex items-center justify-between text-sm text-gray-400 mb-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-1">
+                      <Download className="h-4 w-4" />
+                      <span>{question.downloads}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <Users className="h-4 w-4" />
+                      <span>{question.likes}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="grid grid-cols-1 gap-2">
                   <Button
                     onClick={() => handleStartExam(question)}
-                    size="sm"
-                    className="flex-1"
+                    className="w-full bg-gradient-to-r from-red-500 via-pink-500 via-purple-500 via-blue-600 to-cyan-400 hover:opacity-90 transition-opacity rounded-full"
                   >
-                    <Play className="h-4 w-4 mr-1" />
-                    পরীক্ষা শুরু করুন
+                    <Play className="mr-2 h-4 w-4" />
+                    পরীক্ষা দিন
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handlePreview(question)}
-                  >
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDownload(question)}
-                  >
-                    <Download className="h-4 w-4" />
-                  </Button>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      onClick={() => handlePreview(question)}
+                      variant="outline"
+                      className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                    >
+                      <Eye className="mr-2 h-4 w-4" />
+                      প্রিভিউ
+                    </Button>
+                    <Button
+                      onClick={() => handleDownload(question)}
+                      variant="outline"
+                      className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      ডাউনলোড
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
         </div>
 
         {filteredQuestions.length === 0 && (

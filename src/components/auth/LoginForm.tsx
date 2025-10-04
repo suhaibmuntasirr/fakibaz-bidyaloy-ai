@@ -49,11 +49,11 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
   };
 
   return (
-    <Card className="bg-transparent backdrop-blur-lg border-0 bg-gradient-to-r from-white/5 via-blue-500/10 via-purple-500/10 to-pink-500/10 p-[1px] rounded-2xl">
-      <CardHeader className="bg-transparent">
-        <CardTitle className="text-white text-center bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">লগইন করুন</CardTitle>
+    <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+      <CardHeader>
+        <CardTitle className="text-white text-center">লগইন করুন</CardTitle>
       </CardHeader>
-      <CardContent className="bg-transparent">
+      <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <Label htmlFor="email" className="text-white">ইমেইল ঠিকানা</Label>
@@ -67,7 +67,7 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
                   message: 'সঠিক ইমেইল ঠিকানা দিন'
                 }
               })}
-              className="bg-transparent border-0 bg-gradient-to-r from-white/5 via-blue-500/10 via-purple-500/10 to-pink-500/10 p-[1px] rounded-lg"
+              className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
               placeholder="আপনার ইমেইল লিখুন"
             />
             {errors.email && (
@@ -81,7 +81,7 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
               id="password"
               type="password"
               {...register('password', { required: 'পাসওয়ার্ড প্রয়োজন' })}
-              className="bg-transparent border-0 bg-gradient-to-r from-white/5 via-blue-500/10 via-purple-500/10 to-pink-500/10 p-[1px] rounded-lg text-white placeholder:text-gray-400"
+              className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
               placeholder="আপনার পাসওয়ার্ড লিখুন"
             />
             {errors.password && (
@@ -91,7 +91,7 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
 
           <Button 
             type="submit" 
-            className={`w-full ${isLoading ? 'bg-gradient-to-r from-blue-400 via-blue-600 via-purple-600 via-purple-400 to-pink-500' : 'bg-blue-600 hover:bg-gradient-to-r hover:from-blue-400 hover:via-blue-600 hover:via-purple-600 hover:via-purple-400 hover:to-pink-500'} text-white transition-all duration-300`}
+            className="w-full bg-blue-600 hover:bg-blue-700"
             disabled={isLoading}
           >
             {isLoading ? (

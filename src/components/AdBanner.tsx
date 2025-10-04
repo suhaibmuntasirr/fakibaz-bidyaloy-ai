@@ -14,7 +14,7 @@ const AdBanner: React.FC<AdBannerProps> = ({ imageUrl, altText, onClick }) => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed top-24 left-0 right-0 z-40 w-full bg-black overflow-hidden">
+    <div className="relative w-full bg-black overflow-hidden">
       <div className="w-full">
         <div 
           className="relative cursor-pointer"
