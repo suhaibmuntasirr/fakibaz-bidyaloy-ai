@@ -38,28 +38,28 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-6">
             <Link 
               to="/" 
-              className="text-gray-300 hover:text-white transition-colors flex items-center text-sm font-medium"
+              className="text-gray-300 hover:text-white transition-colors flex items-center text-base font-medium"
             >
               <Home className="mr-1 h-4 w-4" />
               হোম
             </Link>
             <Link 
               to="/notes" 
-              className="text-gray-300 hover:text-white transition-colors flex items-center text-sm font-medium"
+              className="text-gray-300 hover:text-white transition-colors flex items-center text-base font-medium"
             >
               <BookOpen className="mr-1 h-4 w-4" />
               নোট
             </Link>
             <Link 
               to="/question-bank" 
-              className="text-gray-300 hover:text-white transition-colors flex items-center text-sm font-medium"
+              className="text-gray-300 hover:text-white transition-colors flex items-center text-base font-medium"
             >
               <FileText className="mr-1 h-4 w-4" />
               প্রশ্ন ব্যাংক
             </Link>
             <Link 
               to="/community" 
-              className="text-gray-300 hover:text-white transition-colors flex items-center text-sm font-medium"
+              className="text-gray-300 hover:text-white transition-colors flex items-center text-base font-medium"
             >
               <Users className="mr-1 h-4 w-4" />
               কমিউনিটি

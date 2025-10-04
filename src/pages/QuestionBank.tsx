@@ -309,9 +309,10 @@ const QuestionBank = () => {
         </div>
 
         {/* Search and Filters */}
-        <Card className="mb-8 bg-white/10 backdrop-blur-lg border-2 rounded-3xl"
+        <Card className="mb-8 bg-white/10 backdrop-blur-lg border-2 rounded-3xl relative overflow-hidden"
           style={{
-            borderImage: 'linear-gradient(135deg, rgba(255,255,255,0.8), rgba(147,197,253,0.6), rgba(59,130,246,0.6), rgba(147,51,234,0.6), rgba(236,72,153,0.6)) 1'
+            borderImage: 'linear-gradient(135deg, rgba(255,255,255,0.8), rgba(147,197,253,0.6), rgba(59,130,246,0.6), rgba(147,51,234,0.6), rgba(236,72,153,0.6)) 1',
+            borderRadius: '1.5rem'
           }}
         >
           <CardContent className="p-6">
@@ -409,7 +410,7 @@ const QuestionBank = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <Card key={question.id} className="relative bg-transparent backdrop-blur-xl hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl"
+              <Card key={question.id} className="relative backdrop-blur-xl hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl"
                 style={{
                   border: '2px solid transparent',
                   borderRadius: '24px',

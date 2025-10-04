@@ -167,7 +167,7 @@ const StudyGroups = () => {
   };
 
   return (
-    <Card className="bg-black/20 backdrop-blur-lg border border-white/10">
+    <Card className="bg-gray-800/30 backdrop-blur-lg border border-white/10 rounded-3xl">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-white flex items-center">
