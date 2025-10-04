@@ -23,47 +23,46 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-black/30 backdrop-blur-lg border-b border-white/10 sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo and Brand */}
-          <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-auto">
+      <nav className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-full shadow-2xl px-6">
+        <div className="flex items-center justify-between h-14">
+          {/* Logo Only */}
+          <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
             <img 
               src="/lovable-uploads/48bd98a0-c7ee-4b45-adf1-cca6b79289b4.png" 
               alt="Fakibaz Logo"
-              className="w-8 h-8"
+              className="w-10 h-10"
             />
-            <span className="text-xl font-bold text-white">Fakibaz</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             <Link 
               to="/" 
-              className="text-white hover:text-blue-400 transition-colors flex items-center"
+              className="text-white hover:text-blue-400 transition-colors flex items-center text-base"
             >
-              <Home className="mr-1 h-4 w-4" />
+              <Home className="mr-1.5 h-5 w-5" />
               হোম
             </Link>
             <Link 
               to="/notes" 
-              className="text-white hover:text-blue-400 transition-colors flex items-center"
+              className="text-white hover:text-blue-400 transition-colors flex items-center text-base"
             >
-              <BookOpen className="mr-1 h-4 w-4" />
+              <BookOpen className="mr-1.5 h-5 w-5" />
               নোট
             </Link>
             <Link 
               to="/question-bank" 
-              className="text-white hover:text-blue-400 transition-colors flex items-center"
+              className="text-white hover:text-blue-400 transition-colors flex items-center text-base"
             >
-              <FileText className="mr-1 h-4 w-4" />
+              <FileText className="mr-1.5 h-5 w-5" />
               প্রশ্ন ব্যাংক
             </Link>
             <Link 
               to="/community" 
-              className="text-white hover:text-blue-400 transition-colors flex items-center"
+              className="text-white hover:text-blue-400 transition-colors flex items-center text-base"
             >
-              <Users className="mr-1 h-4 w-4" />
+              <Users className="mr-1.5 h-5 w-5" />
               কমিউনিটি
             </Link>
           </div>
@@ -157,10 +156,11 @@ const Navbar = () => {
             </Button>
           </div>
         </div>
+      </nav>
 
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-black/40 backdrop-blur-lg border-t border-white/10 py-4">
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-black/40 backdrop-blur-lg border border-white/10 rounded-2xl mt-2 py-4">
             <div className="flex flex-col space-y-4">
               <Link 
                 to="/" 
@@ -197,8 +197,7 @@ const Navbar = () => {
             </div>
           </div>
         )}
-      </div>
-    </nav>
+    </div>
   );
 };
 

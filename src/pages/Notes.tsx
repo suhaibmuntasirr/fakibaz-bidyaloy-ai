@@ -367,8 +367,8 @@ const Notes = () => {
         </div>
 
         {/* Filters */}
-        <Card className="mb-8 bg-white/10 backdrop-blur-lg border-white/20">
-          <CardContent className="p-6">
+        <Card className="mb-8 bg-transparent backdrop-blur-lg border-0 bg-gradient-to-r from-white/5 via-blue-500/10 via-purple-500/10 to-pink-500/10 p-[2px] rounded-xl">
+          <CardContent className="p-6 bg-transparent rounded-xl">
             <div className="flex items-center mb-4">
               <Filter className="h-5 w-5 text-blue-400 mr-2" />
               <span className="text-white font-medium">ফিল্টার</span>
@@ -378,7 +378,7 @@ const Notes = () => {
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-gray-600/30 border-0 text-white rounded-full px-4 py-2.5"
               >
                 <option value="">ক্লাস নির্বাচন</option>
                 {classes.map(cls => (
@@ -388,7 +388,7 @@ const Notes = () => {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-gray-600/30 border-0 text-white rounded-full px-4 py-2.5"
               >
                 <option value="">বিষয় নির্বাচন</option>
                 {subjects.map(subject => (
@@ -398,7 +398,7 @@ const Notes = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-gray-600/30 border-0 text-white rounded-full px-4 py-2.5"
               >
                 {categories.map(category => (
                   <option key={category} value={category} className="bg-gray-800">{category}</option>
@@ -468,21 +468,21 @@ const Notes = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <Card key={note.id} className={`bg-transparent backdrop-blur-xl border-2 ${colorSet.border} hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl`}>
-                {/* Top colored oval section with icon and blur effect */}
+              <Card key={note.id} className={`bg-transparent backdrop-blur-xl border-0 bg-gradient-to-r from-white/5 via-blue-500/10 via-purple-500/10 to-pink-500/10 p-[2px] hover:p-[3px] transition-all duration-300 overflow-hidden rounded-3xl`}>
+                {/* Top colored section - 15% height with blur effect below */}
                 <div className="relative">
-                  <div className={`h-24 bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl`}>
+                  <div className={`h-16 bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl`}>
                     <img 
                       src={bookIcon} 
                       alt="Book Icon" 
                       className="w-10 h-10 filter brightness-0 invert opacity-90"
                     />
                   </div>
-                  {/* Blur effect below oval */}
-                  <div className={`absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-b ${colorSet.gradient} opacity-30 blur-xl`}></div>
+                  {/* Soft glowing blur below the card header */}
+                  <div className={`absolute -bottom-6 left-0 right-0 h-12 bg-gradient-to-b ${colorSet.gradient} opacity-40 blur-2xl`}></div>
                 </div>
                 
-                <CardContent className="p-6 pt-8">
+                <CardContent className="p-6 pt-8 bg-transparent">
                   <div className="space-y-4">
                     {/* Title and Badges */}
                     <div>

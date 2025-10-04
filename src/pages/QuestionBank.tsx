@@ -308,8 +308,8 @@ const QuestionBank = () => {
         </div>
 
         {/* Search and Filters */}
-        <Card className="mb-8 bg-white/10 backdrop-blur-lg border-white/20">
-          <CardContent className="p-6">
+        <Card className="mb-8 bg-transparent backdrop-blur-lg border-0 bg-gradient-to-r from-white/5 via-blue-500/10 via-purple-500/10 to-pink-500/10 p-[2px] rounded-xl">
+          <CardContent className="p-6 bg-transparent rounded-xl">
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <div className="relative md:col-span-2 lg:col-span-2">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -317,13 +317,13 @@ const QuestionBank = () => {
                   placeholder="প্রশ্নপত্র খুঁজুন..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  className="pl-10 bg-gray-600/30 border-0 text-white placeholder:text-gray-400 rounded-full"
                 />
               </div>
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-gray-600/30 border-0 text-white rounded-full px-4 py-2"
               >
                 <option value="">সব ক্লাস</option>
                 {classes.map(cls => (
@@ -333,7 +333,7 @@ const QuestionBank = () => {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-gray-600/30 border-0 text-white rounded-full px-4 py-2"
               >
                 <option value="">সব বিষয়</option>
                 {subjects.map(subject => (
@@ -343,7 +343,7 @@ const QuestionBank = () => {
               <select
                 value={selectedDistrict}
                 onChange={(e) => setSelectedDistrict(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-gray-600/30 border-0 text-white rounded-full px-4 py-2"
               >
                 <option value="">সব জেলা</option>
                 {districts.map(district => (
@@ -353,7 +353,7 @@ const QuestionBank = () => {
               <select
                 value={selectedSchool}
                 onChange={(e) => setSelectedSchool(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-gray-600/30 border-0 text-white rounded-full px-4 py-2"
               >
                 <option value="">সব প্রতিষ্ঠান</option>
                 {schools.map(school => (
@@ -365,31 +365,29 @@ const QuestionBank = () => {
               <select
                 value={selectedExamType}
                 onChange={(e) => setSelectedExamType(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-gray-600/30 border-0 text-white rounded-full px-4 py-2"
               >
                 <option value="">সব ধরণ</option>
                 {examTypes.map(type => (
                   <option key={type.value} value={type.value} className="bg-gray-800">{type.label}</option>
                 ))}
               </select>
-              <div className="text-white text-sm flex items-center">
-                <School className="mr-1 h-3 w-3" />
-                মোট {filteredQuestions.length} টি প্রশ্নপত্র পাওয়া গেছে
+              <div className="flex items-center justify-between gap-4">
+                <div className="text-white text-sm flex items-center">
+                  <School className="mr-1 h-3 w-3" />
+                  মোট {filteredQuestions.length} টি প্রশ্নপত্র পাওয়া গেছে
+                </div>
+                <Button
+                  onClick={() => setShowUpload(true)}
+                  className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700"
+                >
+                  <Upload className="mr-2 h-4 w-4" />
+                  প্রশ্নপত্র আপলোড করুন
+                </Button>
               </div>
             </div>
           </CardContent>
         </Card>
-
-        {/* Upload Button */}
-        <div className="mb-8 text-center">
-          <Button
-            onClick={() => setShowUpload(true)}
-            className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700"
-          >
-            <Upload className="mr-2 h-4 w-4" />
-            প্রশ্নপত্র আপলোড করুন
-          </Button>
-        </div>
 
         {/* Questions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -406,20 +404,20 @@ const QuestionBank = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <Card key={question.id} className={`bg-transparent backdrop-blur-xl border-2 ${colorSet.border} hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl`}>
-                {/* Oval colored title section - 15% of card with blur below */}
-                <div className="relative">
-                  <div className={`relative h-20 bg-gradient-to-br ${colorSet.gradient} rounded-b-[3rem] flex items-center justify-center px-6`}>
+              <Card key={question.id} className={`bg-transparent backdrop-blur-xl border-0 bg-gradient-to-r from-white/5 via-blue-500/10 via-purple-500/10 to-pink-500/10 p-[2px] hover:p-[3px] transition-all duration-300 overflow-hidden rounded-3xl`}>
+                {/* Rounded pill header - 15% height */}
+                <div className="relative pt-4 px-4">
+                  <div className={`h-16 bg-gradient-to-br ${colorSet.gradient} rounded-full flex items-center justify-center px-6`}>
                     <CardTitle className="text-white text-base font-bold text-center leading-tight">
                       {question.title}
                     </CardTitle>
                   </div>
-                  {/* Blur effect below oval */}
-                  <div className={`absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-b ${colorSet.gradient} opacity-30 blur-xl`}></div>
+                  {/* Soft glowing blur below the pill header */}
+                  <div className={`absolute top-12 left-0 right-0 h-12 bg-gradient-to-b ${colorSet.gradient} opacity-40 blur-2xl`}></div>
                 </div>
                 
                 {/* Card content */}
-                <CardHeader className="pt-6">
+                <CardHeader className="pt-8 bg-transparent">
                   <div className="flex flex-wrap gap-2 mb-3">
                     <Badge className="bg-blue-600/20 text-blue-300 border-blue-400/20">{question.class}</Badge>
                     <Badge className="bg-green-600/20 text-green-300 border-green-400/20">{question.subject}</Badge>
@@ -437,7 +435,7 @@ const QuestionBank = () => {
                 <p className="text-gray-400 text-xs">{question.district} • {question.year}</p>
               </CardHeader>
               
-              <CardContent>
+              <CardContent className="bg-transparent">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-2">
                     <Avatar className="h-8 w-8">
