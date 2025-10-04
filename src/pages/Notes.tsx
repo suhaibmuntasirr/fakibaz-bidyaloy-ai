@@ -386,30 +386,30 @@ const Notes = () => {
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-gray-500/20 backdrop-blur-sm border border-gray-400/30 text-white rounded-2xl px-3 py-2"
+                className="bg-black/60 border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">ক্লাস নির্বাচন</option>
                 {classes.map(cls => (
-                  <option key={cls} value={cls} className="bg-gray-800">{cls}</option>
+                  <option key={cls} value={cls} className="bg-gray-900">{cls}</option>
                 ))}
               </select>
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-gray-500/20 backdrop-blur-sm border border-gray-400/30 text-white rounded-2xl px-3 py-2"
+                className="bg-black/60 border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">বিষয় নির্বাচন</option>
                 {subjects.map(subject => (
-                  <option key={subject} value={subject} className="bg-gray-800">{subject}</option>
+                  <option key={subject} value={subject} className="bg-gray-900">{subject}</option>
                 ))}
               </select>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-gray-500/20 backdrop-blur-sm border border-gray-400/30 text-white rounded-2xl px-3 py-2"
+                className="bg-black/60 border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {categories.map(category => (
-                  <option key={category} value={category} className="bg-gray-800">{category}</option>
+                  <option key={category} value={category} className="bg-gray-900">{category}</option>
                 ))}
               </select>
             </div>
@@ -483,15 +483,15 @@ const Notes = () => {
             return (
               <div 
                 key={note.id} 
-                className="rounded-3xl p-[2px] transition-all duration-300 hover:scale-105"
+                className="rounded-3xl p-[1px] transition-all duration-300 hover:scale-105"
                 style={{
                   background: borderGradient
                 }}
               >
-                <div className="rounded-[calc(1.5rem-2px)] overflow-hidden bg-slate-900/80 backdrop-blur-sm">
-                  {/* Colored header section with icon */}
+                <div className="rounded-[calc(1.5rem-1px)] overflow-hidden bg-black">
+                  {/* Colored header section with icon - 30% height */}
                   <div 
-                    className="h-24 flex items-center justify-center"
+                    className="h-32 flex items-center justify-center"
                     style={{
                       background: borderGradient
                     }}
@@ -499,7 +499,7 @@ const Notes = () => {
                     <img 
                       src={bookIcon} 
                       alt="Book Icon" 
-                      className="w-10 h-10 filter brightness-0 invert opacity-90"
+                      className="w-12 h-12 filter brightness-0 invert opacity-90"
                     />
                   </div>
                 

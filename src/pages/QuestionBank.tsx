@@ -332,41 +332,41 @@ const QuestionBank = () => {
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-gray-500/20 backdrop-blur-sm border border-gray-400/30 text-white rounded-2xl px-3 py-2"
+                className="bg-black/60 border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">সব ক্লাস</option>
                 {classes.map(cls => (
-                  <option key={cls} value={cls} className="bg-gray-800">{cls}</option>
+                  <option key={cls} value={cls} className="bg-gray-900">{cls}</option>
                 ))}
               </select>
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-gray-500/20 backdrop-blur-sm border border-gray-400/30 text-white rounded-2xl px-3 py-2"
+                className="bg-black/60 border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">সব বিষয়</option>
                 {subjects.map(subject => (
-                  <option key={subject} value={subject} className="bg-gray-800">{subject}</option>
+                  <option key={subject} value={subject} className="bg-gray-900">{subject}</option>
                 ))}
               </select>
               <select
                 value={selectedDistrict}
                 onChange={(e) => setSelectedDistrict(e.target.value)}
-                className="bg-gray-500/20 backdrop-blur-sm border border-gray-400/30 text-white rounded-2xl px-3 py-2"
+                className="bg-black/60 border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">সব জেলা</option>
                 {districts.map(district => (
-                  <option key={district} value={district} className="bg-gray-800">{district}</option>
+                  <option key={district} value={district} className="bg-gray-900">{district}</option>
                 ))}
               </select>
               <select
                 value={selectedSchool}
                 onChange={(e) => setSelectedSchool(e.target.value)}
-                className="bg-gray-500/20 backdrop-blur-sm border border-gray-400/30 text-white rounded-2xl px-3 py-2"
+                className="bg-black/60 border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">সব প্রতিষ্ঠান</option>
                 {schools.map(school => (
-                  <option key={school} value={school} className="bg-gray-800">{school}</option>
+                  <option key={school} value={school} className="bg-gray-900">{school}</option>
                 ))}
               </select>
             </div>
@@ -374,11 +374,11 @@ const QuestionBank = () => {
               <select
                 value={selectedExamType}
                 onChange={(e) => setSelectedExamType(e.target.value)}
-                className="bg-gray-500/20 backdrop-blur-sm border border-gray-400/30 text-white rounded-2xl px-3 py-2"
+                className="bg-black/60 border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">সব ধরণ</option>
                 {examTypes.map(type => (
-                  <option key={type.value} value={type.value} className="bg-gray-800">{type.label}</option>
+                  <option key={type.value} value={type.value} className="bg-gray-900">{type.label}</option>
                 ))}
               </select>
               <div className="flex items-center justify-between">
@@ -415,20 +415,20 @@ const QuestionBank = () => {
             return (
               <div 
                 key={question.id} 
-                className="rounded-3xl p-[2px] transition-all duration-300 hover:scale-105"
+                className="rounded-3xl p-[1px] transition-all duration-300 hover:scale-105"
                 style={{
                   background: borderGradient
                 }}
               >
-                <div className="rounded-[calc(1.5rem-2px)] overflow-hidden bg-slate-900/80 backdrop-blur-sm">
-                  {/* Colored header section */}
+                <div className="rounded-[calc(1.5rem-1px)] overflow-hidden bg-black">
+                  {/* Colored header section - 30% height */}
                   <div 
-                    className="h-20 flex items-center justify-center px-6"
+                    className="h-32 flex items-center justify-center px-6"
                     style={{
                       background: borderGradient
                     }}
                   >
-                    <CardTitle className="text-white text-base font-bold text-center leading-tight">
+                    <CardTitle className="text-white text-lg font-bold text-center leading-tight">
                       {question.title}
                     </CardTitle>
                   </div>
