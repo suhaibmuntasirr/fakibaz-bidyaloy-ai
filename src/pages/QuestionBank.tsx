@@ -332,7 +332,7 @@ const QuestionBank = () => {
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-2xl px-3 py-2"
+                className="bg-white/5 backdrop-blur-md border border-white/30 text-white rounded-2xl px-3 py-2 shadow-lg"
               >
                 <option value="">সব ক্লাস</option>
                 {classes.map(cls => (
@@ -342,7 +342,7 @@ const QuestionBank = () => {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-2xl px-3 py-2"
+                className="bg-white/5 backdrop-blur-md border border-white/30 text-white rounded-2xl px-3 py-2 shadow-lg"
               >
                 <option value="">সব বিষয়</option>
                 {subjects.map(subject => (
@@ -352,7 +352,7 @@ const QuestionBank = () => {
               <select
                 value={selectedDistrict}
                 onChange={(e) => setSelectedDistrict(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-2xl px-3 py-2"
+                className="bg-white/5 backdrop-blur-md border border-white/30 text-white rounded-2xl px-3 py-2 shadow-lg"
               >
                 <option value="">সব জেলা</option>
                 {districts.map(district => (
@@ -362,7 +362,7 @@ const QuestionBank = () => {
               <select
                 value={selectedSchool}
                 onChange={(e) => setSelectedSchool(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-2xl px-3 py-2"
+                className="bg-white/5 backdrop-blur-md border border-white/30 text-white rounded-2xl px-3 py-2 shadow-lg"
               >
                 <option value="">সব প্রতিষ্ঠান</option>
                 {schools.map(school => (
@@ -374,7 +374,7 @@ const QuestionBank = () => {
               <select
                 value={selectedExamType}
                 onChange={(e) => setSelectedExamType(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-2xl px-3 py-2"
+                className="bg-white/5 backdrop-blur-md border border-white/30 text-white rounded-2xl px-3 py-2 shadow-lg"
               >
                 <option value="">সব ধরণ</option>
                 {examTypes.map(type => (
@@ -428,7 +428,8 @@ const QuestionBank = () => {
                 }}
               >
                 <div 
-                  className="rounded-[calc(1.5rem-1.5px)] overflow-hidden bg-black/80"
+                  className="rounded-[calc(1.5rem-1.5px)] overflow-hidden"
+                  style={{ backgroundColor: 'transparent' }}
                 >
                 {/* Oval colored title section - 15% of card with glowing blur below */}
                 <div className="relative">

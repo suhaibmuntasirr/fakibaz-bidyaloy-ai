@@ -386,7 +386,7 @@ const Notes = () => {
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-2xl px-3 py-2"
+                className="bg-white/5 backdrop-blur-md border border-white/30 text-white rounded-2xl px-3 py-2 shadow-lg"
               >
                 <option value="">ক্লাস নির্বাচন</option>
                 {classes.map(cls => (
@@ -396,7 +396,7 @@ const Notes = () => {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-2xl px-3 py-2"
+                className="bg-white/5 backdrop-blur-md border border-white/30 text-white rounded-2xl px-3 py-2 shadow-lg"
               >
                 <option value="">বিষয় নির্বাচন</option>
                 {subjects.map(subject => (
@@ -406,7 +406,7 @@ const Notes = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-2xl px-3 py-2"
+                className="bg-white/5 backdrop-blur-md border border-white/30 text-white rounded-2xl px-3 py-2 shadow-lg"
               >
                 {categories.map(category => (
                   <option key={category} value={category} className="bg-gray-800">{category}</option>
@@ -491,7 +491,8 @@ const Notes = () => {
                 }}
               >
                 <div 
-                  className="rounded-[calc(1.5rem-1.5px)] overflow-hidden bg-black/80"
+                  className="rounded-[calc(1.5rem-1.5px)] overflow-hidden"
+                  style={{ backgroundColor: 'transparent' }}
                 >
                 {/* Top colored oval section with icon and glowing blur effect */}
                 <div className="relative">
