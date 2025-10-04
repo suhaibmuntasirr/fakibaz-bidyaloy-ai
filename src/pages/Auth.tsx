@@ -12,6 +12,7 @@ const Auth = () => {
   const [activeTab, setActiveTab] = useState('login');
 
   const handleAuthSuccess = () => {
+    // Handle successful authentication - could redirect to dashboard
     console.log('Authentication successful');
   };
 
@@ -19,38 +20,32 @@ const Auth = () => {
     {
       icon: <BookOpen className="h-8 w-8 text-blue-400" />,
       title: 'বিনামূল্যে নোট অ্যাক্সেস',
-      description: 'হাজারো নোট এবং প্রশ্নব্যাংকে বিনামূল্যে প্রবেশাধিকার পান',
-      gradient: 'from-cyan-500 to-blue-600'
+      description: 'হাজারো নোট এবং প্রশ্নব্যাংকে বিনামূল্যে প্রবেশাধিকার পান'
     },
     {
       icon: <Users className="h-8 w-8 text-green-400" />,
       title: 'কমিউনিটি সাপোর্ট',
-      description: 'সারাদেশের ছাত্রছাত্রীদের সাথে যুক্ত হয়ে একসাথে শিখুন',
-      gradient: 'from-purple-500 to-pink-600'
+      description: 'সারাদেশের ছাত্রছাত্রীদের সাথে যুক্ত হয়ে একসাথে শিখুন'
     },
     {
       icon: <Zap className="h-8 w-8 text-yellow-400" />,
       title: 'AI শিক্ষা সহায়ক',
-      description: '২৪/৭ AI সহায়ক যে আপনার সব প্রশ্নের উত্তর দিবে বাংলায়',
-      gradient: 'from-green-500 to-teal-600'
+      description: '২৪/৭ AI সহায়ক যে আপনার সব প্রশ্নের উত্তর দিবে বাংলায়'
     },
     {
       icon: <Star className="h-8 w-8 text-purple-400" />,
       title: 'ব্যক্তিগত প্রগ্রেস ট্র্যাকিং',
-      description: 'আপনার শিক্ষার অগ্রগতি ট্র্যাক করুন এবং লক্ষ্য নির্ধারণ করুন',
-      gradient: 'from-orange-500 to-red-600'
+      description: 'আপনার শিক্ষার অগ্রগতি ট্র্যাক করুন এবং লক্ষ্য নির্ধারণ করুন'
     },
     {
       icon: <Target className="h-8 w-8 text-red-400" />,
       title: 'লক্ষ্য অর্জনের সহায়তা',
-      description: 'আপনার একাডেমিক লক্ষ্য পূরণে পরিকল্পিত গাইডলাইন পান',
-      gradient: 'from-blue-500 to-indigo-600'
+      description: 'আপনার একাডেমিক লক্ষ্য পূরণে পরিকল্পিত গাইডলাইন পান'
     },
     {
       icon: <Shield className="h-8 w-8 text-cyan-400" />,
       title: 'নিরাপদ ও বিশ্বস্ত',
-      description: 'আপনার তথ্য সম্পূর্ণ নিরাপদ এবং গোপনীয়তা সুরক্ষিত',
-      gradient: 'from-pink-500 to-rose-600'
+      description: 'আপনার তথ্য সম্পূর্ণ নিরাপদ এবং গোপনীয়তা সুরক্ষিত'
     }
   ];
 
@@ -63,6 +58,7 @@ const Auth = () => {
         backgroundRepeat: 'no-repeat'
       }}
     >
+      {/* Background decorative elements */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl"></div>
         <div className="absolute top-40 right-20 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
@@ -76,7 +72,7 @@ const Auth = () => {
           {/* Left Side - Features */}
           <div className="space-y-8">
             <div className="text-center lg:text-left">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
+              <h1 className="text-4xl font-bold text-white mb-4">
                 ফাকিবাজে স্বাগতম
               </h1>
               <p className="text-gray-300 text-lg mb-8">
@@ -84,72 +80,33 @@ const Auth = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {features.map((feature, index) => {
-                const colorSet = {
-                  gradient: feature.gradient,
-                  border: feature.gradient.includes('cyan') ? 'rgba(34,211,238,0.6)' :
-                    feature.gradient.includes('purple') ? 'rgba(168,85,247,0.6)' :
-                    feature.gradient.includes('green') ? 'rgba(20,184,166,0.6)' :
-                    feature.gradient.includes('orange') ? 'rgba(239,68,68,0.6)' :
-                    feature.gradient.includes('blue') ? 'rgba(99,102,241,0.6)' :
-                    'rgba(244,63,94,0.6)'
-                };
-
-                return (
-                  <Card 
-                    key={index} 
-                    className="relative bg-transparent backdrop-blur-xl hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl"
-                    style={{
-                      border: '2px solid transparent',
-                      borderRadius: '24px',
-                      backgroundImage: `linear-gradient(#1a1a2e, #1a1a2e), 
-                        linear-gradient(to bottom, rgba(255,255,255,0.8), ${colorSet.border})`,
-                      backgroundOrigin: 'border-box',
-                      backgroundClip: 'padding-box, border-box'
-                    }}
-                  >
-                    {/* Oval Header - 15% height */}
-                    <div 
-                      className={`relative h-[15%] min-h-[60px] bg-gradient-to-r ${colorSet.gradient} flex items-center justify-center rounded-t-3xl overflow-hidden`}
-                    >
-                      <div className="absolute inset-0 backdrop-blur-md"></div>
-                      {/* Blur effect below oval */}
-                      <div 
-                        className="absolute left-0 right-0 h-20 -bottom-10"
-                        style={{
-                          background: `linear-gradient(to bottom, ${
-                            colorSet.gradient.includes('cyan') ? 'rgba(34,211,238,0.5)' :
-                            colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.5)' :
-                            colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.5)' :
-                            colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.5)' :
-                            colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.5)' :
-                            'rgba(244,63,94,0.5)'
-                          }, transparent)`,
-                          filter: 'blur(15px)'
-                        }}
-                      ></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {features.map((feature, index) => (
+                <Card key={index} className={`bg-gradient-to-br ${
+                  index === 0 ? 'from-black/40 to-blue-900/30' :
+                  index === 1 ? 'from-black/40 to-green-900/30' :
+                  index === 2 ? 'from-black/40 to-yellow-900/30' :
+                  index === 3 ? 'from-black/40 to-purple-900/30' :
+                  index === 4 ? 'from-black/40 to-red-900/30' :
+                  'from-black/40 to-cyan-900/30'
+                } backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all duration-300`}>
+                  <CardContent className="p-6 text-center">
+                    <div className="mb-4 flex justify-center">
+                      {feature.icon}
                     </div>
-
-                    {/* Content */}
-                    <CardContent className="p-6 text-center pt-8">
-                      <div className="mb-4 flex justify-center">
-                        {feature.icon}
-                      </div>
-                      <h3 className="text-white font-semibold text-lg mb-2">
-                        {feature.title}
-                      </h3>
-                      <p className="text-gray-300 text-sm">
-                        {feature.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+                    <h3 className="text-white font-semibold text-lg mb-2">
+                      {feature.title}
+                    </h3>
+                    <p className="text-gray-300 text-sm">
+                      {feature.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
 
             {/* Stats Section */}
-            <Card className="bg-gradient-to-br from-black/40 to-indigo-900/30 backdrop-blur-lg border border-white/10 rounded-3xl">
+            <Card className="bg-gradient-to-br from-black/40 to-indigo-900/30 backdrop-blur-lg border border-white/10">
               <CardContent className="p-6">
                 <h3 className="text-white font-bold text-xl mb-4 text-center">
                   আমাদের কমিউনিটি
@@ -174,19 +131,9 @@ const Auth = () => {
 
           {/* Right Side - Auth Forms */}
           <div className="flex justify-center">
-            <Card 
-              className="w-full max-w-md bg-transparent backdrop-blur-xl shadow-2xl rounded-3xl"
-              style={{
-                border: '2px solid transparent',
-                borderRadius: '24px',
-                backgroundImage: `linear-gradient(#1a1a2e, #1a1a2e), 
-                  linear-gradient(135deg, rgba(255,255,255,0.8), rgba(147,197,253,0.6), rgba(59,130,246,0.6), rgba(147,51,234,0.6), rgba(236,72,153,0.6))`,
-                backgroundOrigin: 'border-box',
-                backgroundClip: 'padding-box, border-box'
-              }}
-            >
+            <Card className="w-full max-w-md bg-black/20 backdrop-blur-xl border border-white/20 shadow-2xl">
               <CardHeader className="text-center">
-                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                <CardTitle className="text-2xl font-bold text-white">
                   {activeTab === 'login' ? 'লগইন করুন' : 'নতুন অ্যাকাউন্ট তৈরি করুন'}
                 </CardTitle>
                 <p className="text-gray-300">
@@ -227,7 +174,7 @@ const Auth = () => {
 
         {/* Bottom testimonial */}
         <div className="mt-16">
-          <Card className="bg-gradient-to-br from-black/40 to-emerald-900/30 backdrop-blur-lg border border-white/10 rounded-3xl">
+          <Card className="bg-gradient-to-br from-black/40 to-emerald-900/30 backdrop-blur-lg border border-white/10">
             <CardContent className="p-8 text-center">
               <div className="text-emerald-400 text-4xl mb-4">"</div>
               <p className="text-gray-200 text-lg mb-4 max-w-3xl mx-auto">

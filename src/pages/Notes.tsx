@@ -367,15 +367,7 @@ const Notes = () => {
         </div>
 
         {/* Filters */}
-        <Card className="mb-8 bg-white/10 backdrop-blur-lg rounded-3xl relative overflow-hidden"
-          style={{
-            border: '2px solid transparent',
-            borderRadius: '24px',
-            backgroundImage: 'linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)), linear-gradient(135deg, rgba(255,255,255,0.8), rgba(147,197,253,0.6), rgba(59,130,246,0.6), rgba(147,51,234,0.6), rgba(236,72,153,0.6))',
-            backgroundOrigin: 'border-box',
-            backgroundClip: 'padding-box, border-box'
-          }}
-        >
+        <Card className="mb-8 bg-white/10 backdrop-blur-lg border-white/20">
           <CardContent className="p-6">
             <div className="flex items-center mb-4">
               <Filter className="h-5 w-5 text-blue-400 mr-2" />
@@ -386,30 +378,30 @@ const Notes = () => {
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-gray-600/30 text-white rounded-xl px-4 py-2.5 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
               >
                 <option value="">ক্লাস নির্বাচন</option>
                 {classes.map(cls => (
-                  <option key={cls} value={cls} className="bg-gray-900">{cls}</option>
+                  <option key={cls} value={cls} className="bg-gray-800">{cls}</option>
                 ))}
               </select>
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-gray-600/30 text-white rounded-xl px-4 py-2.5 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
               >
                 <option value="">বিষয় নির্বাচন</option>
                 {subjects.map(subject => (
-                  <option key={subject} value={subject} className="bg-gray-900">{subject}</option>
+                  <option key={subject} value={subject} className="bg-gray-800">{subject}</option>
                 ))}
               </select>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-gray-600/30 text-white rounded-xl px-4 py-2.5 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
               >
                 {categories.map(category => (
-                  <option key={category} value={category} className="bg-gray-900">{category}</option>
+                  <option key={category} value={category} className="bg-gray-800">{category}</option>
                 ))}
               </select>
             </div>
@@ -422,8 +414,8 @@ const Notes = () => {
                   size="sm"
                   onClick={() => setSelectedCategory(category)}
                   className={selectedCategory === category 
-                    ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600 rounded-2xl" 
-                    : "bg-transparent border-white/30 text-gray-300 hover:bg-white/10 hover:border-white/50 rounded-2xl"
+                    ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600" 
+                    : "bg-transparent border-white/30 text-gray-300 hover:bg-white/10 hover:border-white/50"
                   }
                 >
                   {category}
@@ -465,43 +457,30 @@ const Notes = () => {
         {/* Notes Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredNotes.map((note, index) => {
-            const isLiked = likedNotes.includes(note.id);
-            const noteComments = comments[note.id] || [];
-            const userRating = ratings[note.id] || 0;
-            
-            // Color palette for gradients
-            const gradients = [
-              'linear-gradient(135deg, #06b6d4, #3b82f6)',
-              'linear-gradient(135deg, #a855f7, #ec4899)',
-              'linear-gradient(135deg, #10b981, #14b8a6)',
-              'linear-gradient(135deg, #f97316, #ef4444)',
-              'linear-gradient(135deg, #3b82f6, #6366f1)',
-              'linear-gradient(135deg, #ec4899, #f43f5e)',
+            const colors = [
+              { gradient: 'from-cyan-500 to-blue-600', border: 'border-cyan-500/50' },
+              { gradient: 'from-purple-500 to-pink-600', border: 'border-purple-500/50' },
+              { gradient: 'from-green-500 to-teal-600', border: 'border-green-500/50' },
+              { gradient: 'from-orange-500 to-red-600', border: 'border-orange-500/50' },
+              { gradient: 'from-blue-500 to-indigo-600', border: 'border-blue-500/50' },
+              { gradient: 'from-pink-500 to-rose-600', border: 'border-pink-500/50' },
             ];
-            const borderGradient = gradients[index % gradients.length];
+            const colorSet = colors[index % colors.length];
             
             return (
-              <div 
-                key={note.id} 
-                className="rounded-3xl p-[1px] transition-all duration-300 hover:scale-105"
-                style={{
-                  background: borderGradient
-                }}
-              >
-                <div className="rounded-[calc(1.5rem-1px)] overflow-hidden bg-transparent backdrop-blur-sm">
-                  {/* Colored header section with icon - 15% height */}
-                  <div 
-                    className="h-20 flex items-center justify-center"
-                    style={{
-                      background: borderGradient
-                    }}
-                  >
+              <Card key={note.id} className={`bg-transparent backdrop-blur-xl border-2 ${colorSet.border} hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl`}>
+                {/* Top colored oval section with icon and blur effect */}
+                <div className="relative">
+                  <div className={`h-24 bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl`}>
                     <img 
                       src={bookIcon} 
                       alt="Book Icon" 
                       className="w-10 h-10 filter brightness-0 invert opacity-90"
                     />
                   </div>
+                  {/* Blur effect below oval */}
+                  <div className={`absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-b ${colorSet.gradient} opacity-30 blur-xl`}></div>
+                </div>
                 
                 <CardContent className="p-6 pt-8">
                   <div className="space-y-4">
@@ -601,8 +580,7 @@ const Notes = () => {
                     </div>
                   </div>
                 </CardContent>
-                </div>
-              </div>
+              </Card>
             );
           })}
         </div>

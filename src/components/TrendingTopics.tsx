@@ -128,7 +128,7 @@ const TrendingTopics = () => {
   };
 
   return (
-    <Card className="bg-gray-800/30 backdrop-blur-lg border border-white/10 rounded-3xl">
+    <Card className="bg-black/20 backdrop-blur-lg border border-white/10">
       <CardHeader>
         <CardTitle className="text-white flex items-center">
           <TrendingUp className="mr-2 h-5 w-5 text-yellow-400" />

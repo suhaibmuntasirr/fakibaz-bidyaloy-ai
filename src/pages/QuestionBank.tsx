@@ -16,8 +16,7 @@ import {
   Users,
   X,
   Play,
-  School,
-  Plus
+  School
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -309,15 +308,7 @@ const QuestionBank = () => {
         </div>
 
         {/* Search and Filters */}
-        <Card className="mb-8 bg-white/10 backdrop-blur-lg rounded-3xl relative overflow-hidden"
-          style={{
-            border: '2px solid transparent',
-            borderRadius: '24px',
-            backgroundImage: 'linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)), linear-gradient(135deg, rgba(255,255,255,0.8), rgba(147,197,253,0.6), rgba(59,130,246,0.6), rgba(147,51,234,0.6), rgba(236,72,153,0.6))',
-            backgroundOrigin: 'border-box',
-            backgroundClip: 'padding-box, border-box'
-          }}
-        >
+        <Card className="mb-8 bg-white/10 backdrop-blur-lg border-white/20">
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <div className="relative md:col-span-2 lg:col-span-2">
@@ -326,47 +317,47 @@ const QuestionBank = () => {
                   placeholder="প্রশ্নপত্র খুঁজুন..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400 rounded-2xl"
+                  className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                 />
               </div>
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-gray-600/30 text-white rounded-xl px-4 py-2.5 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
               >
                 <option value="">সব ক্লাস</option>
                 {classes.map(cls => (
-                  <option key={cls} value={cls} className="bg-gray-900">{cls}</option>
+                  <option key={cls} value={cls} className="bg-gray-800">{cls}</option>
                 ))}
               </select>
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-gray-600/30 text-white rounded-xl px-4 py-2.5 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
               >
                 <option value="">সব বিষয়</option>
                 {subjects.map(subject => (
-                  <option key={subject} value={subject} className="bg-gray-900">{subject}</option>
+                  <option key={subject} value={subject} className="bg-gray-800">{subject}</option>
                 ))}
               </select>
               <select
                 value={selectedDistrict}
                 onChange={(e) => setSelectedDistrict(e.target.value)}
-                className="bg-gray-600/30 text-white rounded-xl px-4 py-2.5 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
               >
                 <option value="">সব জেলা</option>
                 {districts.map(district => (
-                  <option key={district} value={district} className="bg-gray-900">{district}</option>
+                  <option key={district} value={district} className="bg-gray-800">{district}</option>
                 ))}
               </select>
               <select
                 value={selectedSchool}
                 onChange={(e) => setSelectedSchool(e.target.value)}
-                className="bg-gray-600/30 text-white rounded-xl px-4 py-2.5 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
               >
                 <option value="">সব প্রতিষ্ঠান</option>
                 {schools.map(school => (
-                  <option key={school} value={school} className="bg-gray-900">{school}</option>
+                  <option key={school} value={school} className="bg-gray-800">{school}</option>
                 ))}
               </select>
             </div>
@@ -374,66 +365,58 @@ const QuestionBank = () => {
               <select
                 value={selectedExamType}
                 onChange={(e) => setSelectedExamType(e.target.value)}
-                className="bg-gray-600/30 text-white rounded-xl px-4 py-2.5 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
               >
                 <option value="">সব ধরণ</option>
                 {examTypes.map(type => (
-                  <option key={type.value} value={type.value} className="bg-gray-900">{type.label}</option>
+                  <option key={type.value} value={type.value} className="bg-gray-800">{type.label}</option>
                 ))}
               </select>
-              <div className="flex items-center justify-between">
-                <div className="text-white text-sm flex items-center">
-                  <School className="mr-1 h-3 w-3" />
-                  মোট {filteredQuestions.length} টি প্রশ্নপত্র পাওয়া গেছে
-                </div>
-                <Button
-                  onClick={() => setShowUpload(true)}
-                  className="h-10 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 rounded-2xl"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  প্রশ্নপত্র আপলোড
-                </Button>
+              <div className="text-white text-sm flex items-center">
+                <School className="mr-1 h-3 w-3" />
+                মোট {filteredQuestions.length} টি প্রশ্নপত্র পাওয়া গেছে
               </div>
             </div>
           </CardContent>
         </Card>
 
+        {/* Upload Button */}
+        <div className="mb-8 text-center">
+          <Button
+            onClick={() => setShowUpload(true)}
+            className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700"
+          >
+            <Upload className="mr-2 h-4 w-4" />
+            প্রশ্নপত্র আপলোড করুন
+          </Button>
+        </div>
+
         {/* Questions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredQuestions.map((question, index) => {
-            // Color palette for gradients
-            const gradients = [
-              'linear-gradient(135deg, #06b6d4, #3b82f6)',
-              'linear-gradient(135deg, #a855f7, #ec4899)',
-              'linear-gradient(135deg, #10b981, #14b8a6)',
-              'linear-gradient(135deg, #f97316, #ef4444)',
-              'linear-gradient(135deg, #3b82f6, #6366f1)',
-              'linear-gradient(135deg, #ec4899, #f43f5e)',
+            // Color palette for oval sections and borders
+            const colors = [
+              { gradient: 'from-cyan-500 to-blue-600', border: 'border-cyan-500/50' },
+              { gradient: 'from-purple-500 to-pink-600', border: 'border-purple-500/50' },
+              { gradient: 'from-green-500 to-teal-600', border: 'border-green-500/50' },
+              { gradient: 'from-orange-500 to-red-600', border: 'border-orange-500/50' },
+              { gradient: 'from-blue-500 to-indigo-600', border: 'border-blue-500/50' },
+              { gradient: 'from-pink-500 to-rose-600', border: 'border-pink-500/50' },
             ];
-            const borderGradient = gradients[index % gradients.length];
+            const colorSet = colors[index % colors.length];
             
             return (
-              <div 
-                key={question.id} 
-                className="rounded-3xl p-[1px] transition-all duration-300 hover:scale-105"
-                style={{
-                  background: borderGradient
-                }}
-              >
-                <div className="rounded-[calc(1.5rem-1px)] overflow-hidden bg-transparent backdrop-blur-sm">
-                  {/* Rounded pill header section at top */}
-                  <div className="pt-6 px-6">
-                    <div 
-                      className="h-16 flex items-center justify-center px-6 rounded-full"
-                      style={{
-                        background: borderGradient
-                      }}
-                    >
-                      <CardTitle className="text-white text-base font-bold text-center leading-tight">
-                        {question.title}
-                      </CardTitle>
-                    </div>
+              <Card key={question.id} className={`bg-transparent backdrop-blur-xl border-2 ${colorSet.border} hover:border-opacity-80 transition-all duration-300 overflow-hidden rounded-3xl`}>
+                {/* Oval colored title section - 15% of card with blur below */}
+                <div className="relative">
+                  <div className={`relative h-20 bg-gradient-to-br ${colorSet.gradient} rounded-b-[3rem] flex items-center justify-center px-6`}>
+                    <CardTitle className="text-white text-base font-bold text-center leading-tight">
+                      {question.title}
+                    </CardTitle>
                   </div>
+                  {/* Blur effect below oval */}
+                  <div className={`absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-b ${colorSet.gradient} opacity-30 blur-xl`}></div>
+                </div>
                 
                 {/* Card content */}
                 <CardHeader className="pt-6">
@@ -540,8 +523,7 @@ const QuestionBank = () => {
                   </div>
                 </div>
               </CardContent>
-                </div>
-              </div>
+            </Card>
             );
           })}
         </div>

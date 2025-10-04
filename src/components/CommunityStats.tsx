@@ -72,7 +72,7 @@ const CommunityStats = () => {
   };
 
   return (
-    <Card className="bg-gray-800/30 backdrop-blur-lg border border-white/10 rounded-3xl">
+    <Card className="bg-black/20 backdrop-blur-lg border border-white/10">
       <CardHeader>
         <CardTitle className="text-white">কমিউনিটি পরিসংখ্যান</CardTitle>
       </CardHeader>
