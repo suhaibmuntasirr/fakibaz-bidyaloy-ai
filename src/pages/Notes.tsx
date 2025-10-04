@@ -456,133 +456,97 @@ const Notes = () => {
 
         {/* Notes Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredNotes.map((note, index) => {
-            const colors = [
-              { gradient: 'from-cyan-500 to-blue-600', border: 'border-cyan-500/50' },
-              { gradient: 'from-purple-500 to-pink-600', border: 'border-purple-500/50' },
-              { gradient: 'from-green-500 to-teal-600', border: 'border-green-500/50' },
-              { gradient: 'from-orange-500 to-red-600', border: 'border-orange-500/50' },
-              { gradient: 'from-blue-500 to-indigo-600', border: 'border-blue-500/50' },
-              { gradient: 'from-pink-500 to-rose-600', border: 'border-pink-500/50' },
-            ];
-            const colorSet = colors[index % colors.length];
-            
-            return (
-              <div key={note.id} className="bg-gradient-to-r from-white/5 via-blue-500/10 via-purple-500/10 to-pink-500/10 p-[2px] hover:p-[3px] transition-all duration-300 overflow-hidden rounded-3xl">
-                <div className="bg-black/60 backdrop-blur-xl rounded-3xl overflow-hidden">
-                  {/* Top colored section - 15% height */}
-                  <div className="relative h-20">
-                    <div className={`h-full bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl`}>
-                      <img 
-                        src={bookIcon} 
-                        alt="Book Icon" 
-                        className="w-10 h-10 filter brightness-0 invert opacity-90"
-                      />
+          {filteredNotes.map((note) => (
+            <Card key={note.id} className="bg-card/50 backdrop-blur border-border hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <CardTitle className="text-lg mb-2">{note.title}</CardTitle>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      <Badge variant="secondary">{note.class}</Badge>
+                      <Badge variant="secondary">{note.subject}</Badge>
+                      <Badge variant="outline">{note.chapter}</Badge>
                     </div>
                   </div>
-                  
-                  <div className="p-6 bg-transparent">
-                    <div className="space-y-4">
-                     {/* Title and Badges */}
-                     <div>
-                       <h3 className="text-white text-xl font-bold mb-2 line-clamp-2">{note.title}</h3>
-                       <p className="text-gray-300 text-sm mb-3">{note.chapter}</p>
-                       
-                       <div className="flex flex-wrap gap-2 mb-3">
-                         <Badge variant="outline" className="text-blue-400 border-blue-400 bg-blue-400/10">
-                           {note.class}
-                         </Badge>
-                         <Badge variant="outline" className="text-green-400 border-green-400 bg-green-400/10">
-                           {note.subject}
-                         </Badge>
-                         {note.verified && (
-                           <Badge variant="outline" className="text-yellow-400 border-yellow-400 bg-yellow-400/10">
-                             ✓ Verified
-                           </Badge>
-                         )}
-                       </div>
-                     </div>
-                     
-                     {/* Author and File Info */}
-                     <div className="space-y-2">
-                       <div className="flex items-center space-x-2 text-gray-400 text-sm">
-                         <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                         <span>{note.author}</span>
-                       </div>
-                       <div className="flex items-center justify-between text-gray-500 text-xs">
-                         <span>{(note.fileSize / 1024 / 1024).toFixed(1)} MB</span>
-                         <span>{note.uploadDate.toLocaleDateString('bn-BD')}</span>
-                       </div>
-                    </div>
-                     
-                     {/* Stats */}
-                     <div className="flex items-center justify-between text-gray-400 text-sm mb-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="flex items-center space-x-1">
-                          <Heart className={`h-4 w-4 ${likedNotes.includes(note.id) ? 'fill-red-400 text-red-400' : ''}`} />
-                          <span>{note.likes}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <MessageSquare className="h-4 w-4" />
-                          <span>{note.comments}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <Download className="h-4 w-4" />
-                          <span>{note.downloads}</span>
-                        </div>
-                      </div>
-                      
-                      {/* Rating */}
-                      <div className="flex items-center space-x-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-4 w-4 cursor-pointer transition-colors ${
-                              i < (ratings[note.id] || Math.floor(note.rating)) 
-                                ? 'text-yellow-400 fill-current' 
-                                : 'text-gray-600 hover:text-yellow-300'
-                            }`}
-                            onClick={() => handleRate(note.id, i + 1)}
-                          />
-                        ))}
-                        <span className="text-xs ml-1">({note.rating})</span>
-                      </div>
-                    </div>
-                    
-                    {/* Action Buttons */}
-                    <div className="flex gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handlePreview(note)}
-                        className="flex-1 text-white border-white/30 hover:bg-white/10 bg-white/5"
-                      >
-                        <Eye className="h-4 w-4 mr-1" />
-                        দেখুন
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        onClick={() => handleDownload(note)}
-                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-                      >
-                        <Download className="h-4 w-4 mr-1" />
-                        ডাউনলোড
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleLike(note.id)}
-                        className={`${likedNotes.includes(note.id) ? 'text-red-400' : 'text-gray-400'} hover:text-red-400`}
-                      >
-                        <Heart className={`h-4 w-4 ${likedNotes.includes(note.id) ? 'fill-current' : ''}`} />
-                      </Button>
-                    </div>
+                  {note.verified && (
+                    <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
+                      ✓ Verified
+                    </Badge>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground line-clamp-2">{note.description}</p>
+                
+                <div className="flex items-center gap-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback>{note.author.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{note.author}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {Math.floor((Date.now() - note.uploadDate.getTime()) / (1000 * 60 * 60 * 24))} দিন আগে
+                    </p>
                   </div>
                 </div>
-              </div>
-            </div>
-            );
-          })}
+
+                <div className="flex flex-wrap gap-1">
+                  {note.tags.map((tag, i) => (
+                    <Badge key={i} variant="outline" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-4 gap-2 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <Heart className="h-3 w-3" />
+                    {note.likes}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Download className="h-3 w-3" />
+                    {note.downloads}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <MessageSquare className="h-3 w-3" />
+                    {note.comments}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
+                    {note.rating}
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePreview(note)}
+                    className="flex-1"
+                  >
+                    <Eye className="h-4 w-4 mr-1" />
+                    দেখুন
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDownload(note)}
+                    className="flex-1"
+                  >
+                    <Download className="h-4 w-4 mr-1" />
+                    ডাউনলোড
+                  </Button>
+                  <Button
+                    variant={likedNotes.includes(note.id) ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handleLike(note.id)}
+                  >
+                    <Heart className={`h-4 w-4 ${likedNotes.includes(note.id) ? 'fill-current' : ''}`} />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
         {filteredNotes.length === 0 && (
