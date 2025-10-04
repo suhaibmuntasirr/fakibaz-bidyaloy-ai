@@ -308,26 +308,25 @@ const QuestionBank = () => {
         </div>
 
         {/* Search and Filters */}
-        <Card className="mb-8 bg-white/10 backdrop-blur-lg rounded-3xl border-2 border-transparent bg-clip-padding relative
-          before:absolute before:inset-0 before:-z-10 before:rounded-3xl before:p-[2px]
-          before:bg-gradient-to-r before:from-white before:via-blue-400 before:via-blue-600 before:via-purple-600 before:via-pink-500 before:to-pink-400">
+        <Card className="mb-8 bg-[#1a1a1a] backdrop-blur-lg rounded-2xl border border-gray-800">
           <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              <div className="relative md:col-span-2 lg:col-span-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              <div className="relative md:col-span-2 lg:col-span-1">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="প্রশ্নপত্র খুঁজুন..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  className="pl-10 bg-[#2d2d2d] border-gray-700 text-white placeholder:text-gray-400 focus:border-blue-500"
                 />
               </div>
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-[#2d2d2d] border border-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 appearance-none cursor-pointer"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
               >
-                <option value="">সব ক্লাস</option>
+                <option value="" className="bg-gray-800">সব ক্লাস</option>
                 {classes.map(cls => (
                   <option key={cls} value={cls} className="bg-gray-800">{cls}</option>
                 ))}
@@ -335,9 +334,10 @@ const QuestionBank = () => {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-[#2d2d2d] border border-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 appearance-none cursor-pointer"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
               >
-                <option value="">সব বিষয়</option>
+                <option value="" className="bg-gray-800">সব বিষয়</option>
                 {subjects.map(subject => (
                   <option key={subject} value={subject} className="bg-gray-800">{subject}</option>
                 ))}
@@ -345,9 +345,10 @@ const QuestionBank = () => {
               <select
                 value={selectedDistrict}
                 onChange={(e) => setSelectedDistrict(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-[#2d2d2d] border border-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 appearance-none cursor-pointer"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
               >
-                <option value="">সব জেলা</option>
+                <option value="" className="bg-gray-800">সব জেলা</option>
                 {districts.map(district => (
                   <option key={district} value={district} className="bg-gray-800">{district}</option>
                 ))}
@@ -355,9 +356,10 @@ const QuestionBank = () => {
               <select
                 value={selectedSchool}
                 onChange={(e) => setSelectedSchool(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-[#2d2d2d] border border-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 appearance-none cursor-pointer"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
               >
-                <option value="">সব প্রতিষ্ঠান</option>
+                <option value="" className="bg-gray-800">সব প্রতিষ্ঠান</option>
                 {schools.map(school => (
                   <option key={school} value={school} className="bg-gray-800">{school}</option>
                 ))}
@@ -367,9 +369,10 @@ const QuestionBank = () => {
               <select
                 value={selectedExamType}
                 onChange={(e) => setSelectedExamType(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-[#2d2d2d] border border-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 appearance-none cursor-pointer"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
               >
-                <option value="">সব ধরণ</option>
+                <option value="" className="bg-gray-800">সব ধরণ</option>
                 {examTypes.map(type => (
                   <option key={type.value} value={type.value} className="bg-gray-800">{type.label}</option>
                 ))}
@@ -381,7 +384,7 @@ const QuestionBank = () => {
                 </div>
                 <Button
                   onClick={() => setShowUpload(true)}
-                  className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700"
+                  className="bg-gradient-to-r from-blue-500 via-purple-600 to-purple-700 hover:opacity-90 transition-opacity"
                 >
                   <Upload className="mr-2 h-4 w-4" />
                   প্রশ্নপত্র আপলোড করুন

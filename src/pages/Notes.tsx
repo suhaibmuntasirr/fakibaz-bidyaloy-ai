@@ -367,7 +367,7 @@ const Notes = () => {
         </div>
 
         {/* Filters */}
-        <Card className="mb-8 bg-white/10 backdrop-blur-lg border-white/20">
+        <Card className="mb-8 bg-[#1a1a1a] backdrop-blur-lg border-white/10 rounded-2xl">
           <CardContent className="p-6">
             <div className="flex items-center mb-4">
               <Filter className="h-5 w-5 text-blue-400 mr-2" />
@@ -378,9 +378,10 @@ const Notes = () => {
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-[#2d2d2d] border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 appearance-none cursor-pointer"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
               >
-                <option value="">ক্লাস নির্বাচন</option>
+                <option value="" className="bg-gray-800">ক্লাস নির্বাচন</option>
                 {classes.map(cls => (
                   <option key={cls} value={cls} className="bg-gray-800">{cls}</option>
                 ))}
@@ -388,9 +389,10 @@ const Notes = () => {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-[#2d2d2d] border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 appearance-none cursor-pointer"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
               >
-                <option value="">বিষয় নির্বাচন</option>
+                <option value="" className="bg-gray-800">বিষয় নির্বাচন</option>
                 {subjects.map(subject => (
                   <option key={subject} value={subject} className="bg-gray-800">{subject}</option>
                 ))}
@@ -398,7 +400,8 @@ const Notes = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                className="bg-[#2d2d2d] border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 appearance-none cursor-pointer"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
               >
                 {categories.map(category => (
                   <option key={category} value={category} className="bg-gray-800">{category}</option>
@@ -414,8 +417,8 @@ const Notes = () => {
                   size="sm"
                   onClick={() => setSelectedCategory(category)}
                   className={selectedCategory === category 
-                    ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600" 
-                    : "bg-transparent border-white/30 text-gray-300 hover:bg-white/10 hover:border-white/50"
+                    ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600 rounded-lg" 
+                    : "bg-[#2d2d2d] border-gray-700 text-gray-300 hover:bg-gray-700 rounded-lg"
                   }
                 >
                   {category}
