@@ -413,41 +413,24 @@ const QuestionBank = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <div key={question.id} className="relative">
-                {/* Outer glow - positioned outside the card */}
+              <div 
+                key={question.id} 
+                className="rounded-3xl p-[1px]"
+                style={{
+                  background: `linear-gradient(135deg, ${
+                    colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.7), rgba(6,182,212,0.3)' : 
+                    colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.7), rgba(168,85,247,0.3)' : 
+                    colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.7), rgba(20,184,166,0.3)' : 
+                    colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.7), rgba(239,68,68,0.3)' : 
+                    colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.7), rgba(99,102,241,0.3)' : 
+                    'rgba(236,72,153,0.7), rgba(236,72,153,0.3)'
+                  })`
+                }}
+              >
                 <div 
-                  className="absolute -inset-3 rounded-3xl blur-3xl opacity-30 pointer-events-none"
-                  style={{
-                    background: `radial-gradient(circle at center, ${
-                      colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.6)' : 
-                      colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.6)' : 
-                      colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.6)' : 
-                      colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.6)' : 
-                      colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.6)' : 
-                      'rgba(236,72,153,0.6)'
-                    }, transparent 60%)`
-                  }}
-                />
-                
-                {/* Gradient border - thin stroke only */}
-                <div 
-                  className="relative rounded-3xl p-[1px]"
-                  style={{
-                    background: `linear-gradient(135deg, ${
-                      colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.7), rgba(6,182,212,0.3)' : 
-                      colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.7), rgba(168,85,247,0.3)' : 
-                      colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.7), rgba(20,184,166,0.3)' : 
-                      colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.7), rgba(239,68,68,0.3)' : 
-                      colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.7), rgba(99,102,241,0.3)' : 
-                      'rgba(236,72,153,0.7), rgba(236,72,153,0.3)'
-                    })`
-                  }}
+                  className="rounded-[calc(1.5rem-1px)] overflow-hidden" 
+                  style={{ backgroundColor: 'transparent' }}
                 >
-                  {/* Fully transparent inner content area */}
-                  <div 
-                    className="rounded-[calc(1.5rem-1px)] overflow-hidden backdrop-blur-[1px]" 
-                    style={{ backgroundColor: 'transparent' }}
-                  >
                 {/* Oval colored title section - 15% of card with glowing blur below */}
                 <div className="relative">
                   <div className={`relative h-20 bg-gradient-to-br ${colorSet.gradient} rounded-b-[3rem] flex items-center justify-center px-6 z-10`}>
@@ -565,7 +548,6 @@ const QuestionBank = () => {
                   </div>
                 </div>
               </CardContent>
-                  </div>
                 </div>
               </div>
             );
