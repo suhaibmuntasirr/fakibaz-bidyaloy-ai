@@ -413,33 +413,38 @@ const QuestionBank = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <div key={question.id} className="rounded-3xl p-[2px] relative"
-                style={{
-                  background: `linear-gradient(to bottom, rgba(255,255,255,0.8), ${
-                    colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.6)' : 
-                    colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.6)' : 
-                    colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.6)' : 
-                    colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.6)' : 
-                    colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.6)' : 
-                    'rgba(236,72,153,0.6)'
-                  })`
-                }}
-              >
-                {/* Blurred glow effect behind card */}
+              <div key={question.id} className="relative">
+                {/* Outer glow effect */}
                 <div 
-                  className="absolute inset-0 rounded-3xl blur-xl opacity-50 -z-10"
+                  className="absolute -inset-2 rounded-3xl blur-2xl opacity-40"
                   style={{
-                    background: `linear-gradient(to bottom, rgba(255,255,255,0.4), ${
-                      colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.4)' : 
-                      colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.4)' : 
-                      colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.4)' : 
-                      colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.4)' : 
-                      colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.4)' : 
-                      'rgba(236,72,153,0.4)'
-                    })`
+                    background: `radial-gradient(circle, ${
+                      colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.5)' : 
+                      colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.5)' : 
+                      colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.5)' : 
+                      colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.5)' : 
+                      colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.5)' : 
+                      'rgba(236,72,153,0.5)'
+                    }, transparent 70%)`
                   }}
                 />
-                <div className="rounded-[22px] overflow-hidden" style={{ background: 'transparent' }}>
+                
+                {/* Gradient border wrapper */}
+                <div 
+                  className="relative rounded-3xl p-[2px]"
+                  style={{
+                    background: `linear-gradient(135deg, ${
+                      colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.8), rgba(6,182,212,0.4)' : 
+                      colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.8), rgba(168,85,247,0.4)' : 
+                      colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.8), rgba(20,184,166,0.4)' : 
+                      colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.8), rgba(239,68,68,0.4)' : 
+                      colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.8), rgba(99,102,241,0.4)' : 
+                      'rgba(236,72,153,0.8), rgba(236,72,153,0.4)'
+                    })`
+                  }}
+                >
+                  {/* Transparent inner content */}
+                  <div className="rounded-[22px] overflow-hidden" style={{ background: 'transparent' }}>
                 {/* Oval colored title section - 15% of card with glowing blur below */}
                 <div className="relative">
                   <div className={`relative h-20 bg-gradient-to-br ${colorSet.gradient} rounded-b-[3rem] flex items-center justify-center px-6 z-10`}>
@@ -557,8 +562,9 @@ const QuestionBank = () => {
                   </div>
                 </div>
               </CardContent>
-            </div>
-          </div>
+                  </div>
+                </div>
+              </div>
             );
           })}
         </div>
