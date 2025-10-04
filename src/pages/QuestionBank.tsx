@@ -425,7 +425,7 @@ const QuestionBank = () => {
                   })`
                 }}
               >
-                <Card className="!bg-transparent border-0 rounded-[22px] overflow-hidden shadow-none">
+                <div className="rounded-[22px] overflow-hidden" style={{ background: 'rgba(0, 0, 0, 0.8)' }}>
                 {/* Oval colored title section - 15% of card with glowing blur below */}
                 <div className="relative">
                   <div className={`relative h-20 bg-gradient-to-br ${colorSet.gradient} rounded-b-[3rem] flex items-center justify-center px-6 z-10`}>
@@ -543,7 +543,7 @@ const QuestionBank = () => {
                   </div>
                 </div>
               </CardContent>
-            </Card>
+            </div>
           </div>
             );
           })}

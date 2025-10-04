@@ -488,7 +488,7 @@ const Notes = () => {
                   })`
                 }}
               >
-                <Card className="!bg-transparent border-0 rounded-[22px] overflow-hidden shadow-none">
+                <div className="rounded-[22px] overflow-hidden" style={{ background: 'rgba(0, 0, 0, 0.8)' }}>
                 {/* Top colored oval section with icon and glowing blur effect */}
                 <div className="relative">
                   <div className={`h-24 bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl z-10 relative`}>
@@ -601,7 +601,7 @@ const Notes = () => {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </div>
             </div>
             );
           })}
