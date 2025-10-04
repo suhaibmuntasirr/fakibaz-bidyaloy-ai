@@ -334,7 +334,7 @@ const Notes = () => {
       
       <Navbar />
       
-      <div className="container mx-auto px-4 py-8 relative z-10">
+      <div className="container mx-auto px-4 pt-28 pb-8 relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
@@ -367,8 +367,8 @@ const Notes = () => {
         </div>
 
         {/* Filters */}
-        <Card className="mb-8 bg-transparent backdrop-blur-lg border-0 bg-gradient-to-r from-white/5 via-blue-500/10 via-purple-500/10 to-pink-500/10 p-[2px] rounded-xl">
-          <CardContent className="p-6 bg-transparent rounded-xl">
+        <div className="mb-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-[1px]">
+          <div className="p-6 bg-transparent rounded-2xl">
             <div className="flex items-center mb-4">
               <Filter className="h-5 w-5 text-blue-400 mr-2" />
               <span className="text-white font-medium">ফিল্টার</span>
@@ -422,8 +422,8 @@ const Notes = () => {
                 </Button>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Results Header */}
         <div className="flex items-center justify-between mb-6">
@@ -468,22 +468,21 @@ const Notes = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <Card key={note.id} className={`bg-transparent backdrop-blur-xl border-0 bg-gradient-to-r from-white/5 via-blue-500/10 via-purple-500/10 to-pink-500/10 p-[2px] hover:p-[3px] transition-all duration-300 overflow-hidden rounded-3xl`}>
-                {/* Top colored section - 15% height with blur effect below */}
-                <div className="relative">
-                  <div className={`h-16 bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl`}>
-                    <img 
-                      src={bookIcon} 
-                      alt="Book Icon" 
-                      className="w-10 h-10 filter brightness-0 invert opacity-90"
-                    />
+              <div key={note.id} className="bg-gradient-to-r from-white/20 via-blue-500/20 via-purple-500/20 to-pink-500/20 p-[1px] hover:p-[1.5px] transition-all duration-300 overflow-hidden rounded-3xl">
+                <div className="bg-transparent backdrop-blur-xl rounded-3xl overflow-hidden">
+                  {/* Top colored section - 15% height */}
+                  <div className="relative h-20">
+                    <div className={`h-full bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl`}>
+                      <img 
+                        src={bookIcon} 
+                        alt="Book Icon" 
+                        className="w-10 h-10 filter brightness-0 invert opacity-90"
+                      />
+                    </div>
                   </div>
-                  {/* Soft glowing blur below the card header */}
-                  <div className={`absolute -bottom-6 left-0 right-0 h-12 bg-gradient-to-b ${colorSet.gradient} opacity-40 blur-2xl`}></div>
-                </div>
-                
-                <CardContent className="p-6 pt-8 bg-transparent">
-                  <div className="space-y-4">
+                  
+                  <div className="p-6 bg-transparent">
+                    <div className="space-y-4">
                     {/* Title and Badges */}
                     <div>
                       <h3 className="text-white text-xl font-bold mb-2 line-clamp-2">{note.title}</h3>
@@ -579,8 +578,9 @@ const Notes = () => {
                       </Button>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
+            </div>
             );
           })}
         </div>

@@ -16,7 +16,8 @@ import {
   Users,
   X,
   Play,
-  School
+  School,
+  Plus
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -296,7 +297,7 @@ const QuestionBank = () => {
       
       <Navbar />
       
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 pt-28 pb-8">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
@@ -308,8 +309,8 @@ const QuestionBank = () => {
         </div>
 
         {/* Search and Filters */}
-        <Card className="mb-8 bg-transparent backdrop-blur-lg border-0 bg-gradient-to-r from-white/5 via-blue-500/10 via-purple-500/10 to-pink-500/10 p-[2px] rounded-xl">
-          <CardContent className="p-6 bg-transparent rounded-xl">
+        <div className="mb-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-[1px]">
+          <div className="p-6 bg-transparent rounded-2xl">
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <div className="relative md:col-span-2 lg:col-span-2">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -379,15 +380,15 @@ const QuestionBank = () => {
                 </div>
                 <Button
                   onClick={() => setShowUpload(true)}
-                  className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                 >
-                  <Upload className="mr-2 h-4 w-4" />
+                  <Plus className="mr-2 h-4 w-4" />
                   প্রশ্নপত্র আপলোড করুন
                 </Button>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Questions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -404,38 +405,34 @@ const QuestionBank = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <Card key={question.id} className={`bg-transparent backdrop-blur-xl border-0 bg-gradient-to-r from-white/5 via-blue-500/10 via-purple-500/10 to-pink-500/10 p-[2px] hover:p-[3px] transition-all duration-300 overflow-hidden rounded-3xl`}>
-                {/* Rounded pill header - 15% height */}
-                <div className="relative pt-4 px-4">
-                  <div className={`h-16 bg-gradient-to-br ${colorSet.gradient} rounded-full flex items-center justify-center px-6`}>
-                    <CardTitle className="text-white text-base font-bold text-center leading-tight">
-                      {question.title}
-                    </CardTitle>
+              <div key={question.id} className="bg-gradient-to-r from-white/20 via-blue-500/20 via-purple-500/20 to-pink-500/20 p-[1px] hover:p-[1.5px] transition-all duration-300 overflow-hidden rounded-3xl">
+                <div className="bg-transparent backdrop-blur-xl rounded-3xl overflow-hidden">
+                  {/* Oval pill header - 15% height */}
+                  <div className="relative pt-6 px-6">
+                    <div className={`h-16 bg-gradient-to-br ${colorSet.gradient} rounded-full flex items-center justify-center px-6 shadow-lg`}>
+                      <h3 className="text-white text-base font-bold text-center leading-tight">
+                        {question.title}
+                      </h3>
+                    </div>
                   </div>
-                  {/* Soft glowing blur below the pill header */}
-                  <div className={`absolute top-12 left-0 right-0 h-12 bg-gradient-to-b ${colorSet.gradient} opacity-40 blur-2xl`}></div>
-                </div>
-                
-                {/* Card content */}
-                <CardHeader className="pt-8 bg-transparent">
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    <Badge className="bg-blue-600/20 text-blue-300 border-blue-400/20">{question.class}</Badge>
-                    <Badge className="bg-green-600/20 text-green-300 border-green-400/20">{question.subject}</Badge>
-                    <Badge className="bg-purple-600/20 text-purple-300 border-purple-400/20">
-                      {getExamTypeLabel(question.examType)}
-                    </Badge>
-                    {question.verified && (
-                      <Badge className="bg-yellow-600/20 text-yellow-300 border-yellow-400/20">✓ যাচাইকৃত</Badge>
-                    )}
-                  </div>
-                  <p className="text-gray-300 text-sm flex items-center">
-                    <School className="mr-1 h-3 w-3" />
-                    {question.school}
-                  </p>
-                <p className="text-gray-400 text-xs">{question.district} • {question.year}</p>
-              </CardHeader>
-              
-              <CardContent className="bg-transparent">
+                  
+                  {/* Card content */}
+                  <div className="pt-6 px-6 pb-6 bg-transparent">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <Badge className="bg-blue-600/20 text-blue-300 border-blue-400/20">{question.class}</Badge>
+                      <Badge className="bg-green-600/20 text-green-300 border-green-400/20">{question.subject}</Badge>
+                      <Badge className="bg-purple-600/20 text-purple-300 border-purple-400/20">
+                        {getExamTypeLabel(question.examType)}
+                      </Badge>
+                      {question.verified && (
+                        <Badge className="bg-yellow-600/20 text-yellow-300 border-yellow-400/20">✓ যাচাইকৃত</Badge>
+                      )}
+                    </div>
+                    <p className="text-gray-300 text-sm flex items-center mb-1">
+                      <School className="mr-1 h-3 w-3" />
+                      {question.school}
+                    </p>
+                    <p className="text-gray-400 text-xs mb-4">{question.district} • {question.year}</p>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-2">
                     <Avatar className="h-8 w-8">
@@ -520,8 +517,9 @@ const QuestionBank = () => {
                     </Button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
+          </div>
             );
           })}
         </div>
