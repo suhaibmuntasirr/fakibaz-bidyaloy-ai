@@ -477,37 +477,40 @@ const Notes = () => {
             
             return (
               <div key={note.id} className="relative">
-                {/* Outer glow effect */}
+                {/* Outer glow - positioned outside the card */}
                 <div 
-                  className="absolute -inset-2 rounded-3xl blur-2xl opacity-40"
+                  className="absolute -inset-3 rounded-3xl blur-3xl opacity-30 pointer-events-none"
                   style={{
-                    background: `radial-gradient(circle, ${
-                      colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.5)' : 
-                      colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.5)' : 
-                      colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.5)' : 
-                      colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.5)' : 
-                      colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.5)' : 
-                      'rgba(236,72,153,0.5)'
-                    }, transparent 70%)`
+                    background: `radial-gradient(circle at center, ${
+                      colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.6)' : 
+                      colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.6)' : 
+                      colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.6)' : 
+                      colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.6)' : 
+                      colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.6)' : 
+                      'rgba(236,72,153,0.6)'
+                    }, transparent 60%)`
                   }}
                 />
                 
-                {/* Gradient border wrapper */}
+                {/* Gradient border - thin stroke only */}
                 <div 
-                  className="relative rounded-3xl p-[2px]"
+                  className="relative rounded-3xl p-[1px]"
                   style={{
                     background: `linear-gradient(135deg, ${
-                      colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.8), rgba(6,182,212,0.4)' : 
-                      colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.8), rgba(168,85,247,0.4)' : 
-                      colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.8), rgba(20,184,166,0.4)' : 
-                      colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.8), rgba(239,68,68,0.4)' : 
-                      colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.8), rgba(99,102,241,0.4)' : 
-                      'rgba(236,72,153,0.8), rgba(236,72,153,0.4)'
+                      colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.7), rgba(6,182,212,0.3)' : 
+                      colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.7), rgba(168,85,247,0.3)' : 
+                      colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.7), rgba(20,184,166,0.3)' : 
+                      colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.7), rgba(239,68,68,0.3)' : 
+                      colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.7), rgba(99,102,241,0.3)' : 
+                      'rgba(236,72,153,0.7), rgba(236,72,153,0.3)'
                     })`
                   }}
                 >
-                  {/* Transparent inner content */}
-                  <div className="rounded-[22px] overflow-hidden" style={{ background: 'transparent' }}>
+                  {/* Fully transparent inner content area */}
+                  <div 
+                    className="rounded-[calc(1.5rem-1px)] overflow-hidden backdrop-blur-[1px]" 
+                    style={{ backgroundColor: 'transparent' }}
+                  >
                 {/* Top colored oval section with icon and glowing blur effect */}
                 <div className="relative">
                   <div className={`h-24 bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl z-10 relative`}>
