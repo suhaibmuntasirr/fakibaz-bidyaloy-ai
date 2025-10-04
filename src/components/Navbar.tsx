@@ -24,19 +24,19 @@ const Navbar = () => {
 
   return (
     <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-auto">
-      <nav className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-full shadow-2xl px-8">
-        <div className="flex items-center justify-between h-16 gap-8">
+      <nav className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-full shadow-2xl px-10">
+        <div className="flex items-center justify-between h-16 gap-12">
           {/* Logo Only */}
           <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
             <img 
               src="/lovable-uploads/48bd98a0-c7ee-4b45-adf1-cca6b79289b4.png" 
               alt="Fakibaz Logo"
-              className="w-10 h-10"
+              className="w-12 h-12"
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-10">
             <Link 
               to="/" 
               className="text-white hover:text-blue-400 transition-colors flex items-center text-lg font-medium"

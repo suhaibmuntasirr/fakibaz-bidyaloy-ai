@@ -75,7 +75,7 @@ const Index = () => {
         />
 
         {/* Hero Section with Enhanced Glass Effects */}
-        <section className="relative py-12 px-4 text-center">
+        <section className="relative pt-32 pb-12 px-4 text-center">
           {/* Additional gradient overlay for depth */}
           <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/30"></div>
         

@@ -405,8 +405,8 @@ const QuestionBank = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <div key={question.id} className="bg-gradient-to-r from-white/20 via-blue-500/20 via-purple-500/20 to-pink-500/20 p-[1px] hover:p-[1.5px] transition-all duration-300 overflow-hidden rounded-3xl">
-                <div className="bg-transparent backdrop-blur-xl rounded-3xl overflow-hidden">
+              <div key={question.id} className="bg-gradient-to-r from-blue-400/40 via-purple-500/40 to-pink-500/40 p-[1.5px] hover:p-[2px] transition-all duration-300 overflow-hidden rounded-3xl">
+                <div className="bg-black/60 backdrop-blur-xl rounded-3xl overflow-hidden">
                   {/* Oval pill header - 15% height */}
                   <div className="relative pt-6 px-6">
                     <div className={`h-16 bg-gradient-to-br ${colorSet.gradient} rounded-full flex items-center justify-center px-6 shadow-lg`}>

@@ -468,40 +468,36 @@ const Notes = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <div key={note.id} className="bg-gradient-to-r from-white/20 via-blue-500/20 via-purple-500/20 to-pink-500/20 p-[1px] hover:p-[1.5px] transition-all duration-300 overflow-hidden rounded-3xl">
-                <div className="bg-transparent backdrop-blur-xl rounded-3xl overflow-hidden">
+              <div key={note.id} className="bg-gradient-to-r from-blue-400/40 via-purple-500/40 to-pink-500/40 p-[1.5px] hover:p-[2px] transition-all duration-300 overflow-hidden rounded-3xl">
+                <div className="bg-black/60 backdrop-blur-xl rounded-3xl overflow-hidden">
                   {/* Top colored section - 15% height */}
-                  <div className="relative h-20">
+                  <div className="relative h-24">
                     <div className={`h-full bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl`}>
-                      <img 
-                        src={bookIcon} 
-                        alt="Book Icon" 
-                        className="w-10 h-10 filter brightness-0 invert opacity-90"
-                      />
+                      <BookOpen className="w-12 h-12 text-white" />
                     </div>
                   </div>
                   
                   <div className="p-6 bg-transparent">
                     <div className="space-y-4">
-                    {/* Title and Badges */}
-                    <div>
-                      <h3 className="text-white text-xl font-bold mb-2 line-clamp-2">{note.title}</h3>
-                      <p className="text-gray-300 text-sm mb-3">{note.chapter}</p>
-                      
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        <Badge variant="outline" className="text-blue-400 border-blue-400 bg-blue-400/10">
-                          {note.class}
-                        </Badge>
-                        <Badge variant="outline" className="text-green-400 border-green-400 bg-green-400/10">
-                          {note.subject}
-                        </Badge>
-                        {note.verified && (
-                          <Badge variant="outline" className="text-yellow-400 border-yellow-400 bg-yellow-400/10">
-                            ✓ Verified
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
+                     {/* Title and Badges */}
+                     <div>
+                       <h3 className="text-white text-xl font-bold mb-2 line-clamp-2">{note.title}</h3>
+                       <p className="text-gray-300 text-sm mb-3">{note.chapter}</p>
+                       
+                       <div className="flex flex-wrap gap-2 mb-3">
+                         <Badge variant="outline" className="text-blue-400 border-blue-500 bg-blue-500/20">
+                           {note.class}
+                         </Badge>
+                         <Badge variant="outline" className="text-green-400 border-green-500 bg-green-500/20">
+                           {note.subject}
+                         </Badge>
+                         {note.verified && (
+                           <Badge variant="outline" className="text-yellow-400 border-yellow-500 bg-yellow-500/20">
+                             ✓ Verified
+                           </Badge>
+                         )}
+                       </div>
+                     </div>
                     
                     {/* Author and File Info */}
                     <div className="space-y-2">
