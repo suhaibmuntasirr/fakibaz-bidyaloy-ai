@@ -468,8 +468,8 @@ const Notes = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <div key={note.id} className="bg-gradient-to-r from-blue-400/40 via-purple-500/40 to-pink-500/40 p-[1.5px] hover:p-[2px] transition-all duration-300 overflow-hidden rounded-3xl">
-                <div className="bg-black/60 backdrop-blur-xl rounded-3xl overflow-hidden">
+              <div key={note.id} className="bg-gradient-to-r from-blue-400/30 via-purple-500/30 to-pink-500/30 p-[1.5px] hover:p-[2px] transition-all duration-300 overflow-hidden rounded-3xl">
+                <div className="bg-transparent backdrop-blur-sm rounded-3xl overflow-hidden">
                   {/* Top colored section - 15% height */}
                   <div className="relative h-24">
                     <div className={`h-full bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl`}>
@@ -482,7 +482,7 @@ const Notes = () => {
                      {/* Title and Badges */}
                      <div>
                        <h3 className="text-white text-xl font-bold mb-2 line-clamp-2">{note.title}</h3>
-                       <p className="text-gray-300 text-sm mb-3">{note.chapter}</p>
+                       <p className="text-gray-200 text-sm mb-3">{note.chapter}</p>
                        
                        <div className="flex flex-wrap gap-2 mb-3">
                          <Badge variant="outline" className="text-blue-400 border-blue-500 bg-blue-500/20">
@@ -498,21 +498,21 @@ const Notes = () => {
                          )}
                        </div>
                      </div>
-                    
-                    {/* Author and File Info */}
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2 text-gray-400 text-sm">
-                        <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                        <span>{note.author}</span>
-                      </div>
-                      <div className="flex items-center justify-between text-gray-500 text-xs">
-                        <span>{(note.fileSize / 1024 / 1024).toFixed(1)} MB</span>
-                        <span>{note.uploadDate.toLocaleDateString('bn-BD')}</span>
-                      </div>
+                     
+                     {/* Author and File Info */}
+                     <div className="space-y-2">
+                       <div className="flex items-center space-x-2 text-gray-200 text-sm">
+                         <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                         <span>{note.author}</span>
+                       </div>
+                       <div className="flex items-center justify-between text-gray-300 text-xs">
+                         <span>{(note.fileSize / 1024 / 1024).toFixed(1)} MB</span>
+                         <span>{note.uploadDate.toLocaleDateString('bn-BD')}</span>
+                       </div>
                     </div>
-                    
-                    {/* Stats */}
-                    <div className="flex items-center justify-between text-gray-400 text-sm mb-4">
+                     
+                     {/* Stats */}
+                     <div className="flex items-center justify-between text-gray-200 text-sm mb-4">
                       <div className="flex items-center space-x-4">
                         <div className="flex items-center space-x-1">
                           <Heart className={`h-4 w-4 ${likedNotes.includes(note.id) ? 'fill-red-400 text-red-400' : ''}`} />

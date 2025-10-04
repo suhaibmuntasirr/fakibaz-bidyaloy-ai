@@ -405,80 +405,80 @@ const QuestionBank = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <div key={question.id} className="bg-gradient-to-r from-blue-400/40 via-purple-500/40 to-pink-500/40 p-[1.5px] hover:p-[2px] transition-all duration-300 overflow-hidden rounded-3xl">
-                <div className="bg-black/60 backdrop-blur-xl rounded-3xl overflow-hidden">
-                  {/* Oval pill header - 15% height */}
-                  <div className="relative pt-6 px-6">
-                    <div className={`h-16 bg-gradient-to-br ${colorSet.gradient} rounded-full flex items-center justify-center px-6 shadow-lg`}>
-                      <h3 className="text-white text-base font-bold text-center leading-tight">
+              <div key={question.id} className="bg-gradient-to-r from-blue-400/30 via-purple-500/30 to-pink-500/30 p-[1.5px] hover:p-[2px] transition-all duration-300 overflow-hidden rounded-3xl">
+                <div className="bg-transparent backdrop-blur-sm rounded-3xl overflow-hidden">
+                  {/* Rounded pill header - full width, centered text */}
+                  <div className="relative p-4">
+                    <div className={`h-20 bg-gradient-to-br ${colorSet.gradient} rounded-[3rem] flex items-center justify-center px-8 shadow-lg`}>
+                      <h3 className="text-white text-lg font-bold text-center leading-tight">
                         {question.title}
                       </h3>
                     </div>
                   </div>
                   
                   {/* Card content */}
-                  <div className="pt-6 px-6 pb-6 bg-transparent">
+                  <div className="pt-2 px-6 pb-6 bg-transparent">
                     <div className="flex flex-wrap gap-2 mb-3">
-                      <Badge className="bg-blue-600/20 text-blue-300 border-blue-400/20">{question.class}</Badge>
-                      <Badge className="bg-green-600/20 text-green-300 border-green-400/20">{question.subject}</Badge>
-                      <Badge className="bg-purple-600/20 text-purple-300 border-purple-400/20">
+                      <Badge className="bg-blue-600/30 text-blue-200 border-blue-400/30">{question.class}</Badge>
+                      <Badge className="bg-green-600/30 text-green-200 border-green-400/30">{question.subject}</Badge>
+                      <Badge className="bg-purple-600/30 text-purple-200 border-purple-400/30">
                         {getExamTypeLabel(question.examType)}
                       </Badge>
                       {question.verified && (
-                        <Badge className="bg-yellow-600/20 text-yellow-300 border-yellow-400/20">✓ যাচাইকৃত</Badge>
+                        <Badge className="bg-yellow-600/30 text-yellow-200 border-yellow-400/30">✓ যাচাইকৃত</Badge>
                       )}
                     </div>
-                    <p className="text-gray-300 text-sm flex items-center mb-1">
+                    <p className="text-gray-200 text-sm flex items-center mb-1">
                       <School className="mr-1 h-3 w-3" />
                       {question.school}
                     </p>
-                    <p className="text-gray-400 text-xs mb-4">{question.district} • {question.year}</p>
+                    <p className="text-gray-300 text-xs mb-4">{question.district} • {question.year}</p>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-2">
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="bg-blue-600 text-white text-xs">
                         {question.author.charAt(0)}
                       </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-white text-sm font-medium">{question.author}</p>
-                      <p className="text-gray-400 text-xs">
-                        {Math.floor((Date.now() - question.uploadDate.getTime()) / (1000 * 60 * 60 * 24))} দিন আগে
-                      </p>
+                      </Avatar>
+                      <div>
+                        <p className="text-white text-sm font-medium">{question.author}</p>
+                        <p className="text-gray-300 text-xs">
+                          {Math.floor((Date.now() - question.uploadDate.getTime()) / (1000 * 60 * 60 * 24))} দিন আগে
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-gray-300 text-xs">
+                      {(question.fileSize / 1024 / 1024).toFixed(1)} MB
+                    </p>
+                  </div>
+
+                  {/* Exam Info */}
+                  <div className="bg-black/30 p-3 rounded-lg mb-4">
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div className="flex items-center text-gray-200">
+                        <Clock className="h-3 w-3 mr-1" />
+                        <span>{question.duration}</span>
+                      </div>
+                      <div className="flex items-center text-gray-200">
+                        <Award className="h-3 w-3 mr-1" />
+                        <span>{question.marks} নম্বর</span>
+                      </div>
                     </div>
                   </div>
-                  <p className="text-gray-400 text-xs">
-                    {(question.fileSize / 1024 / 1024).toFixed(1)} MB
-                  </p>
-                </div>
 
-                {/* Exam Info */}
-                <div className="bg-black/20 p-3 rounded-lg mb-4">
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="flex items-center text-gray-300">
-                      <Clock className="h-3 w-3 mr-1" />
-                      <span>{question.duration}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300">
-                      <Award className="h-3 w-3 mr-1" />
-                      <span>{question.marks} নম্বর</span>
-                    </div>
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-1 mb-4">
+                    {question.tags.map((tag, index) => (
+                      <Badge key={index} variant="outline" className="text-gray-200 border-gray-500 text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
                   </div>
-                </div>
 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1 mb-4">
-                  {question.tags.map((tag, index) => (
-                    <Badge key={index} variant="outline" className="text-gray-400 border-gray-600 text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-
-                {/* Stats */}
-                <div className="flex items-center justify-between text-sm text-gray-400 mb-4">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-1">
+                  {/* Stats */}
+                  <div className="flex items-center justify-between text-sm text-gray-200 mb-4">
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-1">
                       <Download className="h-4 w-4" />
                       <span>{question.downloads}</span>
                     </div>
