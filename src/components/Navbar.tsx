@@ -23,13 +23,13 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl">
+    <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-[60] w-[95%] max-w-7xl">
       <div className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-[2rem] shadow-xl">
         <div className="px-8">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-16">
             {/* Logo Only */}
             <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
-              <img 
+              <img
                 src="/lovable-uploads/48bd98a0-c7ee-4b45-adf1-cca6b79289b4.png" 
                 alt="Fakibaz Logo"
                 className="w-10 h-10"
@@ -40,30 +40,30 @@ const Navbar = () => {
             <div className="hidden md:flex items-center justify-center flex-1 space-x-12">
               <Link 
                 to="/" 
-                className="text-white hover:text-blue-400 transition-colors flex items-center"
+                className="text-white hover:text-blue-400 transition-colors flex items-center text-base font-medium"
               >
-                <Home className="mr-1 h-4 w-4" />
+                <Home className="mr-1 h-5 w-5" />
                 হোম
               </Link>
               <Link 
                 to="/notes" 
-                className="text-white hover:text-blue-400 transition-colors flex items-center"
+                className="text-white hover:text-blue-400 transition-colors flex items-center text-base font-medium"
               >
-                <BookOpen className="mr-1 h-4 w-4" />
+                <BookOpen className="mr-1 h-5 w-5" />
                 নোট
               </Link>
               <Link 
                 to="/question-bank" 
-                className="text-white hover:text-blue-400 transition-colors flex items-center"
+                className="text-white hover:text-blue-400 transition-colors flex items-center text-base font-medium"
               >
-                <FileText className="mr-1 h-4 w-4" />
+                <FileText className="mr-1 h-5 w-5" />
                 প্রশ্ন ব্যাংক
               </Link>
               <Link 
                 to="/community" 
-                className="text-white hover:text-blue-400 transition-colors flex items-center"
+                className="text-white hover:text-blue-400 transition-colors flex items-center text-base font-medium"
               >
-                <Users className="mr-1 h-4 w-4" />
+                <Users className="mr-1 h-5 w-5" />
                 কমিউনিটি
               </Link>
             </div>

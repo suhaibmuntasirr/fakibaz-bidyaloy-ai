@@ -67,12 +67,14 @@ const Index = () => {
       <div className="relative z-10">
         <Navbar />
         
-        {/* Ad Banner below navbar */}
-        <AdBanner 
-          imageUrl="/lovable-uploads/e283b105-0747-4859-9cef-ef35fb06dd9d.png"
-          altText="বিশেষ অফার"
-          onClick={() => console.log('Ad clicked')}
-        />
+        {/* Ad Banner below navbar with top padding */}
+        <div className="pt-24">
+          <AdBanner 
+            imageUrl="/lovable-uploads/e283b105-0747-4859-9cef-ef35fb06dd9d.png"
+            altText="বিশেষ অফার"
+            onClick={() => console.log('Ad clicked')}
+          />
+        </div>
 
         {/* Hero Section with Enhanced Glass Effects */}
         <section className="relative py-12 px-4 text-center">
