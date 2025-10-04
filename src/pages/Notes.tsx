@@ -476,24 +476,24 @@ const Notes = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <Card key={note.id} className="relative overflow-hidden"
-                style={{
-                  background: 'transparent',
-                  border: '2px solid transparent',
-                  borderRadius: '24px',
-                  backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0)), 
-                    linear-gradient(to bottom, rgba(255,255,255,0.8), ${
-                    colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.6)' : 
-                    colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.6)' : 
-                    colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.6)' : 
-                    colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.6)' : 
-                    colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.6)' : 
-                    'rgba(236,72,153,0.6)'
-                  })`,
-                  backgroundOrigin: 'border-box',
-                  backgroundClip: 'padding-box, border-box'
-                }}
-              >
+              <div key={note.id} className="relative rounded-3xl overflow-hidden">
+                {/* Gradient border using pseudo-element */}
+                <div className="absolute inset-0 rounded-3xl p-[2px]"
+                  style={{
+                    background: `linear-gradient(to bottom, rgba(255,255,255,0.8), ${
+                      colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.6)' : 
+                      colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.6)' : 
+                      colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.6)' : 
+                      colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.6)' : 
+                      colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.6)' : 
+                      'rgba(236,72,153,0.6)'
+                    })`
+                  }}
+                >
+                  <div className="w-full h-full bg-transparent rounded-3xl"></div>
+                </div>
+                
+                <Card className="relative bg-transparent border-0 rounded-3xl">
                 {/* Top colored oval section with icon and glowing blur effect */}
                 <div className="relative">
                   <div className={`h-24 bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl z-10 relative`}>
@@ -607,6 +607,7 @@ const Notes = () => {
                   </div>
                 </CardContent>
               </Card>
+            </div>
             );
           })}
         </div>
