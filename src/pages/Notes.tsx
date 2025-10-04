@@ -476,7 +476,7 @@ const Notes = () => {
             const colorSet = colors[index % colors.length];
             
             return (
-              <div key={note.id} className="rounded-3xl p-[2px]"
+              <div key={note.id} className="rounded-3xl p-[2px] relative"
                 style={{
                   background: `linear-gradient(to bottom, rgba(255,255,255,0.8), ${
                     colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.6)' : 
@@ -488,7 +488,21 @@ const Notes = () => {
                   })`
                 }}
               >
-                <div className="rounded-[22px] overflow-hidden" style={{ background: 'rgba(0, 0, 0, 0.8)' }}>
+                {/* Blurred glow effect behind card */}
+                <div 
+                  className="absolute inset-0 rounded-3xl blur-xl opacity-50 -z-10"
+                  style={{
+                    background: `linear-gradient(to bottom, rgba(255,255,255,0.4), ${
+                      colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.4)' : 
+                      colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.4)' : 
+                      colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.4)' : 
+                      colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.4)' : 
+                      colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.4)' : 
+                      'rgba(236,72,153,0.4)'
+                    })`
+                  }}
+                />
+                <div className="rounded-[22px] overflow-hidden" style={{ background: 'transparent' }}>
                 {/* Top colored oval section with icon and glowing blur effect */}
                 <div className="relative">
                   <div className={`h-24 bg-gradient-to-br ${colorSet.gradient} flex items-center justify-center rounded-t-3xl z-10 relative`}>
