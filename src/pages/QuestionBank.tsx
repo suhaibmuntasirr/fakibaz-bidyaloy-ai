@@ -332,7 +332,7 @@ const QuestionBank = () => {
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-black/60 border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-gray-600/30 text-white rounded-xl px-4 py-2.5 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">সব ক্লাস</option>
                 {classes.map(cls => (
@@ -342,7 +342,7 @@ const QuestionBank = () => {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-black/60 border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-gray-600/30 text-white rounded-xl px-4 py-2.5 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">সব বিষয়</option>
                 {subjects.map(subject => (
@@ -352,7 +352,7 @@ const QuestionBank = () => {
               <select
                 value={selectedDistrict}
                 onChange={(e) => setSelectedDistrict(e.target.value)}
-                className="bg-black/60 border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-gray-600/30 text-white rounded-xl px-4 py-2.5 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">সব জেলা</option>
                 {districts.map(district => (
@@ -362,7 +362,7 @@ const QuestionBank = () => {
               <select
                 value={selectedSchool}
                 onChange={(e) => setSelectedSchool(e.target.value)}
-                className="bg-black/60 border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-gray-600/30 text-white rounded-xl px-4 py-2.5 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">সব প্রতিষ্ঠান</option>
                 {schools.map(school => (
@@ -374,7 +374,7 @@ const QuestionBank = () => {
               <select
                 value={selectedExamType}
                 onChange={(e) => setSelectedExamType(e.target.value)}
-                className="bg-black/60 border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-gray-600/30 text-white rounded-xl px-4 py-2.5 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">সব ধরণ</option>
                 {examTypes.map(type => (
@@ -420,17 +420,19 @@ const QuestionBank = () => {
                   background: borderGradient
                 }}
               >
-                <div className="rounded-[calc(1.5rem-1px)] overflow-hidden bg-black">
-                  {/* Colored header section - 30% height */}
-                  <div 
-                    className="h-32 flex items-center justify-center px-6"
-                    style={{
-                      background: borderGradient
-                    }}
-                  >
-                    <CardTitle className="text-white text-lg font-bold text-center leading-tight">
-                      {question.title}
-                    </CardTitle>
+                <div className="rounded-[calc(1.5rem-1px)] overflow-hidden bg-transparent backdrop-blur-sm">
+                  {/* Rounded pill header section at top */}
+                  <div className="pt-6 px-6">
+                    <div 
+                      className="h-16 flex items-center justify-center px-6 rounded-full"
+                      style={{
+                        background: borderGradient
+                      }}
+                    >
+                      <CardTitle className="text-white text-base font-bold text-center leading-tight">
+                        {question.title}
+                      </CardTitle>
+                    </div>
                   </div>
                 
                 {/* Card content */}

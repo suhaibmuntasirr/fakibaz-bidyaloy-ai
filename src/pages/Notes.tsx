@@ -386,7 +386,7 @@ const Notes = () => {
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-black/60 border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-gray-600/30 text-white rounded-xl px-4 py-2.5 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">ক্লাস নির্বাচন</option>
                 {classes.map(cls => (
@@ -396,7 +396,7 @@ const Notes = () => {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="bg-black/60 border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-gray-600/30 text-white rounded-xl px-4 py-2.5 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">বিষয় নির্বাচন</option>
                 {subjects.map(subject => (
@@ -406,7 +406,7 @@ const Notes = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-black/60 border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-gray-600/30 text-white rounded-xl px-4 py-2.5 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {categories.map(category => (
                   <option key={category} value={category} className="bg-gray-900">{category}</option>
@@ -488,10 +488,10 @@ const Notes = () => {
                   background: borderGradient
                 }}
               >
-                <div className="rounded-[calc(1.5rem-1px)] overflow-hidden bg-black">
-                  {/* Colored header section with icon - 30% height */}
+                <div className="rounded-[calc(1.5rem-1px)] overflow-hidden bg-transparent backdrop-blur-sm">
+                  {/* Colored header section with icon - 15% height */}
                   <div 
-                    className="h-32 flex items-center justify-center"
+                    className="h-20 flex items-center justify-center"
                     style={{
                       background: borderGradient
                     }}
@@ -499,7 +499,7 @@ const Notes = () => {
                     <img 
                       src={bookIcon} 
                       alt="Book Icon" 
-                      className="w-12 h-12 filter brightness-0 invert opacity-90"
+                      className="w-10 h-10 filter brightness-0 invert opacity-90"
                     />
                   </div>
                 
