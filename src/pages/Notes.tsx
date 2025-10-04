@@ -478,21 +478,20 @@ const Notes = () => {
             return (
               <div 
                 key={note.id} 
-                className="rounded-3xl p-[1px]"
+                className="rounded-3xl p-[1.5px]"
                 style={{
                   background: `linear-gradient(135deg, ${
-                    colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.7), rgba(6,182,212,0.3)' : 
-                    colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.7), rgba(168,85,247,0.3)' : 
-                    colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.7), rgba(20,184,166,0.3)' : 
-                    colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.7), rgba(239,68,68,0.3)' : 
-                    colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.7), rgba(99,102,241,0.3)' : 
-                    'rgba(236,72,153,0.7), rgba(236,72,153,0.3)'
+                    colorSet.gradient.includes('cyan') ? 'rgba(6,182,212,0.6), rgba(6,182,212,0.3)' : 
+                    colorSet.gradient.includes('purple') ? 'rgba(168,85,247,0.6), rgba(168,85,247,0.3)' : 
+                    colorSet.gradient.includes('green') ? 'rgba(20,184,166,0.6), rgba(20,184,166,0.3)' : 
+                    colorSet.gradient.includes('orange') ? 'rgba(239,68,68,0.6), rgba(239,68,68,0.3)' : 
+                    colorSet.gradient.includes('blue') ? 'rgba(99,102,241,0.6), rgba(99,102,241,0.3)' : 
+                    'rgba(236,72,153,0.6), rgba(236,72,153,0.3)'
                   })`
                 }}
               >
                 <div 
-                  className="rounded-[calc(1.5rem-1px)] overflow-hidden" 
-                  style={{ backgroundColor: 'transparent' }}
+                  className="rounded-[calc(1.5rem-1.5px)] overflow-hidden bg-black/80"
                 >
                 {/* Top colored oval section with icon and glowing blur effect */}
                 <div className="relative">
